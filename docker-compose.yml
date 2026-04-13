@@ -1,0 +1,67 @@
+services:
+  npm:
+    image: jlesage/nginx-proxy-manager
+    container_name: nginx-proxy-manager
+    restart: unless-stopped
+    ports:
+      - "${NPM_HTTPS}:${BOX_HTTPS}"
+      - "${NPM_ADMIN}:${NPM_ADMIN}"
+    volumes:
+      - ${NPM_VOLUME}:/config:rw
+    networks:
+      - proxy
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=${VITE_API_URL}
+        - FRONTEND_PORT=${FRONTEND_PORT}
+    container_name: ${FRONTEND_CONTAINER}
+    ports:
+      - "${FRONTEND_PORT}:${FRONTEND_PORT}"
+    networks:
+      - proxy
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ${BACKEND_CONTAINER}
+    networks:
+      - proxy
+    depends_on:
+      - db
+
+  db:
+    image: postgres:16
+    container_name: ${DB_CONTAINER}
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - ${DB_VOLUME}:/var/lib/postgresql/data
+    networks:
+      - proxy
+
+  adminer:
+    image: adminer:5.4.2
+    container_name: ${ADMINER_CONTAINER}
+    restart: unless-stopped
+    ports:
+      - "${ADMINER_PORT}:${ADMINER_PORT}"
+    environment:
+      ADMINER_DEFAULT_SERVER: db
+    depends_on:
+      - db
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    driver: bridge
+    external: true
