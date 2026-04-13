@@ -4,6 +4,12 @@
     // File Layout
     "rootDir": "./",
     "outDir": "./dist",
+    "paths": {
+      "src/*": ["./src/*"],
+      "models/*": ["./src/models/*"],
+      "routes/*": ["./src/routes/*"],
+      "controllers/*": ["./src/controllers/*"]
+    },
 
     // Environment Settings
     // See also https://aka.ms/tsconfig/module

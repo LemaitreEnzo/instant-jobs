@@ -6,8 +6,8 @@ services:
     ports:
       - "${NPM_HTTPS}:${BOX_HTTPS}"
       - "${NPM_ADMIN}:${NPM_ADMIN}"
-    volumes:
-      - ${NPM_VOLUME}:/config:rw
+    # volumes:
+    #   - ${NPM_VOLUME}:/config:rw
     networks:
       - proxy
 
@@ -43,8 +43,8 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
-    volumes:
-      - ${DB_VOLUME}:/var/lib/postgresql/data
+    # volumes:
+    #   - ${DB_VOLUME}:/var/lib/postgresql/data
     networks:
       - proxy
 
