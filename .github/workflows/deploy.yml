@@ -18,14 +18,18 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          port: ${{ secrets.SSH_PORT }}
+          debug: true 
           # 2. Les commandes qui seront exécutées directement sur ton VPS
           script: |
             # On va dans le dossier du projet
             cd ${{ secrets.PROJECT_PATH }}
 
             # On force la synchronisation exacte avec la branche production de GitHub
-            git fetch --all
-            git reset --hard origin/production
+            git fetch origin main
+            git reset --hard origin/main
+            git clean -fd
 
             # On reconstruit les images (Front) et on relance sans coupure
             docker compose up -d --build
