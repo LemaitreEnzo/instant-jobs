@@ -1,0 +1,34 @@
+name: Déploiement en Production
+
+# 1. Le déclencheur : Uniquement lors d'un push sur la branche "production"
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Connexion SSH et Déploiement Docker
+        # On utilise une action officielle et sécurisée pour le SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          # 2. Les commandes qui seront exécutées directement sur ton VPS
+          script: |
+            # On va dans le dossier du projet
+            cd ${{ secrets.PROJECT_PATH }}
+
+            # On force la synchronisation exacte avec la branche production de GitHub
+            git fetch --all
+            git reset --hard origin/production
+
+            # On reconstruit les images (Front) et on relance sans coupure
+            docker compose up -d --build
+
+            # Nettoyage optionnel des anciennes images Docker pour libérer de l'espace
+            docker image prune -f
