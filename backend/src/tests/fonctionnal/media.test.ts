@@ -1,11 +1,20 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
-import { User } from "models/users.model";
+import { Media } from "src/models/medias.model";
+import { User } from "src/models/users.model";
 import request from "supertest";
 import app from "../../../app";
+
+const MEDIA_URL = "/users/1/docs/medias";
 
 // Create mock for user model
 jest.mock("models/users.model", () => ({
   User: {
+    findOne: jest.fn(),
+  },
+}));
+
+jest.mock("models/medias.model", () => ({
+  Media: {
     findAll: jest.fn(),
     findOne: jest.fn(),
     create: jest.fn(),
@@ -14,104 +23,99 @@ jest.mock("models/users.model", () => ({
   },
 }));
 
-describe("GET USER", () => {
+describe("GET MEDIA", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it("Should return 200", async () => {
-    const res = await request(app).get("/users");
+    jest.mocked(User.findOne).mockResolvedValue({ id: 1, name: "ee" } as any);
+    const res = await request(app).get(MEDIA_URL);
     expect(res.status).toBe(200);
   });
 
-  it("Returns all users", async () => {
+  it("Returns all medias", async () => {
     // Create mock for findAll fuction
     jest
-      .mocked(User.findAll)
+      .mocked(Media.findAll)
       .mockResolvedValue([
         { id: 1, name: "ee" } as any,
         { id: 2, name: "eeee" } as any,
       ]);
+    jest.mocked(User.findOne).mockResolvedValue({ id: 1, name: "ee" } as any);
 
-    const res = await request(app).get("/users");
+    const res = await request(app).get(MEDIA_URL);
     expect(res.status).toBe(200);
     expect(res.body).toEqual({
-      users: [
+      medias: [
         { id: 1, name: "ee" },
         { id: 2, name: "eeee" },
       ],
     });
   });
 
-  it("Returns one user", async () => {
+  it("Returns one media", async () => {
     jest.mocked(User.findOne).mockResolvedValue({ id: 1, name: "ee" } as any);
+    jest.mocked(Media.findOne).mockResolvedValue({ id: 1, name: "ee" } as any);
 
-    const res = await request(app).get("/users/1");
+    const res = await request(app).get(`${MEDIA_URL}/1`);
     expect(res.status).toBe(200);
     expect(res.body).toEqual({
-      users: { id: 1, name: "ee" },
+      media: { id: 1, name: "ee" },
     });
   });
 });
 
-describe("CREATE ONE USER", () => {
+describe("CREATE ONE MEDIA", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it("Create one user", async () => {
+  it("Create one Media", async () => {
+    jest.mocked(User.findOne).mockResolvedValue({ id: 1, name: "ee" } as any);
     jest
-      .mocked(User.create)
+      .mocked(Media.create)
       .mockResolvedValue({ id: 1, name: "instant-jobs" } as any);
 
     const res = await request(app)
-      .post("/users")
-      .send({ id: 1, name: "instant-jobs" });
+      .post(MEDIA_URL)
+      .send({ name: "instant-jobs" });
     expect(res.status).toBe(201);
     expect(res.body).toMatchObject({
       users: { id: expect.any(Number), name: "instant-jobs" },
     });
   });
-
-  it("Returns a 409 error if a user's email address is already in use.", async () => {
-    jest
-      .mocked(User.findOne)
-      .mockResolvedValue({ id: 1, name: "instant-jobs" } as any);
-
-    const res = await request(app)
-      .post("/users")
-      .send({ id: 1, name: "instant-jobs" });
-
-    expect(res.status).toBe(409);
-    expect(User.create).not.toHaveBeenCalled();
-  });
 });
 
-describe("UPDATE USER", () => {
+describe("UPDATE MEDIA", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it("update one user", async () => {
+  it("update one media", async () => {
     jest.mocked(User.findOne).mockResolvedValue({ id: 1, name: "ee" } as any);
+    jest.mocked(Media.findOne).mockResolvedValue({ id: 1, name: "ee" } as any);
 
-    const res = await request(app).patch("/users/1").send({ name: "La manu" });
+    const res = await request(app)
+      .patch(`${MEDIA_URL}/1`)
+      .send({ name: "La manu" });
     expect(res.status).toBe(206);
   });
 });
 
-describe("DELETE ONE USER", () => {
+describe("DELETE ONE MEDIA", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it("Delete", async () => {
+    jest.mocked(User.findOne).mockResolvedValue({ id: 1, name: "ee" } as any);
     jest
-      .mocked(User.destroy)
+      .mocked(Media.destroy)
       .mockResolvedValue({ id: 1, name: "instant-jobs" } as any);
 
-    const res = await request(app).delete("/users/1");
-    expect(res.status).toBe(200);
-    expect(User.destroy).toHaveBeenCalled();
+    const res = await request(app).delete("/users/1/docs/medias/1");
+    expect(res.status).toBe(204);
+    expect(Media.destroy).toHaveBeenCalled();
   });
 });
