@@ -5,6 +5,7 @@
     "rootDir": "./",
     "outDir": "./dist",
     "paths": {
+      "config/*": ["./config/*"],
       "src/*": ["./src/*"],
       "models/*": ["./src/models/*"],
       "routes/*": ["./src/routes/*"],
