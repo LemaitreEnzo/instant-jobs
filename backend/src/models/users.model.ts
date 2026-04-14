@@ -19,7 +19,7 @@ interface UserModel extends Model<
 export const UserModel = sequelize.define<UserModel>("User", {
   id: {
     primaryKey: true,
-    type: DataTypes.INTEGER.UNSIGNED,
+    type: DataTypes.INTEGER,
   },
   name: {
     type: DataTypes.STRING,

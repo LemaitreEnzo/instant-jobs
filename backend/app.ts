@@ -2,7 +2,9 @@
 import cors from "cors";
 import express, { type Request, type Response } from "express";
 import helmet from "helmet";
+
 import usersRoutes from "routes/users.routes";
+import organizationsRoutes from "routes/organizations.routes";
 const app = express();
 
 app.use(
@@ -17,5 +19,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.use("/users", usersRoutes);
+
+app.use("/organizations", organizationsRoutes)
 
 export default app;
