@@ -8,15 +8,15 @@ import { DataTypes } from "sequelize";
 
 import { sequelize } from "../../config/db";
 
-interface User extends Model<
-  InferAttributes<User>,
-  InferCreationAttributes<User>
+interface Media extends Model<
+  InferAttributes<Media>,
+  InferCreationAttributes<Media>
 > {
   id: CreationOptional<number>;
   name: string;
 }
 
-export const User = sequelize.define<User>("User", {
+export const Media = sequelize.define<Media>("Media", {
   id: {
     primaryKey: true,
     type: DataTypes.INTEGER,
