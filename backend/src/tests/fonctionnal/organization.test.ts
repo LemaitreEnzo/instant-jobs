@@ -6,10 +6,14 @@ import app from "../../../app";
 jest.mock("models/organizations.model", () => ({
     Organization: {
         findAll: jest.fn(),
+        findOne: jest.fn(),
+        create: jest.fn(),
+        update: jest.fn({ id: 1, name: "La Manu"} as any),
+        destroy: jest.fn()
     }
 }));
 
-describe("GET /orgzanizations", () => {
+describe("GET ORGANIZATIONS", () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });
@@ -18,8 +22,8 @@ describe("GET /orgzanizations", () => {
         const res = await request(app).get("/organizations");
         expect(res.status).toBe(200);
     });
-    
-    it("Get all organizations", async () => {
+
+    it("Returns all organizations", async () => {
         jest.mocked(Organization.findAll).mockResolvedValue([
             { id: 1, name: "La Manu" } as any,
             { id: 2, name: "Credit Agricole" } as any
@@ -32,5 +36,80 @@ describe("GET /orgzanizations", () => {
                 { id: 2, name: "Credit Agricole" }
             ]
         })
+    });
+
+    it("Returns one organization", async () => {
+        jest.mocked(Organization.findOne).mockResolvedValue(
+            { id: 1, name: "La Manu" } as any,
+        );
+
+        const res = await request(app).get("/organizations/1");
+        expect(res.body).toEqual({
+            organization: {
+                id: 1, name: "La Manu"
+            },
+        })
     })
-})
+});
+
+describe("CREATE ORGANIZATION", () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it("POST -> should return 201", async () => {
+        jest.mocked(Organization.findOne).mockResolvedValue(null);
+        jest.mocked(Organization.create).mockResolvedValue(
+            { id: 1, name: "La Manu" } as any,
+        );
+
+        const res = await request(app)
+            .post("/organizations")
+            .send({ name: "La Manu" });
+
+        expect(res.status).toBe(201);
+        expect(res.body).toMatchObject({
+            id: expect.any(Number),
+            name: "La Manu"
+        });
+    });
+});
+
+describe("UPDATE ORGANIZATION", () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it("PATCH -> should return 206", async () => {
+        jest.mocked(Organization.findOne).mockResolvedValue({ id: 1 } as any);
+        jest.mocked(Organization.update).mockResolvedValue(
+            { id: 1, name: "ESC Compiègne" } as any,
+        );
+
+        const res = await request(app)
+            .patch("/organizations/1")
+            .send({ name: "ESC Compiègne" });
+
+        expect(res.status).toBe(206);
+        expect(res.body).toMatchObject({
+            id: 1,
+            name: "ESC Compiègne"
+        });
+    });
+});
+
+describe("DELETE ORGANIZATION", () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it("should return 204", async () => {
+        jest.mocked(Organization.destroy).mockResolvedValue(
+            { id: 1, name: "La Manu" } as any,
+        );
+
+        const res = await request(app).delete("/organizations/1");
+        expect(res.status).toBe(204);
+        expect(Organization.destroy).toHaveBeenCalled();
+    });
+});
