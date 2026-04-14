@@ -1,7 +1,11 @@
 import type { Request, Response } from "express";
-import { UserModel } from "models/users.model";
 
-export const getAllUsers = async (req: Request, res: Response) => {
-  const users = await UserModel.findAll();
-  res.json({ users });
-};
+export const getAllUsers = async (req: Request, res: Response) => {};
+
+export const getOneUser = async (req: Request, res: Response) => {};
+
+export const createUser = async (req: Request, res: Response) => {};
+
+export const updateUser = async (req: Request, res: Response) => {};
+
+export const deleteUser = async (req: Request, res: Response) => {};
