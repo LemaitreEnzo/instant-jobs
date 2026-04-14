@@ -2,6 +2,7 @@ import { describe, expect } from "@jest/globals";
 import request from "supertest";
 import app from "../../../app";
 
+// Create mock for DB
 jest.mock("config/db", () => ({
   sequelize: {
     define: jest.fn(() => ({})),
