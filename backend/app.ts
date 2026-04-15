@@ -3,7 +3,11 @@ import express, { type Request, type Response } from "express";
 import helmet from "helmet";
 
 import organizationsRoutes from "routes/organizations.routes";
+import getEnv from "./utils/envHelper";
+
 const app = express();
+
+const VERSION = getEnv("VERSION");
 
 app.use(
   cors({
@@ -12,10 +16,10 @@ app.use(
 );
 
 app.use(helmet());
-app.get("/", (req: Request, res: Response) => {
+app.get(`/${VERSION}`, (req: Request, res: Response) => {
   res.status(200).send("Hello world!");
 });
 
-app.use("/organizations", organizationsRoutes)
+app.use(`/${VERSION}/organizations`, organizationsRoutes)
 
 export default app;

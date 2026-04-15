@@ -1,6 +1,9 @@
 import { describe, expect } from "@jest/globals";
 import request from "supertest";
 import app from "../../../app";
+import getEnv from "../../../utils/envHelper";
+
+const VERSION = getEnv("VERSION");
 
 // Create mock for DB
 jest.mock("config/db", () => ({
@@ -11,9 +14,9 @@ jest.mock("config/db", () => ({
   },
 }));
 
-describe("GET /", () => {
+describe(`GET /${VERSION}`, () => {
   it("should return 200", async () => {
-    const res = await request(app).get("/");
+    const res = await request(app).get(`/${VERSION}`);
     expect(res.status).toBe(200);
   });
 });

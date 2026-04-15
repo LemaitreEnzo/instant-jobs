@@ -4,8 +4,10 @@ import { User } from "models/users.model";
 import request from "supertest";
 import app from "../../../app";
 import getSlug from "../../../utils/slugHelper";
+import getEnv from "../../../utils/envHelper";
 
-const USERS_URL = "/organizations/la-manu/users"
+const VERSION = getEnv("VERSION");
+const USERS_URL = `/${VERSION}/organizations/la-manu/users`;
 
 jest.mock("models/organizations.model", () => ({
   Organization: {

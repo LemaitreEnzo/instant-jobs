@@ -5,8 +5,10 @@ import { User } from "src/models/users.model";
 import request from "supertest";
 import app from "../../../app";
 import getSlug from "../../../utils/slugHelper";
+import getEnv from "../../../utils/envHelper";
 
-const MEDIA_URL = "/organizations/la-manu/users/1/docs/medias";
+const VERSION = getEnv("VERSION");
+const MEDIA_URL = `/${VERSION}/organizations/la-manu/users/1/docs/medias`;
 
 jest.mock("models/organizations.model", () => ({
   Organization: {

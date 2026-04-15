@@ -3,9 +3,11 @@ import { Organization } from "models/organizations.model";
 import { Campus } from "models/campus.model";
 import request from "supertest";
 import app from "../../../app";
+import getEnv from "../../../utils/envHelper";
 import getSlug from "../../../utils/slugHelper";
 
-const CAMPUS_URL = "/organizations/la-manu/campus"
+const VERSION = getEnv("VERSION");
+const CAMPUS_URL = `/${VERSION}/organizations/la-manu/campus`
 
 // Create mock for organization model
 jest.mock("models/organizations.model", () => ({
