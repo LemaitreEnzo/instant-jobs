@@ -47,6 +47,7 @@
     "isolatedModules": true,
     // "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
-    "skipLibCheck": true
-  }
+    "skipLibCheck": true,
+  },
+  "exclude": ["dist", "node_modules"]
 }

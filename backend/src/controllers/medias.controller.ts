@@ -1,4 +1,5 @@
 import type { Request, Response } from "express";
+import { Media } from "src/models/medias.model";
 
 export const getAllMedias = async (req: Request, res: Response) => {};
 

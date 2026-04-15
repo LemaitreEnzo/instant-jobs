@@ -1,4 +1,5 @@
 import type { Request, Response } from "express";
+import { User } from "src/models/users.model";
 
 export const getAllUsers = async (req: Request, res: Response) => {};
 

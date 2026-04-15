@@ -11,15 +11,15 @@ const campusRoutes = express.Router();
 
 // GET
 campusRoutes.get("/", getAllCampus);
-campusRoutes.get("/:id", getOneCampus);
+campusRoutes.get("/:slug", getOneCampus);
 
 // CREATE
 campusRoutes.post("/", createCampus);
 
 // UPDATE
-campusRoutes.patch("/:id", updateCampus);
+campusRoutes.put("/:slug", updateCampus);
 
 // DELETE
-campusRoutes.delete("/:id", deleteCampus);
+campusRoutes.delete("/:slug", deleteCampus);
 
 export default campusRoutes;

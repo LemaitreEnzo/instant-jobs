@@ -1,11 +1,5 @@
-import "dotenv/config";
 import { Sequelize } from "sequelize";
-
-const getEnv = (key: string): string => {
-  const value = process.env[key];
-  if (!value) throw new Error(`Variable d'environnement manquante : ${key}`);
-  return value;
-};
+import getEnv from "../utils/envHelper";
 
 export const sequelize = new Sequelize({
   dialect: "postgres",

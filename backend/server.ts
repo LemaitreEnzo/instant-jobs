@@ -1,9 +1,8 @@
-import "dotenv/config";
-
-import app from "./app";
 import { sequelize } from "./config/db";
+import app from "./app";
+import getEnv from "./utils/envHelper";
 
-const PORT = process.env.PORT;
+const PORT = Number(getEnv("PORT"));
 
 sequelize
   .authenticate()
