@@ -1,15 +1,48 @@
 services:
-  npm:
-    image: jlesage/nginx-proxy-manager
-    container_name: nginx-proxy-manager
-    restart: unless-stopped
+  # npm:
+  #   image: jlesage/nginx-proxy-manager
+  #   container_name: nginx-proxy-manager
+  #   restart: unless-stopped
+  #   ports:
+  #     - "${NPM_HTTPS}:${BOX_HTTPS}"
+  #     - "${NPM_ADMIN}:${NPM_ADMIN}"
+  #   volumes:
+  #     - ${NPM_VOLUME}:/config:rw
+  #   networks:
+  #     - proxy
+
+  db:
+    image: postgres:16
+    container_name: ${DB_CONTAINER}
     ports:
-      - "${NPM_HTTPS}:${BOX_HTTPS}"
-      - "${NPM_ADMIN}:${NPM_ADMIN}"
-    volumes:
-      - ${NPM_VOLUME}:/config:rw
+      - "${DB_PORT}:${DB_PORT}" 
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    # volumes:
+    #   - ${DB_VOLUME}:/var/lib/postgresql/data
     networks:
       - proxy
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d instant-jobs"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ${BACKEND_CONTAINER}
+    ports: 
+      - "${API_PORT}:${API_PORT}"
+    networks:
+      - proxy
+    depends_on:
+      db: 
+          condition: service_healthy
 
   frontend:
     build:
@@ -25,28 +58,6 @@ services:
       - proxy
     depends_on:
       - backend
-
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: ${BACKEND_CONTAINER}
-    networks:
-      - proxy
-    depends_on:
-      - db
-
-  db:
-    image: postgres:16
-    container_name: ${DB_CONTAINER}
-    environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
-    volumes:
-      - ${DB_VOLUME}:/var/lib/postgresql/data
-    networks:
-      - proxy
 
   adminer:
     image: adminer:5.4.2

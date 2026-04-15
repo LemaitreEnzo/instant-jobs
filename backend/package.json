@@ -8,7 +8,7 @@
     "test:cov": "jest --coverage --verbose",
     "dev": "NODE_ENV=dev nodemon dist/server.js",
     "prod": "NODE_ENV=prod nodemon dist/server.js",
-    "build": "tsc --watch"
+    "build": "tsc && tsc-alias"
   },
   "keywords": [],
   "author": "",
@@ -39,6 +39,7 @@
     "supertest": "^7.2.2",
     "ts-jest": "^29.4.9",
     "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.16",
     "typescript": "5.4"
   }
 }

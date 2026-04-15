@@ -13,7 +13,8 @@ interface Campus extends Model<
   InferCreationAttributes<Campus>
 > {
   id: CreationOptional<number>;
-  name: string;
+  name: string,
+  slug: string;
 }
 
 export const Campus = sequelize.define<Campus>("Campus", {
@@ -24,4 +25,8 @@ export const Campus = sequelize.define<Campus>("Campus", {
   name: {
     type: DataTypes.STRING,
   },
+  slug: {
+    unique: true,
+    type: DataTypes.STRING
+  }
 });

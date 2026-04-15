@@ -1,9 +1,7 @@
-// @filename : app.ts
 import cors from "cors";
 import express, { type Request, type Response } from "express";
 import helmet from "helmet";
 
-import usersRoutes from "routes/users.routes";
 import organizationsRoutes from "routes/organizations.routes";
 const app = express();
 
@@ -17,8 +15,6 @@ app.use(helmet());
 app.get("/", (req: Request, res: Response) => {
   res.status(200).send("Hello world!");
 });
-
-app.use("/users", usersRoutes);
 
 app.use("/organizations", organizationsRoutes)
 

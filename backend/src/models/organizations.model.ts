@@ -14,6 +14,7 @@ InferCreationAttributes<Organization>
 > {
     id: CreationOptional<number>,
     name: string;
+    slug: string;
 }
 
 export const Organization = sequelize.define<Organization>("Organization", {
@@ -22,6 +23,11 @@ export const Organization = sequelize.define<Organization>("Organization", {
         type: DataTypes.INTEGER,
     },
     name: {
+        unique: true,
         type: DataTypes.STRING
-    }
+    },
+    slug: {
+        unique: true,
+        type: DataTypes.STRING
+    },
 });

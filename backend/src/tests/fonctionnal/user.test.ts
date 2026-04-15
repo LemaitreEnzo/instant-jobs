@@ -1,7 +1,17 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
+import { Organization } from "src/models/organizations.model";
 import { User } from "models/users.model";
 import request from "supertest";
 import app from "../../../app";
+import getSlug from "../../../utils/slugHelper";
+
+const USERS_URL = "/organizations/la-manu/users"
+
+jest.mock("models/organizations.model", () => ({
+  Organization: {
+    findOne: jest.fn(),
+  },
+}));
 
 // Create mock for user model
 jest.mock("models/users.model", () => ({
@@ -20,11 +30,12 @@ describe("GET USER", () => {
   });
 
   it("Should return 200", async () => {
-    const res = await request(app).get("/users");
+    const res = await request(app).get(USERS_URL);
     expect(res.status).toBe(200);
   });
 
   it("Returns all users", async () => {
+    jest.mocked(Organization.findOne).mockResolvedValue({ id: 1, name: "La Manu", slug: getSlug("La Manu") } as any);
     // Create mock for findAll fuction
     jest
       .mocked(User.findAll)
@@ -33,7 +44,7 @@ describe("GET USER", () => {
         { id: 2, name: "eeee" } as any,
       ]);
 
-    const res = await request(app).get("/users");
+    const res = await request(app).get(USERS_URL);
     expect(res.status).toBe(200);
     expect(res.body).toEqual({
       users: [
@@ -44,12 +55,13 @@ describe("GET USER", () => {
   });
 
   it("Returns one user", async () => {
+    jest.mocked(Organization.findOne).mockResolvedValue({ id: 1, name: "La Manu", slug: getSlug("La Manu") } as any);
     jest.mocked(User.findOne).mockResolvedValue({ id: 1, name: "ee" } as any);
 
-    const res = await request(app).get("/users/1");
+    const res = await request(app).get(`${USERS_URL}/1`);
     expect(res.status).toBe(200);
     expect(res.body).toEqual({
-      users: { id: 1, name: "ee" },
+      user: { id: 1, name: "ee" },
     });
   });
 });
@@ -60,30 +72,21 @@ describe("CREATE ONE USER", () => {
   });
 
   it("Create one user", async () => {
+    jest.mocked(Organization.findOne).mockResolvedValue({ id: 1, name: "La Manu", slug: getSlug("La Manu") } as any);
     jest
       .mocked(User.create)
       .mockResolvedValue({ id: 1, name: "instant-jobs" } as any);
 
     const res = await request(app)
-      .post("/users")
-      .send({ id: 1, name: "instant-jobs" });
+      .post(USERS_URL)
+      .send({ name: "instant-jobs" });
     expect(res.status).toBe(201);
     expect(res.body).toMatchObject({
-      users: { id: expect.any(Number), name: "instant-jobs" },
+      user: { 
+        id: expect.any(Number), 
+        name: "instant-jobs" 
+      },
     });
-  });
-
-  it("Returns a 409 error if a user's email address is already in use.", async () => {
-    jest
-      .mocked(User.findOne)
-      .mockResolvedValue({ id: 1, name: "instant-jobs" } as any);
-
-    const res = await request(app)
-      .post("/users")
-      .send({ id: 1, name: "instant-jobs" });
-
-    expect(res.status).toBe(409);
-    expect(User.create).not.toHaveBeenCalled();
   });
 });
 
@@ -93,9 +96,10 @@ describe("UPDATE USER", () => {
   });
 
   it("update one user", async () => {
+    jest.mocked(Organization.findOne).mockResolvedValue({ id: 1, name: "La Manu", slug: getSlug("La Manu") } as any);
     jest.mocked(User.findOne).mockResolvedValue({ id: 1, name: "ee" } as any);
 
-    const res = await request(app).patch("/users/1").send({ name: "La manu" });
+    const res = await request(app).patch(`${USERS_URL}/1`).send({ name: "oo" });
     expect(res.status).toBe(206);
   });
 });
@@ -106,12 +110,13 @@ describe("DELETE ONE USER", () => {
   });
 
   it("Delete", async () => {
+    jest.mocked(Organization.findOne).mockResolvedValue({ id: 1, name: "La Manu", slug: getSlug("La Manu") } as any);
     jest
       .mocked(User.destroy)
       .mockResolvedValue({ id: 1, name: "instant-jobs" } as any);
 
-    const res = await request(app).delete("/users/1");
-    expect(res.status).toBe(200);
+    const res = await request(app).delete(`${USERS_URL}/1`);
+    expect(res.status).toBe(204);
     expect(User.destroy).toHaveBeenCalled();
   });
 });

@@ -1,4 +1,5 @@
 import type { Request, Response } from "express";
+import { Campus } from "src/models/campus.model";
 
 export const getAllCampus = async (req: Request, res: Response) => {};
 
