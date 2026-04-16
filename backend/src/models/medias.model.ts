@@ -14,6 +14,8 @@ interface Media extends Model<
 > {
   id: CreationOptional<number>;
   name: string;
+  path: string;
+  score: number;
 }
 
 export const Media = sequelize.define<Media>("Media", {
@@ -23,5 +25,11 @@ export const Media = sequelize.define<Media>("Media", {
   },
   name: {
     type: DataTypes.STRING,
+  },
+  path: {
+    type: DataTypes.STRING,
+  },
+  score: {
+    type: DataTypes.INTEGER,
   },
 });
