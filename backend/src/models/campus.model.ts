@@ -15,6 +15,7 @@ interface Campus extends Model<
   id: CreationOptional<number>;
   name: string,
   slug: string;
+  organisation_id: number;
 }
 
 export const Campus = sequelize.define<Campus>("Campus", {
@@ -28,5 +29,9 @@ export const Campus = sequelize.define<Campus>("Campus", {
   slug: {
     unique: true,
     type: DataTypes.STRING
+  },
+  organisation_id: {
+    allowNull: false,
+    type: DataTypes.INTEGER
   }
 });

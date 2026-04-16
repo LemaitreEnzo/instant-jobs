@@ -5,6 +5,8 @@ import request from "supertest";
 import app from "../../../app";
 import getSlug from "../../../utils/slugHelper";
 import getEnv from "../../../utils/envHelper";
+import {createUser} from "../../controllers/users.controller"
+import { response } from "express";
 
 const VERSION = getEnv("VERSION");
 const USERS_URL = `/${VERSION}/organizations/la-manu/users`;
@@ -42,28 +44,28 @@ describe("GET USER", () => {
     jest
       .mocked(User.findAll)
       .mockResolvedValue([
-        { id: 1, name: "ee" } as any,
-        { id: 2, name: "eeee" } as any,
+        { id: 1, firstname: "ee" } as any,
+        { id: 2, firstname: "eeee" } as any,
       ]);
 
     const res = await request(app).get(USERS_URL);
     expect(res.status).toBe(200);
     expect(res.body).toEqual({
-      users: [
-        { id: 1, name: "ee" },
-        { id: 2, name: "eeee" },
+      users: [ 
+        { id: 1, firstname: "ee" },
+        { id: 2, firstname: "eeee" },
       ],
     });
   });
 
   it("Returns one user", async () => {
     jest.mocked(Organization.findOne).mockResolvedValue({ id: 1, name: "La Manu", slug: getSlug("La Manu") } as any);
-    jest.mocked(User.findOne).mockResolvedValue({ id: 1, name: "ee" } as any);
+    jest.mocked(User.findOne).mockResolvedValue({ id: 1, firstname: "ee", email: "test@test.fr" } as any);
 
     const res = await request(app).get(`${USERS_URL}/1`);
     expect(res.status).toBe(200);
     expect(res.body).toEqual({
-      user: { id: 1, name: "ee" },
+      user: { id: 1, firstname: "ee", email: "test@test.fr"},
     });
   });
 });
@@ -77,16 +79,16 @@ describe("CREATE ONE USER", () => {
     jest.mocked(Organization.findOne).mockResolvedValue({ id: 1, name: "La Manu", slug: getSlug("La Manu") } as any);
     jest
       .mocked(User.create)
-      .mockResolvedValue({ id: 1, name: "instant-jobs" } as any);
+      .mockResolvedValue({ id: 1, firstname: "instant-jobs", lastname: "instant-jobs", email: "test@test.fr", phone: "0606060606", password_hash: "test", organisation_id: 1 } as any);
 
     const res = await request(app)
       .post(USERS_URL)
-      .send({ name: "instant-jobs" });
+      .send({ firstname: "instant-jobs", lastname: "instant-jobs", email: "test@test.fr", phone: "0606060606", password_hash: "test", organisation_id: 1 });
     expect(res.status).toBe(201);
     expect(res.body).toMatchObject({
       user: { 
         id: expect.any(Number), 
-        name: "instant-jobs" 
+        firstname: "instant-jobs",
       },
     });
   });
@@ -98,11 +100,17 @@ describe("UPDATE USER", () => {
   });
 
   it("update one user", async () => {
-    jest.mocked(Organization.findOne).mockResolvedValue({ id: 1, name: "La Manu", slug: getSlug("La Manu") } as any);
-    jest.mocked(User.findOne).mockResolvedValue({ id: 1, name: "ee" } as any);
+    jest.mocked(Organization.findOne).mockResolvedValue({ id: 1, firstname: "La Manu", slug: getSlug("La Manu") } as any);
+    jest.mocked(User.update).mockResolvedValue({ id: 1, firstname: "oo" } as any);
 
-    const res = await request(app).patch(`${USERS_URL}/1`).send({ name: "oo" });
+    const res = await request(app).patch(`${USERS_URL}/1`).send({ firstname: "oo" }); 
     expect(res.status).toBe(206);
+    expect(res.body).toMatchObject({
+      user: { 
+        id: expect.any(Number), 
+        firstname: "oo",
+      },
+    });
   });
 });
 
