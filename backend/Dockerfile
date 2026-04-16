@@ -1,4 +1,4 @@
-FROM node:25.5.0
+FROM node:22-alpine
 
 # Create app directory
 WORKDIR /usr/src/backend

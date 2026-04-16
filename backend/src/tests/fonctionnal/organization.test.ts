@@ -94,7 +94,7 @@ describe("UPDATE ORGANIZATION", () => {
         );
 
         const res = await request(app)
-            .put(`/${VERSION}/organizations/1`)
+            .put(`/${VERSION}/organizations/la-manu`)
             .send({ name: "ESC Compiègne", slug: getSlug("ESC Compiègne") });
 
         expect(res.status).toBe(206);
