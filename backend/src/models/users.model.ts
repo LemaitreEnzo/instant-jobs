@@ -13,15 +13,44 @@ interface User extends Model<
   InferCreationAttributes<User>
 > {
   id: CreationOptional<number>;
-  name: string;
+  firstname: string;
+  lastname: string;
+  email: string;
+  phone: string;
+  password_hash: string;
+  organisation_id: number;
 }
 
 export const User = sequelize.define<User>("User", {
   id: {
     primaryKey: true,
+    autoIncrement: true,
     type: DataTypes.INTEGER,
   },
-  name: {
+  firstname: {
+    allowNull: false,
     type: DataTypes.STRING,
+  },
+  lastname: {
+    allowNull: false,
+    type: DataTypes.STRING,
+  },
+  email: {
+    allowNull: false,
+    unique: true,
+    type: DataTypes.STRING,
+  },
+  phone: {
+    allowNull: false,
+    unique: true,
+    type: DataTypes.STRING,
+  },
+  password_hash: {
+    allowNull: false,
+    type: DataTypes.STRING,
+  },
+  organisation_id: {
+    allowNull: false,
+    type: DataTypes.INTEGER,
   },
 });

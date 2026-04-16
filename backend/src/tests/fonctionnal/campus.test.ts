@@ -87,9 +87,11 @@ describe("CREATE CAMPUS", () => {
 
         expect(res.status).toBe(201);
         expect(res.body).toMatchObject({
-            id: expect.any(Number),
-            name: "Compiègne",
-            slug: getSlug("Compiègne"),
+            campus : {
+                id: expect.any(Number),
+                name: "Compiègne",
+                slug: getSlug("Compiègne"),
+            }
         });
     });
 });
@@ -112,9 +114,11 @@ describe("UPDATE CAMPUS", () => {
 
         expect(res.status).toBe(206);
         expect(res.body).toMatchObject({
-            id: 1,
-            name: "Amiens",
-            slug: getSlug("Amiens"),
+            campus: {
+                id: 1,
+                name: "Amiens",
+                slug: getSlug("Amiens"),
+            }
         });
     });
 });
