@@ -29,7 +29,7 @@ jobs:
             # On force la synchronisation exacte avec la branche production de GitHub
             git fetch origin main
             git reset --hard origin/main
-            git clean -fd
+            # git clean -fd
 
             # On reconstruit les images (Front) et on relance sans coupure
             docker compose up -d --build
