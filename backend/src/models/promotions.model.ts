@@ -8,19 +8,20 @@ import { DataTypes } from "sequelize";
 
 import { sequelize } from "../../config/db";
 
-interface Promotions extends Model<
-  InferAttributes<Promotions>,
-  InferCreationAttributes<Promotions>
+interface Promotion extends Model<
+  InferAttributes<Promotion>,
+  InferCreationAttributes<Promotion>
 > {
   id: CreationOptional<number>;
-  slug: string,
-  name: string,
+  slug: string;
+  name: string;
   organisationId: number;
 }
 
-export const Promotions = sequelize.define<Promotions>("Promotions", {
+export const Promotion = sequelize.define<Promotion>("Promotion", {
   id: {
     primaryKey: true,
+    autoIncrement: true,
     type: DataTypes.INTEGER,
   },
   slug: {

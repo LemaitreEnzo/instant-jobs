@@ -1,121 +1,161 @@
-import { jest, describe, beforeEach, expect, it } from "@jest/globals";
-import { SubSpecialities } from "src/models/subSpecialities.model";
+import { beforeEach, describe, expect, it, jest } from "@jest/globals";
+import { SubSpeciality } from "src/models/subSpecialities.model";
 import request from "supertest";
 import app from "../../../app";
-import getSlug from "../../../utils/slugHelper";
 import getEnv from "../../../utils/envHelper";
+import getSlug from "../../../utils/slugHelper";
 
-const VERSION = getEnv('VERSION');
-const SUBSPECIALITIES_URL = `/${VERSION}/organizations/la-manu/campus/compiegne/promotions/b3/specialities/dev/sub-specialities`;
+const VERSION = getEnv("VERSION");
+const SubSpeciality_URL = `/${VERSION}/organizations/la-manu/campus/compiegne/promotions/b3/specialities/dev/sub-specialities`;
 
 jest.mock("models/subSpecialities.model", () => ({
-    SubSpecialities: {
-        findAll: jest.fn(),
-        findOne: jest.fn(),
-        create: jest.fn(),
-        update: jest.fn(),
-        destroy: jest.fn(),
-    }
+  SubSpeciality: {
+    findAll: jest.fn(),
+    findOne: jest.fn(),
+    create: jest.fn(),
+    update: jest.fn(),
+    destroy: jest.fn(),
+  },
 }));
 
 beforeEach(() => {
-    jest.clearAllMocks();
+  jest.clearAllMocks();
 });
 
-describe("GET subSpecialities", () => {
-    it("should return 200", async () => {
-        const res = await request(app).get(SUBSPECIALITIES_URL);
-        expect(res.statusCode).toBe(200);
+describe("GET SubSpeciality", () => {
+  it("should return 200", async () => {
+    const res = await request(app).get(SubSpeciality_URL);
+    expect(res.statusCode).toBe(200);
+  });
+
+  it("Returns all SubSpeciality", async () => {
+    jest
+      .mocked(SubSpeciality.findAll)
+      .mockResolvedValue([
+        {
+          id: 1,
+          name: "frontend",
+          slug: getSlug("frontend"),
+          specialityId: 1,
+        } as any,
+        {
+          id: 2,
+          name: "backend",
+          slug: getSlug("backend"),
+          specialityId: 1,
+        } as any,
+      ]);
+
+    const res = await request(app).get(SubSpeciality_URL);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toEqual({
+      SubSpeciality: [
+        { id: 1, name: "frontend", slug: getSlug("frontend"), specialityId: 1 },
+        { id: 2, name: "backend", slug: getSlug("backend"), specialityId: 1 },
+      ],
     });
+  });
 
-    it('Returns all subSpecialities', async () => {
-        jest.mocked(SubSpecialities.findAll).mockResolvedValue([
-            { id: 1, name: 'frontend', slug: getSlug('frontend'), specialityId: 1 } as any,
-            { id: 2, name: 'backend', slug: getSlug('backend'), specialityId: 1 } as any
-        ])
+  it("Returns one subSpeciality", async () => {
+    jest
+      .mocked(SubSpeciality.findOne)
+      .mockResolvedValue({
+        id: 1,
+        name: "frontend",
+        slug: getSlug("frontend"),
+        specialityId: 1,
+      } as any);
 
-        const res = await request(app).get(SUBSPECIALITIES_URL);
+    const res = await request(app).get(
+      `${SubSpeciality_URL}/${getSlug("test")}`,
+    );
 
-        expect(res.statusCode).toBe(200);
-        expect(res.body).toEqual({
-            subSpecialities: [
-                { id: 1, name: 'frontend', slug: getSlug('frontend'), specialityId: 1 },
-                { id: 2, name: 'backend', slug: getSlug('backend'), specialityId: 1 }
-            ]
-        });
-    })
-
-    it('Returns one subSpeciality', async () => {
-        jest.mocked(SubSpecialities.findOne).mockResolvedValue(
-            { id: 1, name: 'frontend', slug: getSlug('frontend'), specialityId: 1 } as any
-        )
-
-        const res = await request(app).get(`${SUBSPECIALITIES_URL}/${getSlug('test')}`);
-
-        expect(res.statusCode).toBe(200);
-        expect(res.body).toEqual({
-            subSpeciality:
-                { id: 1, name: 'frontend', slug: getSlug('frontend'), specialityId: 1 },
-        });
-    })
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toEqual({
+      subSpeciality: {
+        id: 1,
+        name: "frontend",
+        slug: getSlug("frontend"),
+        specialityId: 1,
+      },
+    });
+  });
 });
-
 
 describe("CREATE subSpeciality", () => {
-    it('Create one subSpeciality', async () => {
-        jest.mocked(SubSpecialities.create).mockResolvedValue(
-            { id: 1, name: 'frontend', slug: getSlug('frontend'), specialityId: 1 } as any,
-        )
+  it("Create one subSpeciality", async () => {
+    jest
+      .mocked(SubSpeciality.create)
+      .mockResolvedValue({
+        id: 1,
+        name: "frontend",
+        slug: getSlug("frontend"),
+        specialityId: 1,
+      } as any);
 
-        const res = await request(app)
-            .post(SUBSPECIALITIES_URL)
-            .send({ name: 'frontend', slug: getSlug('frontend'), specialityId: 1 });
+    const res = await request(app)
+      .post(SubSpeciality_URL)
+      .send({ name: "frontend", slug: getSlug("frontend"), specialityId: 1 });
 
-        expect(res.statusCode).toBe(201);
-        expect(res.body).toMatchObject({
-            subSpeciality: {
-                id: expect.any(Number),
-                name: 'frontend',
-                slug: getSlug('frontend'),
-                specialityId: 1
-            }
-        });
-    })
-})
+    expect(res.statusCode).toBe(201);
+    expect(res.body).toMatchObject({
+      subSpeciality: {
+        id: expect.any(Number),
+        name: "frontend",
+        slug: getSlug("frontend"),
+        specialityId: 1,
+      },
+    });
+  });
+});
 
 describe("UPDATE subSpeciality", () => {
-    it('Update one subSpeciality', async () => {
-        jest.mocked(SubSpecialities.findOne).mockResolvedValue({ slug: getSlug("frontend")} as any);
-        jest.mocked(SubSpecialities.update).mockResolvedValue(
-            { id: 1, name: 'backend', slug: getSlug('backend'), specialityId: 1 } as any,
-        )
+  it("Update one subSpeciality", async () => {
+    jest
+      .mocked(SubSpeciality.findOne)
+      .mockResolvedValue({ slug: getSlug("frontend") } as any);
+    jest
+      .mocked(SubSpeciality.update)
+      .mockResolvedValue({
+        id: 1,
+        name: "backend",
+        slug: getSlug("backend"),
+        specialityId: 1,
+      } as any);
 
-        const res = await request(app)
-            .patch(`${SUBSPECIALITIES_URL}/${getSlug('frontend')}`)
-            .send({ name: 'backend', slug: getSlug('backend'), specialityId: 1 });
+    const res = await request(app)
+      .patch(`${SubSpeciality_URL}/${getSlug("frontend")}`)
+      .send({ name: "backend", slug: getSlug("backend"), specialityId: 1 });
 
-        expect(res.statusCode).toBe(206);
-        expect(res.body).toMatchObject({
-            subSpeciality: {
-                id: expect.any(Number),
-                name: 'backend',
-                slug: getSlug('backend'),
-                specialityId: 1
-            }
-        });
-    })
-})
+    expect(res.statusCode).toBe(206);
+    expect(res.body).toMatchObject({
+      subSpeciality: {
+        id: expect.any(Number),
+        name: "backend",
+        slug: getSlug("backend"),
+        specialityId: 1,
+      },
+    });
+  });
+});
 
 describe("DELETE subSpeciality", () => {
-    it('Delete one subSpeciality', async () => {
-        jest.mocked(SubSpecialities.destroy).mockResolvedValue(
-            { id: 1, name: 'frontend', slug: getSlug('frontebd'), specialityId: 1 } as any,
-        )
+  it("Delete one subSpeciality", async () => {
+    jest
+      .mocked(SubSpeciality.destroy)
+      .mockResolvedValue({
+        id: 1,
+        name: "frontend",
+        slug: getSlug("frontebd"),
+        specialityId: 1,
+      } as any);
 
-        const res = await request(app)
-            .delete(`${SUBSPECIALITIES_URL}/${getSlug('frontend')}`)
+    const res = await request(app).delete(
+      `${SubSpeciality_URL}/${getSlug("frontend")}`,
+    );
 
-        expect(res.statusCode).toBe(204);
-        expect(SubSpecialities.destroy).toHaveBeenCalled();
-    })
-})
+    expect(res.statusCode).toBe(204);
+    expect(SubSpeciality.destroy).toHaveBeenCalled();
+  });
+});

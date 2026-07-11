@@ -1,22 +1,22 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
-import { Promotions } from "src/models/promotions.model";
-import { Specialities } from "src/models/specialities.model";
+import { Promotion } from "src/models/promotions.model";
+import { Speciality } from "src/models/specialities.model";
 import request from "supertest";
 import app from "../../../app";
 import getEnv from "../../../utils/envHelper";
 import getSlug from "../../../utils/slugHelper";
 
 const VERSION = getEnv("VERSION");
-const SPECIALITIES_URL = `/${VERSION}/organizations/la-manu/campus/compiegne/promotions/b3/specialities`;
+const Speciality_URL = `/${VERSION}/organizations/la-manu/campus/compiegne/promotions/b3/specialities`;
 
 jest.mock("models/promotions.model", () => ({
-  Promotions: {
+  Promotion: {
     findOne: jest.fn(),
   },
 }));
 
 jest.mock("models/specialities.model", () => ({
-  Specialities: {
+  Speciality: {
     findAll: jest.fn(),
     findOne: jest.fn(),
     create: jest.fn(),
@@ -29,23 +29,23 @@ beforeEach(() => {
   jest.clearAllMocks();
 });
 
-describe("GET SPECIALITIES", () => {
+describe("GET Speciality", () => {
   it("should return 200", async () => {
-    const res = await request(app).get(SPECIALITIES_URL);
+    const res = await request(app).get(Speciality_URL);
     expect(res.status).toBe(200);
   });
 
-  it("Returns all specialities", async () => {
+  it("Returns all Speciality", async () => {
     jest
-      .mocked(Specialities.findAll)
+      .mocked(Speciality.findAll)
       .mockResolvedValue([
         { id: 1, name: "Designeur", slug: getSlug("Designeur") } as any,
         { id: 2, name: "Développeur", slug: getSlug("Développeur") } as any,
       ]);
 
-    const res = await request(app).get(SPECIALITIES_URL);
+    const res = await request(app).get(Speciality_URL);
     expect(res.body).toEqual({
-      specialities: [
+      Speciality: [
         { id: 1, name: "Designeur", slug: getSlug("Designeur") },
         { id: 2, name: "Développeur", slug: getSlug("Développeur") },
       ],
@@ -53,15 +53,15 @@ describe("GET SPECIALITIES", () => {
   });
 
   it("Return one speciality", async () => {
-    jest
-      .mocked(Specialities.findOne)
-      .mockResolvedValue({
-        id: 1,
-        name: "Designeur",
-        slug: getSlug("Designeur"),
-      } as any);
+    jest.mocked(Speciality.findOne).mockResolvedValue({
+      id: 1,
+      name: "Designeur",
+      slug: getSlug("Designeur"),
+    } as any);
 
-    const res = await request(app).get(`${SPECIALITIES_URL}/${getSlug("Designeur")}`);
+    const res = await request(app).get(
+      `${Speciality_URL}/${getSlug("Designeur")}`,
+    );
     expect(res.body).toEqual({
       speciality: {
         id: 1,
@@ -74,24 +74,20 @@ describe("GET SPECIALITIES", () => {
 
 describe("CREATE SPECIALITY", () => {
   it("POST -> should return 201", async () => {
-    jest
-      .mocked(Promotions.findOne)
-      .mockResolvedValue({
-        id: 1,
-        name: "b3",
-        slug: getSlug("B3"),
-        organizationId: 1
-      } as any);
-    jest
-      .mocked(Specialities.create)
-      .mockResolvedValue({
-        id: 1,
-        name: "Designeur",
-        slug: getSlug("Designeur"),
-      } as any);
+    jest.mocked(Promotion.findOne).mockResolvedValue({
+      id: 1,
+      name: "b3",
+      slug: getSlug("B3"),
+      organizationId: 1,
+    } as any);
+    jest.mocked(Speciality.create).mockResolvedValue({
+      id: 1,
+      name: "Designeur",
+      slug: getSlug("Designeur"),
+    } as any);
 
     const res = await request(app)
-      .post(SPECIALITIES_URL)
+      .post(Speciality_URL)
       .send({ name: "Designeur", slug: getSlug("Designeur") });
 
     expect(res.status).toBe(201);
@@ -105,27 +101,23 @@ describe("CREATE SPECIALITY", () => {
 
 describe("UPDATE SPECIALITY", () => {
   it("PATCH -> should return 206", async () => {
+    jest.mocked(Promotion.findOne).mockResolvedValue({
+      id: 1,
+      name: "B3",
+      slug: getSlug("B3"),
+      organizationId: 1,
+    } as any);
     jest
-      .mocked(Promotions.findOne)
-      .mockResolvedValue({
-        id: 1,
-        name: "B3",
-        slug: getSlug("B3"),
-        organizationId: 1
-      } as any);
-    jest
-      .mocked(Specialities.findOne)
-      .mockResolvedValue({ slug: getSlug("Designeur") } as any)
-    jest
-      .mocked(Specialities.update)
-      .mockResolvedValue({
-        id: 1,
-        name: "Marketing",
-        slug: getSlug("Marketing"),
-      } as any);
+      .mocked(Speciality.findOne)
+      .mockResolvedValue({ slug: getSlug("Designeur") } as any);
+    jest.mocked(Speciality.update).mockResolvedValue({
+      id: 1,
+      name: "Marketing",
+      slug: getSlug("Marketing"),
+    } as any);
 
     const res = await request(app)
-      .patch(`${SPECIALITIES_URL}/${getSlug('Designeur')}`)
+      .patch(`${Speciality_URL}/${getSlug("Designeur")}`)
       .send({ name: "Marketing", slug: getSlug("Marketing") });
 
     expect(res.status).toBe(206);
@@ -134,30 +126,26 @@ describe("UPDATE SPECIALITY", () => {
         id: expect.any(Number),
         name: "Marketing",
         slug: getSlug("Marketing"),
-      }
+      },
     });
   });
 });
 
 describe("DELETE SPECIALITY", () => {
   it("should return 204", async () => {
-    jest
-      .mocked(Promotions.findOne)
-      .mockResolvedValue({
-        id: 1,
-        name: "Compiègne",
-        slug: getSlug("Compiègne"),
-      } as any);
-    jest
-      .mocked(Specialities.destroy)
-      .mockResolvedValue({
-        id: 1,
-        name: "Designeur",
-        slug: getSlug("Designeur"),
-      } as any);
-    const res = await request(app).delete(`${SPECIALITIES_URL}/designeur`);
+    jest.mocked(Promotion.findOne).mockResolvedValue({
+      id: 1,
+      name: "Compiègne",
+      slug: getSlug("Compiègne"),
+    } as any);
+    jest.mocked(Speciality.destroy).mockResolvedValue({
+      id: 1,
+      name: "Designeur",
+      slug: getSlug("Designeur"),
+    } as any);
+    const res = await request(app).delete(`${Speciality_URL}/designeur`);
 
     expect(res.status).toBe(204);
-    expect(Specialities.destroy).toHaveBeenCalled();
+    expect(Speciality.destroy).toHaveBeenCalled();
   });
 });
