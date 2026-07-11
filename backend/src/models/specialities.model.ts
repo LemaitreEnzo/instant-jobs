@@ -8,18 +8,19 @@ import { DataTypes } from "sequelize";
 
 import { sequelize } from "../../config/db";
 
-interface Specialities extends Model<
-  InferAttributes<Specialities>,
-  InferCreationAttributes<Specialities>
+interface Speciality extends Model<
+  InferAttributes<Speciality>,
+  InferCreationAttributes<Speciality>
 > {
   id: CreationOptional<number>;
-  slug: string,
-  name: string,
+  slug: string;
+  name: string;
 }
 
-export const Specialities = sequelize.define<Specialities>("Specialities", {
+export const Speciality = sequelize.define<Speciality>("Speciality", {
   id: {
     primaryKey: true,
+    autoIncrement: true,
     type: DataTypes.INTEGER,
   },
   slug: {

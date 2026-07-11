@@ -21,6 +21,7 @@ interface Media extends Model<
 export const Media = sequelize.define<Media>("Media", {
   id: {
     primaryKey: true,
+    autoIncrement: true,
     type: DataTypes.INTEGER,
   },
   name: {

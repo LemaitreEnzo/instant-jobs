@@ -13,20 +13,21 @@ interface Application extends Model<
   InferCreationAttributes<Application>
 > {
   id: CreationOptional<number>;
-  title: string,
-  type: string,
-  logo: string,
-  company: string,
-  city: string,
-  date: string,
-  status: string,
-  resend: string,
-  description: string
+  title: string;
+  type: string;
+  logo: string;
+  company: string;
+  city: string;
+  date: string;
+  status: string;
+  resend: string;
+  description: string;
 }
 
 export const Application = sequelize.define<Application>("Application", {
   id: {
     primaryKey: true,
+    autoIncrement: true,
     type: DataTypes.INTEGER,
   },
   title: {

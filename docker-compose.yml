@@ -15,7 +15,7 @@ services:
     image: postgres:16
     container_name: ${DB_CONTAINER}
     ports:
-      - "${DB_PORT}:${DB_PORT}" 
+      - "${DB_PORT}:${DB_PORT}"
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -25,7 +25,7 @@ services:
     networks:
       - proxy
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d instant-jobs"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d instant_jobs"]
       interval: 3s
       timeout: 3s
       retries: 10
@@ -36,13 +36,16 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     container_name: ${BACKEND_CONTAINER}
-    ports: 
+    ports:
       - "${API_PORT}:${API_PORT}"
+    volumes:
+      - ./backend:/usr/src/backend
+      - ./backend/node_modules:/usr/src/backend/node_modules
     networks:
       - proxy
     depends_on:
-      db: 
-          condition: service_healthy
+      db:
+        condition: service_healthy
 
   frontend:
     build:
