@@ -5,3 +5,9 @@ up:
 
 down:
 	docker compose down
+
+migrate:
+	@echo "===== Running DB migrations ====="
+	@docker compose exec backend npm run migrate && \
+	echo "===== Migrations finished =====" || \
+	(echo "===== Migrations FAILED =====" && exit 1)
