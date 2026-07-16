@@ -10,7 +10,7 @@ if (!migrationName) {
 }
 
 // Define paths
-const migrationsDir = path.resolve(__dirname, "../db/migrations");
+const migrationsDir = path.resolve(__dirname, "../migrations");
 const timestamp = new Date().toISOString().replace(/\D/g, "").slice(0, 14); // YYYYMMDDHHMMSS
 const fileName = `${timestamp}-${migrationName}.ts`;
 const filePath = path.join(migrationsDir, fileName);
