@@ -6,8 +6,8 @@
   "scripts": {
     "test:watch": "jest --watch --verbose",
     "test:cov": "jest --coverage --verbose",
-    "dev": "NODE_ENV=dev nodemon dist/server.js",
-    "prod": "NODE_ENV=prod nodemon dist/server.js",
+    "dev": "npx tsx watch ./server.ts",
+    "prod": "NODE_ENV=prod node dist/server.js",
     "build": "tsc && tsc-alias",
     "migrate:generate": "npx ts-node src/db/templates/generateMigration.ts",
     "migrate": "tsc -p . && npx sequelize-cli db:migrate ",
