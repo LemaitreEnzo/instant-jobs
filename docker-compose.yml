@@ -25,6 +25,7 @@ services:
     networks:
       - proxy
     healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
       interval: 3s
       timeout: 3s
       retries: 10
