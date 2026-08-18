@@ -24,6 +24,11 @@ services:
     #   - ${DB_VOLUME}:/var/lib/postgresql/data
     networks:
       - proxy
+    healthcheck:
+      interval: 3s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
 
   backend:
     build:
@@ -38,6 +43,9 @@ services:
       - /usr/src/backend/node_modules
     networks:
       - proxy
+    depends_on:
+      db:
+        condition: service_healthy
 
   frontend:
     build:
