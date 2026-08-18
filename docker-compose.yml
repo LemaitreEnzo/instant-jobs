@@ -25,6 +25,7 @@ services:
     networks:
       - proxy
     healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
       interval: 3s
       timeout: 3s
       retries: 10
@@ -63,6 +64,7 @@ services:
       - backend
     volumes:
       - ./frontend:/usr/src/frontend
+      - /usr/src/frontend/node_modules
 
   adminer:
     image: adminer:5.4.2
