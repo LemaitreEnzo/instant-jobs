@@ -1,172 +1,159 @@
 # 🚀 Instant Jobs
 
-Une plateforme moderne de recherche d'emploi et de recrutement construite avec React, Node.js et PostgreSQL.
+A modern job search and recruitment platform built with React, Node.js, and PostgreSQL. It facilitates the connection between employers and candidates, providing an intuitive interface for publishing job offers, searching for opportunities, and managing applications.
 
-## 📋 Description
+## 🛠️ Tech Stack
 
-Instant Jobs est une application web full-stack qui facilite la mise en relation entre employeurs et candidats. La plateforme offre une interface intuitive pour publier des offres d'emploi, rechercher des opportunités et gérer les candidatures.
+| Layer | Technologies |
+|-------|--------------|
+| **Frontend** | React 19, Vite, React Router |
+| **Backend** | Node.js, Express.js, Sequelize, PostgreSQL |
+| **Database GUI**| Adminer |
+| **Containers** | Docker, Docker Compose |
+| **Testing** | Jest, Supertest |
 
-## ✨ Fonctionnalités
+## 📋 Requirements
 
-- 🔍 Recherche avancée d'offres d'emploi
-- 📝 Publication et gestion d'annonces
-- 👤 Profils utilisateurs (candidats et employeurs)
-- 📄 Gestion des candidatures
-- 🔐 Authentification et sécurité
-- 🎨 Interface utilisateur moderne et responsive
-- 🐳 Déploiement simplifié avec Docker
+- **Docker** >= 24.0
+- **Docker Compose** >= 2.20
 
-## 🛠️ Technologies Utilisées
+## 🚀 Installation & Setup
 
-### Frontend
-
-- **React 19** - Bibliothèque JavaScript / TypeScript pour l'interface utilisateur
-- **Vite** - Build tool moderne et rapide
-- **React Router** - Navigation et routing
-- **CSS** - Stylisation personnalisée
-
-### Backend
-
-- **Node.js** - Runtime JavaScript côté serveur
-- **Express.js** - Framework web minimaliste
-- **Sequelize** - ORM pour NodeJS
-- **PostgreSQL** - Base de données relationnelle
-- **Helmet** - Sécurité HTTP (CORS, headers...)
-- **dotenv** - Gestion des variables d'environnement
-
-### DevOps & Tests
-
-- **Docker** - Conteneurisation
-- **Docker Compose** - Orchestration des services
-- **Jest** - Framework de test
-- **Supertest** - Testing des API HTTP
-
-## 📁 Structure du Projet
-
-```
-instant-jobs/
-├── frontend/                 # Application React
-│   ├── src/
-│   │   ├── App.tsx
-│   │   ├── main.tsx
-│   │   └── assets/
-│   ├── public/
-│   ├── index.html
-│   ├── vite.config.ts
-│   └── package.json
-├── backend/                  # API Express
-│   ├── config/              # Configuration (DB, etc.)
-│   ├── src/
-│   │   ├── middlewares/         # Middlewares Express
-│   │   ├── tests/               # Suites de tests
-│   │   ├── routes/              # Routes API
-│   │   ├── models/              # Tables de la BD
-│   │   └── controllers/         # Controller d'un model
-│   ├── app.ts
-│   ├── server.ts
-│   └── package.json
-├── docker-compose.yml       # Orchestration des services
-└── README.md
-```
-
-## 🚀 Installation et Démarrage
-
-### 1. Cloner le repository
+### 1. Clone the project
 
 ```bash
 git clone https://github.com/LemaitreEnzo/instant-jobs.git
-cd Instant-jobs
+cd instant-jobs
 ```
 
-### 2. Configuration avec Docker (Recommandé)
+### 2. Configure Environment
+
+Copy the example environment file and adjust the values if necessary:
 
 ```bash
-docker-compose up -d
+cp .env.example .env
 ```
 
-L'application sera disponible sur :
+### 3. Start development environment
 
-- Frontend: `http://localhost:5173`
-- Backend: `http://localhost:3000`
-
-Pour arrêter les services :
+Using the provided Makefile, you can easily start all Docker containers:
 
 ```bash
-docker-compose down
+make up
 ```
 
-### 3. Installation locale (Développement)
+## ⌨️ Available Commands
 
-#### Backend
+The project includes a `Makefile` to simplify common operations:
 
+```bash
+make help         # Display help
+make up           # Start the project (build + containers + dependencies)
+make stop         # Stop the containers without removing them
+make down         # Stop and remove containers (potential data loss)
+make ps           # List running containers
+make logs         # Display real-time logs for all services
+make backend-cli  # Enter bash CLI in the backend container
+make frontend-cli # Enter bash CLI in the frontend container
+make db-cli       # Enter bash CLI in the PostgreSQL container
+make update       # Update project (dependencies + migrations)
+make deps         # Install dependencies only
+make migrate      # Run database migrations
+```
+
+## 📁 Project Structure
+
+```
+instant-jobs/
+├── .docker/                    # Docker configuration
+│   ├── env/
+│   │   ├── base/              # Base services (pgsql, node, frontend, adminer)
+│   │   └── development.yaml   # Dev overrides
+├── .github/workflows/         # CI/CD GitHub Actions
+├── backend/                   # Express API
+│   ├── src/
+│   │   ├── controllers/       # Route controllers
+│   │   ├── db/                # Database configurations & migrations
+│   │   ├── models/            # Sequelize models
+│   │   ├── routes/            # API routes
+│   │   └── tests/             # Jest/Supertest test suites
+│   ├── app.ts                 # Express app setup
+│   ├── server.ts              # Server entry point
+│   └── package.json
+├── frontend/                  # React Frontend
+│   ├── src/
+│   │   ├── assets/            # Static assets
+│   │   ├── components/        # Reusable UI components
+│   │   ├── context/           # React contexts
+│   │   ├── interfaces/        # TypeScript interfaces
+│   │   ├── pages/             # Page components
+│   │   ├── scripts/           # Utility scripts (e.g., component generator)
+│   │   ├── types/             # TypeScript types
+│   │   ├── utils/             # Helper functions
+│   │   ├── App.tsx
+│   │   └── main.tsx
+│   └── package.json
+├── shared/                    # Shared resources between front/back
+├── Makefile                   # Make commands for Docker lifecycle
+└── README.md
+```
+
+## 🌍 Environments
+
+| Environment | Branch | Deployment |
+|-------------|--------|------------|
+| Development | `dev` | `make up` |
+| Production | `main` | Auto (GitHub Actions) |
+
+## 🔄 CI/CD
+
+Deployment is automated via GitHub Actions (`deploy.yml`).
+
+### Runner Requirements
+1. SSH access configured via GitHub Secrets (`HOST`, `USERNAME`, `SSH_KEY`, `SSH_PASSPHRASE`, `SSH_PORT`, `PROJECT_PATH`)
+2. Docker and Docker Compose installed on the deployment server
+
+### Deployment Steps
+When pushing to the `main` branch, the workflow:
+1. Connects via SSH to the VPS
+2. Fetches the latest `main` branch
+3. Runs `docker compose up -d --build` to reconstruct and start services without downtime
+4. Cleans up old Docker images
+
+## 🧪 Testing (Local)
+
+To run the backend tests locally (assuming node modules are installed):
+
+```bash
+cd backend
+npm test              # Run all tests
+npm run test:watch    # Watch mode
+npm run test:cov      # Run with coverage
+```
+
+## 💡 Local Development (Without Docker)
+
+If you prefer to run the application outside of Docker for development:
+
+**1. Backend**
 ```bash
 cd backend
 npm install
 ```
 
-##### Configuration `.env` :
-
-1. Création d'un fichier `.env.dev` pour le développement
-
-```env
-PORT=
-
-DB_HOST=
-DB_PORT=
-DB_NAME=
-DB_USERNAME=
-DB_PASSWORD=
-```
-
-2. Création d'un fichier `.env.prod` pour la production
-
-```env
-PORT=
-
-DB_HOST=
-DB_PORT=
-DB_NAME=
-DB_USERNAME=
-DB_PASSWORD=
-```
-
-#### Frontend
-
+**2. Frontend**
 ```bash
 cd frontend
 npm install
 ```
 
-Configuration `.env` :
-
-```env
-VITE_API_URL=
-```
-
-Démarrer le frontend :
-
+Run the development server:
 ```bash
-npm run dev      # Serveur de développement (port 5173)
-npm run build    # Build pour la production
-npm run preview  # Aperçu du build
-npm run lint     # Vérifier le code avec ESLint
+npm run dev
 ```
 
-## 🧪 Tests
+*Frontend tools:* You can generate new components using `npm run create`.
 
-Exécuter les tests du backend :
+## 📜 License
 
-```bash
-cd backend
-
-npm test              # Lancer tous les tests
-npm run test:watch   # Mode watch
-npm run test:cov     # Avec couverture de code
-```
-
-## 📚 Documentation Supplémentaire
-
-- Configuration des base de données
-- Guide des API endpoints (à documenter)
-- Guide de contribution (à documenter)
-- Guide de déploiement (à documenter)
+Proprietary - Instant Jobs

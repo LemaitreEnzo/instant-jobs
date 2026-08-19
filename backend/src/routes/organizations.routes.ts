@@ -2,9 +2,9 @@
    RESSOURCE : ORGANIZATIONS
 ========================= */
 
-import { 
-   createOrganization, updateOrganization, deleteOrganization, 
-   getAllOrganizations, getOneOrganization 
+import {
+   createOrganization, updateOrganization, deleteOrganization,
+   getAllOrganizations, getOneOrganization
 } from "controllers/organizations.controller";
 import express from "express";
 

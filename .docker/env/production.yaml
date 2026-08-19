@@ -1,0 +1,90 @@
+services:
+  backend:
+    image: "${CI_REGISTRY_IMAGE:-registry.gitlab.com/dronexperts/formation}/backend:${CI_COMMIT_BRANCH:-main}"
+    container_name: "dronosphere_dronexperts-formation_prod_backend"
+    hostname: "prod_dronexperts-formation_backend"
+    restart: unless-stopped
+    environment:
+      NODE_ENV: "production"
+      APP_ENV: "prod"
+      FRONTEND_URL: "https://formation.dronexperts.io"
+      APP_DB_HOST: "pgsql"
+      APP_DB_PORT: "5432"
+      APP_DB_USERNAME: "${PROD_DB_USER:-dronexperts-formation-prod}"
+      APP_DB_PASSWORD: "${DB_PASSWORD}"
+      APP_DB_NAME: "${PROD_DB_NAME:-dronexperts-formation-prod}"
+      REDIS_HOST: "redis"
+      REDIS_PORT: "6379"
+      REDIS_PASSWORD: "${REDIS_PASSWORD}"
+      JWT_SECRET: "${JWT_SECRET}"
+      BREVO_API_KEY: "${BREVO_API_KEY}"
+    volumes:
+      - /srv/docker/dronexperts-formation/prod/uploads:/app/uploads
+    depends_on:
+      pgsql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      app: ~
+      dronosphere_reverse-proxy: ~
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=dronosphere_reverse-proxy"
+      - "traefik.http.routers.dronexperts-backend-prod.rule=Host(`api.formation.dronexperts.io`)"
+      - "traefik.http.routers.dronexperts-backend-prod.entrypoints=websecure"
+      - "traefik.http.routers.dronexperts-backend-prod.tls=true"
+      - "traefik.http.routers.dronexperts-backend-prod.tls.certresolver=ovh"
+      - "traefik.http.services.dronexperts-backend-prod.loadbalancer.server.port=3001"
+
+  frontend:
+    image: "${CI_REGISTRY_IMAGE:-registry.gitlab.com/dronexperts/formation}/frontend:${CI_COMMIT_BRANCH:-main}"
+    container_name: "dronosphere_dronexperts-formation_prod_frontend"
+    hostname: "prod_dronexperts-formation_frontend"
+    restart: unless-stopped
+    depends_on:
+      - backend
+      - prerender
+    networks:
+      app: ~
+      dronosphere_reverse-proxy: ~
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=dronosphere_reverse-proxy"
+      - "traefik.http.routers.dronexperts-frontend-prod.rule=Host(`formation.dronexperts.io`) || Host(`www.formation.dronexperts.io`)"
+      - "traefik.http.routers.dronexperts-frontend-prod.entrypoints=websecure"
+      - "traefik.http.routers.dronexperts-frontend-prod.tls=true"
+      - "traefik.http.routers.dronexperts-frontend-prod.tls.certresolver=ovh"
+      - "traefik.http.services.dronexperts-frontend-prod.loadbalancer.server.port=80"
+
+  prerender:
+    container_name: "dronosphere_dronexperts-formation_prod_prerender"
+    hostname: "prod_dronexperts-formation_prerender"
+    environment:
+      PAGE_TTL: 86400
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+
+  pgsql:
+    container_name: "dronosphere_dronexperts-formation_prod_pgsql"
+    hostname: "prod_dronexperts-formation_pgsql"
+    environment:
+      POSTGRES_USER: "${PROD_DB_USER:-dronexperts-formation-prod}"
+      POSTGRES_PASSWORD: "${DB_PASSWORD:-dronexperts-formation-prod}"
+      POSTGRES_DB: "${PROD_DB_NAME:-dronexperts-formation-prod}"
+    volumes:
+      - /srv/docker/dronexperts-formation/prod/pgsql:/var/lib/postgresql/data
+
+  redis:
+    container_name: "dronosphere_dronexperts-formation_prod_redis"
+    hostname: "prod_dronexperts-formation_redis"
+    volumes:
+      - /srv/docker/dronexperts-formation/prod/redis:/data
+
+networks:
+  app:
+    name: "dronosphere_dronexperts-formation_prod"
+  dronosphere_reverse-proxy:
+    external: true
