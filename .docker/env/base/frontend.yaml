@@ -1,0 +1,10 @@
+services:
+  frontend:
+    build:
+      context: "../../../frontend"
+      dockerfile: "../.docker/frontend/Dockerfile.base"
+    restart: "unless-stopped"
+    depends_on:
+      - backend
+    networks:
+      - proxy
