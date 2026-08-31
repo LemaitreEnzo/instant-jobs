@@ -12,7 +12,10 @@ dist
 dist-ssr
 *.local
 
-.env*
+# Environnment files
+.env
+.env.*
+!.env.dist
 
 package-lock.json
 

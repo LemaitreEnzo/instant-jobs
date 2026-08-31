@@ -13,9 +13,8 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ../../../backend:/usr/src/backend
-      - /usr/src/backend/dist
-      - /usr/src/backend/node_modules
+      - "../../../backend:/usr/src/backend"
+      - "../../../backend/dist:/usr/src/backend/dist"
 
   frontend:
     container_name: "instant-jobs_frontend"
@@ -26,8 +25,7 @@ services:
     ports:
       - "5173:5173"
     volumes:
-      - ../../../frontend:/usr/src/frontend
-      - /usr/src/frontend/node_modules
+      - "../../../frontend:/usr/src/frontend"
 
   pgsql:
     container_name: "instant-jobs_pgsql"
