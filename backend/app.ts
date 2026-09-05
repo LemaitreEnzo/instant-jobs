@@ -17,7 +17,7 @@ app.use(
 
 app.use(helmet());
 app.get(`/${VERSION}`, (req: Request, res: Response) => {
-  res.status(200).send("Hello worlddd!");
+  res.status(200).send("Hello world!");
 });
 
 app.use(express.json());

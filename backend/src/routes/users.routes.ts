@@ -4,6 +4,7 @@ import {
   getAllUsers,
   getOneUser,
   updateUser,
+  login,
 } from "controllers/users.controller";
 import express from "express";
 import mediasRoutes from "routes/medias.routes";
@@ -17,6 +18,7 @@ usersRoutes.get("/:id", getOneUser);
 
 // CREATE
 usersRoutes.post("/", createUser);
+usersRoutes.post("/login", login);
 
 // UPDATE
 usersRoutes.patch("/:id", updateUser);
