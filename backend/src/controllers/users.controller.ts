@@ -1,5 +1,8 @@
 import type { Request, Response } from "express";
 import { User } from "src/models/users.model";
+import jwt from "jsonwebtoken";
+import bcrypt from 'bcryptjs';
+import getEnv from "../../utils/envHelper"; 
 
 export const getAllUsers = async (req: Request, res: Response) => {
     try {
@@ -53,3 +56,34 @@ export const deleteUser = async (req: Request, res: Response) => {
         res.status(500).json(error);
     }
 };
+
+export const login = async (req: Request, res: Response) => {
+    try {
+        // Get request's data for the token
+        const email: string = req.body.email;
+        const password: string = req.body.password;
+        const user = await User.findOne({where: {email}});
+        //Check if à user with the email exist
+        if (user) {
+            const passwordCheck = await bcrypt.compare(password, user.password_hash);
+            if (passwordCheck) {
+                const secret = getEnv('SECRET');
+                const payload = {id: user.id};
+                const jwtToken = jwt.sign(payload, secret);
+                res.cookie('token', jwtToken, {
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: 'strict',
+                    maxAge: 24 * 60 * 60 * 1000
+                });
+                res.status(200).json("Création du cookie");
+            }else{
+                return res.status(401).json("Mot de passe incorrecte");
+            }
+        }else{
+            return res.status(401).json("Aucun compte avec cette email n'a était trouvé");
+        }
+    } catch (error) {
+        res.status(500).json(error);
+    }
+}
