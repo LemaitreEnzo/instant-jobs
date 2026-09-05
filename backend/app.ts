@@ -22,6 +22,6 @@ app.get(`/${VERSION}`, (req: Request, res: Response) => {
 
 app.use(express.json());
 
-app.use(`/${VERSION}/organizations`, organizationsRoutes);
+app.use(`/${VERSION}/organization`, organizationsRoutes);
 
 export default app;

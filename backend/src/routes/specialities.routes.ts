@@ -29,6 +29,6 @@ specialitiesRoutes.patch("/:slug", updateSpeciality);
 specialitiesRoutes.delete("/:slug", deleteSpeciality);
 
 // SubSpecialities routes
-specialitiesRoutes.use("/:slug/sub-specialities", subSpecialities);
+specialitiesRoutes.use("/:slug/sub-speciality", subSpecialities);
 
 export default specialitiesRoutes;

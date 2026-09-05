@@ -16,6 +16,8 @@ interface Campus extends Model<
   name: string;
   slug: string;
   organisation_id: number;
+  createdAt: CreationOptional<Date>;
+  updatedAt: CreationOptional<Date>;
 }
 
 export const Campus = sequelize.define<Campus>("Campus", {
@@ -35,4 +37,6 @@ export const Campus = sequelize.define<Campus>("Campus", {
     allowNull: false,
     type: DataTypes.INTEGER,
   },
+  createdAt: DataTypes.DATE,
+  updatedAt: DataTypes.DATE,
 });

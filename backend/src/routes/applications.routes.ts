@@ -29,6 +29,6 @@ applicationsRoutes.patch("/:id", updateApplication);
 applicationsRoutes.delete("/:id", deleteApplication);
 
 // Medias routes
-applicationsRoutes.use("/:id/docs/medias", mediasRoutes);
+applicationsRoutes.use("/:id/docs/media", mediasRoutes);
 
 export default applicationsRoutes;

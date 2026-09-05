@@ -58,6 +58,20 @@ const Profile = (props: PropsProfile) => {
           </div>
         </div>
       </div>
+      <div className="bottom">
+        <p>
+          Campus: <span>{props.data.campus.name}</span>
+        </p>
+        <p>
+          Promotion: <span>{props.data.promotion.name}</span>
+        </p>
+        <p>
+          Sous-Spécialité : <span>{props.data.subSpeciality.name}</span>
+        </p>
+        <p className="status">
+          Status: <span className={props.data.status}>{props.data.status}</span>
+        </p>
+      </div>
     </div>
   );
 };

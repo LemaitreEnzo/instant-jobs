@@ -1,13 +1,3 @@
-export type User = {
-  id: number;
-  firstname: string;
-  lastname: string;
-  email: string;
-  phone: string;
-  password_hash: string;
-  organisation_id: number;
-};
-
 export type Media = {
   id: number;
   name: string;

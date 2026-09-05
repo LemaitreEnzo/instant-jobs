@@ -8,7 +8,7 @@ import getEnv from "../../../utils/envHelper";
 import getSlug from "../../../utils/slugHelper";
 
 const VERSION = getEnv("VERSION");
-const APPLICATIONS_URL = `/${VERSION}/organizations/la-manu/users/1/applications`;
+const APPLICATIONS_URL = `/${VERSION}/organization/la-manu/users/1/application`;
 
 // Create mock for organization model
 jest.mock("models/organizations.model", () => ({

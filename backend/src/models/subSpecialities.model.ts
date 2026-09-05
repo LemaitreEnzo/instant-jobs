@@ -15,26 +15,37 @@ interface SubSpeciality extends Model<
   name: string;
   slug: string;
   specialityId: number;
+  createdAt: CreationOptional<Date>;
+  updatedAt: CreationOptional<Date>;
 }
 
-export const SubSpeciality = sequelize.define<SubSpeciality>("SubSpeciality", {
-  id: {
-    primaryKey: true,
-    autoIncrement: true,
-    allowNull: false,
-    type: DataTypes.INTEGER,
+export const SubSpeciality = sequelize.define<SubSpeciality>(
+  "SubSpeciality",
+  {
+    id: {
+      primaryKey: true,
+      autoIncrement: true,
+      allowNull: false,
+      type: DataTypes.INTEGER,
+    },
+    name: {
+      allowNull: false,
+      type: DataTypes.STRING,
+    },
+    slug: {
+      unique: true,
+      allowNull: false,
+      type: DataTypes.STRING,
+    },
+    specialityId: {
+      allowNull: false,
+      type: DataTypes.INTEGER,
+    },
+    createdAt: DataTypes.DATE,
+    updatedAt: DataTypes.DATE,
   },
-  name: {
-    allowNull: false,
-    type: DataTypes.STRING,
+  {
+    tableName: "SubSpeciality",
+    freezeTableName: true,
   },
-  slug: {
-    unique: true,
-    allowNull: false,
-    type: DataTypes.STRING,
-  },
-  specialityId: {
-    allowNull: false,
-    type: DataTypes.INTEGER,
-  },
-});
+);

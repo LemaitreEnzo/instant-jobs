@@ -15,18 +15,29 @@ interface Speciality extends Model<
   id: CreationOptional<number>;
   slug: string;
   name: string;
+  createdAt: CreationOptional<Date>;
+  updatedAt: CreationOptional<Date>;
 }
 
-export const Speciality = sequelize.define<Speciality>("Speciality", {
-  id: {
-    primaryKey: true,
-    autoIncrement: true,
-    type: DataTypes.INTEGER,
+export const Speciality = sequelize.define<Speciality>(
+  "Speciality",
+  {
+    id: {
+      primaryKey: true,
+      autoIncrement: true,
+      type: DataTypes.INTEGER,
+    },
+    slug: {
+      type: DataTypes.STRING,
+    },
+    name: {
+      type: DataTypes.STRING,
+    },
+    createdAt: DataTypes.DATE,
+    updatedAt: DataTypes.DATE,
   },
-  slug: {
-    type: DataTypes.STRING,
+  {
+    tableName: "Specility",
+    freezeTableName: true,
   },
-  name: {
-    type: DataTypes.STRING,
-  },
-});
+);

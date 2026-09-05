@@ -6,9 +6,9 @@ import getEnv from "../../../utils/envHelper";
 import getSlug from "../../../utils/slugHelper";
 
 const VERSION = getEnv("VERSION");
-const SubSpeciality_URL = `/${VERSION}/organizations/la-manu/campus/compiegne/promotions/b3/specialities/dev/sub-specialities`;
+const SubSpeciality_URL = `/${VERSION}/organization/la-manu/campus/compiegne/promotion/b3/speciality/dev/sub-speciality`;
 
-jest.mock("models/subSpecialities.model", () => ({
+jest.mock("model/subSpecialities.model", () => ({
   SubSpeciality: {
     findAll: jest.fn(),
     findOne: jest.fn(),
@@ -29,22 +29,20 @@ describe("GET SubSpeciality", () => {
   });
 
   it("Returns all SubSpeciality", async () => {
-    jest
-      .mocked(SubSpeciality.findAll)
-      .mockResolvedValue([
-        {
-          id: 1,
-          name: "frontend",
-          slug: getSlug("frontend"),
-          specialityId: 1,
-        } as any,
-        {
-          id: 2,
-          name: "backend",
-          slug: getSlug("backend"),
-          specialityId: 1,
-        } as any,
-      ]);
+    jest.mocked(SubSpeciality.findAll).mockResolvedValue([
+      {
+        id: 1,
+        name: "frontend",
+        slug: getSlug("frontend"),
+        specialityId: 1,
+      } as any,
+      {
+        id: 2,
+        name: "backend",
+        slug: getSlug("backend"),
+        specialityId: 1,
+      } as any,
+    ]);
 
     const res = await request(app).get(SubSpeciality_URL);
 
@@ -58,14 +56,12 @@ describe("GET SubSpeciality", () => {
   });
 
   it("Returns one subSpeciality", async () => {
-    jest
-      .mocked(SubSpeciality.findOne)
-      .mockResolvedValue({
-        id: 1,
-        name: "frontend",
-        slug: getSlug("frontend"),
-        specialityId: 1,
-      } as any);
+    jest.mocked(SubSpeciality.findOne).mockResolvedValue({
+      id: 1,
+      name: "frontend",
+      slug: getSlug("frontend"),
+      specialityId: 1,
+    } as any);
 
     const res = await request(app).get(
       `${SubSpeciality_URL}/${getSlug("test")}`,
@@ -85,14 +81,12 @@ describe("GET SubSpeciality", () => {
 
 describe("CREATE subSpeciality", () => {
   it("Create one subSpeciality", async () => {
-    jest
-      .mocked(SubSpeciality.create)
-      .mockResolvedValue({
-        id: 1,
-        name: "frontend",
-        slug: getSlug("frontend"),
-        specialityId: 1,
-      } as any);
+    jest.mocked(SubSpeciality.create).mockResolvedValue({
+      id: 1,
+      name: "frontend",
+      slug: getSlug("frontend"),
+      specialityId: 1,
+    } as any);
 
     const res = await request(app)
       .post(SubSpeciality_URL)
@@ -115,14 +109,12 @@ describe("UPDATE subSpeciality", () => {
     jest
       .mocked(SubSpeciality.findOne)
       .mockResolvedValue({ slug: getSlug("frontend") } as any);
-    jest
-      .mocked(SubSpeciality.update)
-      .mockResolvedValue({
-        id: 1,
-        name: "backend",
-        slug: getSlug("backend"),
-        specialityId: 1,
-      } as any);
+    jest.mocked(SubSpeciality.update).mockResolvedValue({
+      id: 1,
+      name: "backend",
+      slug: getSlug("backend"),
+      specialityId: 1,
+    } as any);
 
     const res = await request(app)
       .patch(`${SubSpeciality_URL}/${getSlug("frontend")}`)
@@ -142,14 +134,12 @@ describe("UPDATE subSpeciality", () => {
 
 describe("DELETE subSpeciality", () => {
   it("Delete one subSpeciality", async () => {
-    jest
-      .mocked(SubSpeciality.destroy)
-      .mockResolvedValue({
-        id: 1,
-        name: "frontend",
-        slug: getSlug("frontebd"),
-        specialityId: 1,
-      } as any);
+    jest.mocked(SubSpeciality.destroy).mockResolvedValue({
+      id: 1,
+      name: "frontend",
+      slug: getSlug("frontebd"),
+      specialityId: 1,
+    } as any);
 
     const res = await request(app).delete(
       `${SubSpeciality_URL}/${getSlug("frontend")}`,

@@ -1,6 +1,5 @@
+import type { Student } from "../interfaces/user.interface";
 import type { PropsBase } from "../types/global.type";
-import type { User } from "./models.type";
-
 export interface PropsButton extends PropsBase {
   className?: "btn-primary" | "btn-secondary";
   shape?: "rectangle" | "oval";
@@ -20,5 +19,10 @@ export interface PropsTag extends PropsBase {
 
 export type PropsProfile = {
   className?: string;
-  data: User;
+  data: Student;
+};
+
+export type PropsCardStudent = {
+  className?: string;
+  data: Student;
 };

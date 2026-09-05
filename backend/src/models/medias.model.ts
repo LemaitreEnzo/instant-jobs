@@ -16,21 +16,32 @@ interface Media extends Model<
   name: string;
   path: string;
   score: number;
+  createdAt: CreationOptional<Date>;
+  updatedAt: CreationOptional<Date>;
 }
 
-export const Media = sequelize.define<Media>("Media", {
-  id: {
-    primaryKey: true,
-    autoIncrement: true,
-    type: DataTypes.INTEGER,
+export const Media = sequelize.define<Media>(
+  "Media",
+  {
+    id: {
+      primaryKey: true,
+      autoIncrement: true,
+      type: DataTypes.INTEGER,
+    },
+    name: {
+      type: DataTypes.STRING,
+    },
+    path: {
+      type: DataTypes.STRING,
+    },
+    score: {
+      type: DataTypes.INTEGER,
+    },
+    createdAt: DataTypes.DATE,
+    updatedAt: DataTypes.DATE,
   },
-  name: {
-    type: DataTypes.STRING,
+  {
+    tableName: "Media",
+    freezeTableName: true,
   },
-  path: {
-    type: DataTypes.STRING,
-  },
-  score: {
-    type: DataTypes.INTEGER,
-  },
-});
+);
