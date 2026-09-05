@@ -14,21 +14,26 @@ STEP = "\\n\\r******************************************************************
 
 help:
 	@echo "=== DOCKER ===";
-	@echo "make up              Start the project (build + containers + dependencies)";
-	@echo "make stop            Stop the containers without removing them";
-	@echo "make down            Stop and remove containers (potential data loss)";
-	@echo "make ps              List running containers";
-	@echo "make logs            Display real-time logs for all services";
+	@echo "make up              	Start the project (build + containers + dependencies)";
+	@echo "make stop            	Stop the containers without removing them";
+	@echo "make down            	Stop and remove containers (potential data loss)";
+	@echo "make ps              	List running containers";
+	@echo "make logs            	Display real-time logs for all services";
 	@echo "";
 	@echo "=== CLI ===";
-	@echo "make backend-cli     Enter bash CLI in the backend container";
-	@echo "make frontend-cli    Enter bash CLI in the frontend container";
-	@echo "make db-cli          Enter bash CLI in the PostgresSQL container";
+	@echo "make backend-cli     	Enter bash CLI in the backend container";
+	@echo "make frontend-cli    	Enter bash CLI in the frontend container";
+	@echo "make db-cli          	Enter bash CLI in the PostgresSQL container";
 	@echo "";
 	@echo "=== INSTALLATION ===";
-	@echo "make update          Update project (dependencies + migrations)";
-	@echo "make deps            Install dependencies only";
-	@echo "make migrate         Run database migrations only";
+	@echo "make update          	Update project (dependencies + migrations)";
+	@echo "make deps            	Install dependencies only";
+	@echo "make migrate         	Run database migrations only";
+	@echo "make migrate-undo     	Undo the last migration";
+	@echo "make migrate-undo-all 	Undo all migrations";
+	@echo "make load [SEED=file] 	Load seed data (default: load-data.seeder.ts)";
+	@echo "make load-all         	Load all seed files";
+	
 	@echo "";
 
 base:
@@ -59,6 +64,14 @@ deps:
 migrate:
 	@echo "$(STEP) Running database migrations... $(STEP)";
 	@docker container exec -it instant-jobs_backend npm run migrate;
+
+migrate-undo:
+	@echo "$(STEP) Undoing last migration... $(STEP)";
+	@docker container exec -it instant-jobs_backend npm run migrate:undo;
+
+migrate-undo-all:
+	@echo "$(STEP) Undoing all migrations... $(STEP)";
+	@docker container exec -it instant-jobs_backend npm run migrate:undo:all;
 
 update: deps migrate
 	@echo "$(STEP) Project updated successfully! $(STEP)";
@@ -93,3 +106,11 @@ ps:
 	@echo "$(STEP) List containers... $(STEP)";
 	@$(DOCKER_COMPOSE) ps;
 	@echo "$(STEP) Finished! $(STEP)";
+
+load:
+	@echo "$(STEP) Loading seed data ($(or $(SEED),load-data.seeder.ts))... $(STEP)";
+	@docker container exec -it instant-jobs_backend npm run load -- $(or $(SEED),load-data.seeder.ts);
+
+load-all:
+	@echo "$(STEP) Loading all seed files... $(STEP)";
+	@docker container exec -it instant-jobs_backend npm run load:all;

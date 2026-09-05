@@ -1,5 +1,5 @@
 import { type Request, type Response } from "express";
-import { Application } from "models/applications.model";
+import { Application } from "src/models";
 
 export const getAllApplications = async (req: Request, res: Response) => {
   try {

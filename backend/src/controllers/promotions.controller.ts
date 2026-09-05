@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { Promotion } from "src/models/promotions.model";
+import { Promotion } from "src/models";
 
 export const getAllPromotions = async (req: Request, res: Response) => {
   try {

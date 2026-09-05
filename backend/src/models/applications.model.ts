@@ -1,5 +1,6 @@
 import type {
   CreationOptional,
+  ForeignKey,
   InferAttributes,
   InferCreationAttributes,
   Model,
@@ -7,8 +8,9 @@ import type {
 import { DataTypes } from "sequelize";
 
 import { sequelize } from "../../config/db";
+import { User } from "./users.model";
 
-interface Application extends Model<
+export interface Application extends Model<
   InferAttributes<Application>,
   InferCreationAttributes<Application>
 > {
@@ -24,6 +26,7 @@ interface Application extends Model<
   description: string;
   createdAt: CreationOptional<Date>;
   updatedAt: CreationOptional<Date>;
+  userId: ForeignKey<User["id"]> | null;
 }
 
 export const Application = sequelize.define<Application>(
@@ -63,6 +66,14 @@ export const Application = sequelize.define<Application>(
     },
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,
+    userId: {
+      allowNull: true,
+      type: DataTypes.INTEGER,
+      references: {
+        model: User,
+        key: "id",
+      },
+    },
   },
   {
     tableName: "Application",

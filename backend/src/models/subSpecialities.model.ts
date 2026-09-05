@@ -2,12 +2,14 @@ import { sequelize } from "config/db";
 import {
   CreationOptional,
   DataTypes,
+  ForeignKey,
   InferAttributes,
   InferCreationAttributes,
   Model,
 } from "sequelize";
+import { Speciality } from "./specialities.model";
 
-interface SubSpeciality extends Model<
+export interface SubSpeciality extends Model<
   InferAttributes<SubSpeciality>,
   InferCreationAttributes<SubSpeciality>
 > {
@@ -17,6 +19,7 @@ interface SubSpeciality extends Model<
   specialityId: number;
   createdAt: CreationOptional<Date>;
   updatedAt: CreationOptional<Date>;
+  specialitySlug: ForeignKey<Speciality["slug"]>;
 }
 
 export const SubSpeciality = sequelize.define<SubSpeciality>(
@@ -43,6 +46,13 @@ export const SubSpeciality = sequelize.define<SubSpeciality>(
     },
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,
+    specialitySlug: {
+      type: DataTypes.STRING,
+      references: {
+        model: Speciality,
+        key: "slug",
+      },
+    },
   },
   {
     tableName: "SubSpeciality",

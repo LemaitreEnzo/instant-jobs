@@ -1,5 +1,6 @@
 import type {
   CreationOptional,
+  ForeignKey,
   InferAttributes,
   InferCreationAttributes,
   Model,
@@ -7,8 +8,9 @@ import type {
 import { DataTypes } from "sequelize";
 
 import { sequelize } from "../../config/db";
+import { Promotion } from "./promotions.model";
 
-interface Speciality extends Model<
+export interface Speciality extends Model<
   InferAttributes<Speciality>,
   InferCreationAttributes<Speciality>
 > {
@@ -17,6 +19,7 @@ interface Speciality extends Model<
   name: string;
   createdAt: CreationOptional<Date>;
   updatedAt: CreationOptional<Date>;
+  promotionSlug: ForeignKey<Promotion["slug"]>;
 }
 
 export const Speciality = sequelize.define<Speciality>(
@@ -35,9 +38,16 @@ export const Speciality = sequelize.define<Speciality>(
     },
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,
+    promotionSlug: {
+      type: DataTypes.STRING,
+      references: {
+        model: Promotion,
+        key: "slug",
+      },
+    },
   },
   {
-    tableName: "Specility",
+    tableName: "Speciality",
     freezeTableName: true,
   },
 );

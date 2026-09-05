@@ -9,7 +9,7 @@ import express from "express";
 import mediasRoutes from "routes/medias.routes";
 import applicationsRoutes from "./applications.routes";
 
-const usersRoutes = express.Router();
+const usersRoutes = express.Router({ mergeParams: true });
 
 // GET
 usersRoutes.get("/", getAllUsers);
@@ -25,9 +25,9 @@ usersRoutes.patch("/:id", updateUser);
 usersRoutes.delete("/:id", deleteUser);
 
 // Medias routes
-usersRoutes.use("/:id/docs/medias", mediasRoutes);
+usersRoutes.use("/:id/docs/media", mediasRoutes);
 
 // Applications routes
-usersRoutes.use("/:id/applications", applicationsRoutes);
+usersRoutes.use("/:id/application", applicationsRoutes);
 
 export default usersRoutes;
