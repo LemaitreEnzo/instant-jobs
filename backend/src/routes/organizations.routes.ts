@@ -3,15 +3,17 @@
 ========================= */
 
 import {
-   createOrganization, updateOrganization, deleteOrganization,
-   getAllOrganizations, getOneOrganization
+  createOrganization,
+  deleteOrganization,
+  getAllOrganizations,
+  getOneOrganization,
+  updateOrganization,
 } from "controllers/organizations.controller";
 import express from "express";
 
-import usersRoutes from "routes/users.routes";
 import campusRoutes from "routes/campus.routes";
+import usersRoutes from "routes/users.routes";
 import promotionsRoutes from "./promotions.routes";
-
 
 const organizationsRoutes = express.Router();
 
@@ -37,6 +39,6 @@ organizationsRoutes.use("/:slug/users", usersRoutes);
 organizationsRoutes.use("/:slug/campus", campusRoutes);
 
 // SUBSPECIALITIES ROUTES
-organizationsRoutes.use("/:slug/promotions", promotionsRoutes);
+organizationsRoutes.use("/:slug/promotion", promotionsRoutes);
 
 export default organizationsRoutes;

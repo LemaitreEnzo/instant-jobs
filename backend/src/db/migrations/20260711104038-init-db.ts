@@ -45,6 +45,8 @@ export default {
         unique: true,
         type: DataTypes.STRING,
       },
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE,
     });
     await queryInterface.createTable("User", {
       id: {
@@ -74,6 +76,8 @@ export default {
         allowNull: false,
         type: DataTypes.STRING,
       },
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE,
     });
     await queryInterface.createTable("Campus", {
       id: {
@@ -88,6 +92,8 @@ export default {
         unique: true,
         type: DataTypes.STRING,
       },
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE,
     });
     await queryInterface.createTable("Application", {
       id: {
@@ -122,6 +128,8 @@ export default {
       description: {
         type: DataTypes.TEXT,
       },
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE,
     });
     await queryInterface.createTable("Media", {
       id: {
@@ -138,6 +146,8 @@ export default {
       score: {
         type: DataTypes.INTEGER,
       },
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE,
     });
     await queryInterface.createTable("Promotion", {
       id: {
@@ -151,6 +161,8 @@ export default {
       name: {
         type: DataTypes.STRING,
       },
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE,
     });
     await queryInterface.createTable("Speciality", {
       id: {
@@ -164,6 +176,8 @@ export default {
       name: {
         type: DataTypes.STRING,
       },
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE,
     });
     await queryInterface.createTable("SubSpeciality", {
       id: {
@@ -177,6 +191,8 @@ export default {
       name: {
         type: DataTypes.STRING,
       },
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE,
     });
   },
 

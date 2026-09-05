@@ -22,39 +22,50 @@ interface Application extends Model<
   status: string;
   resend: string;
   description: string;
+  createdAt: CreationOptional<Date>;
+  updatedAt: CreationOptional<Date>;
 }
 
-export const Application = sequelize.define<Application>("Application", {
-  id: {
-    primaryKey: true,
-    autoIncrement: true,
-    type: DataTypes.INTEGER,
+export const Application = sequelize.define<Application>(
+  "Application",
+  {
+    id: {
+      primaryKey: true,
+      autoIncrement: true,
+      type: DataTypes.INTEGER,
+    },
+    title: {
+      type: DataTypes.STRING,
+    },
+    type: {
+      type: DataTypes.STRING,
+    },
+    logo: {
+      type: DataTypes.STRING,
+    },
+    company: {
+      type: DataTypes.STRING,
+    },
+    city: {
+      type: DataTypes.STRING,
+    },
+    date: {
+      type: DataTypes.DATEONLY,
+    },
+    status: {
+      type: DataTypes.STRING,
+    },
+    resend: {
+      type: DataTypes.STRING,
+    },
+    description: {
+      type: DataTypes.TEXT,
+    },
+    createdAt: DataTypes.DATE,
+    updatedAt: DataTypes.DATE,
   },
-  title: {
-    type: DataTypes.STRING,
+  {
+    tableName: "Application",
+    freezeTableName: true,
   },
-  type: {
-    type: DataTypes.STRING,
-  },
-  logo: {
-    type: DataTypes.STRING,
-  },
-  company: {
-    type: DataTypes.STRING,
-  },
-  city: {
-    type: DataTypes.STRING,
-  },
-  date: {
-    type: DataTypes.DATEONLY,
-  },
-  status: {
-    type: DataTypes.STRING,
-  },
-  resend: {
-    type: DataTypes.STRING,
-  },
-  description: {
-    type: DataTypes.TEXT,
-  },
-});
+);

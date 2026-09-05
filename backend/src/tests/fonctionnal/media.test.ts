@@ -1,14 +1,14 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
-import { Organization } from "src/models/organizations.model";
 import { Media } from "src/models/medias.model";
+import { Organization } from "src/models/organizations.model";
 import { User } from "src/models/users.model";
 import request from "supertest";
 import app from "../../../app";
-import getSlug from "../../../utils/slugHelper";
 import getEnv from "../../../utils/envHelper";
+import getSlug from "../../../utils/slugHelper";
 
 const VERSION = getEnv("VERSION");
-const MEDIA_URL = `/${VERSION}/organizations/la-manu/users/1/docs/medias`;
+const MEDIA_URL = `/${VERSION}/organization/la-manu/user/1/docs/media`;
 
 jest.mock("models/organizations.model", () => ({
   Organization: {
@@ -45,7 +45,11 @@ describe("GET MEDIA", () => {
   });
 
   it("Returns all medias", async () => {
-    jest.mocked(Organization.findOne).mockResolvedValue({ id: 1, name: "La Manu", slug: getSlug("La Manu") } as any);
+    jest.mocked(Organization.findOne).mockResolvedValue({
+      id: 1,
+      name: "La Manu",
+      slug: getSlug("La Manu"),
+    } as any);
     // Create mock for findAll fuction
     jest
       .mocked(Media.findAll)
@@ -66,7 +70,11 @@ describe("GET MEDIA", () => {
   });
 
   it("Returns one media", async () => {
-    jest.mocked(Organization.findOne).mockResolvedValue({ id: 1, name: "La Manu", slug: getSlug("La Manu") } as any);
+    jest.mocked(Organization.findOne).mockResolvedValue({
+      id: 1,
+      name: "La Manu",
+      slug: getSlug("La Manu"),
+    } as any);
     jest.mocked(User.findOne).mockResolvedValue({ id: 1, name: "ee" } as any);
     jest.mocked(Media.findOne).mockResolvedValue({ id: 1, name: "ee" } as any);
 
@@ -84,7 +92,11 @@ describe("CREATE ONE MEDIA", () => {
   });
 
   it("Create one Media", async () => {
-    jest.mocked(Organization.findOne).mockResolvedValue({ id: 1, name: "La Manu", slug: getSlug("La Manu") } as any);
+    jest.mocked(Organization.findOne).mockResolvedValue({
+      id: 1,
+      name: "La Manu",
+      slug: getSlug("La Manu"),
+    } as any);
     jest.mocked(User.findOne).mockResolvedValue({ id: 1, name: "ee" } as any);
     jest
       .mocked(Media.create)
@@ -95,9 +107,9 @@ describe("CREATE ONE MEDIA", () => {
       .send({ name: "instant-jobs" });
     expect(res.status).toBe(201);
     expect(res.body).toMatchObject({
-      media: { 
-        id: expect.any(Number), 
-        name: "instant-jobs" 
+      media: {
+        id: expect.any(Number),
+        name: "instant-jobs",
       },
     });
   });
@@ -109,7 +121,11 @@ describe("UPDATE MEDIA", () => {
   });
 
   it("update one media", async () => {
-    jest.mocked(Organization.findOne).mockResolvedValue({ id: 1, name: "La Manu", slug: getSlug("La Manu") } as any);
+    jest.mocked(Organization.findOne).mockResolvedValue({
+      id: 1,
+      name: "La Manu",
+      slug: getSlug("La Manu"),
+    } as any);
     jest.mocked(User.findOne).mockResolvedValue({ id: 1, name: "ee" } as any);
     jest.mocked(Media.findOne).mockResolvedValue({ id: 1, name: "ee" } as any);
 
@@ -126,7 +142,11 @@ describe("DELETE ONE MEDIA", () => {
   });
 
   it("Delete", async () => {
-    jest.mocked(Organization.findOne).mockResolvedValue({ id: 1, name: "La Manu", slug: getSlug("La Manu") } as any);
+    jest.mocked(Organization.findOne).mockResolvedValue({
+      id: 1,
+      name: "La Manu",
+      slug: getSlug("La Manu"),
+    } as any);
     jest.mocked(User.findOne).mockResolvedValue({ id: 1, name: "ee" } as any);
     jest
       .mocked(Media.destroy)

@@ -24,6 +24,6 @@ campusRoutes.put("/:slug", updateCampus);
 campusRoutes.delete("/:slug", deleteCampus);
 
 // PROMOTIONS ROUTES
-campusRoutes.use("/:slug/promotions", promotionsRoutes);
+campusRoutes.use("/:slug/promotion", promotionsRoutes);
 
 export default campusRoutes;

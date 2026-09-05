@@ -7,7 +7,7 @@ import getEnv from "../../../utils/envHelper";
 import getSlug from "../../../utils/slugHelper";
 
 const VERSION = getEnv("VERSION");
-const Speciality_URL = `/${VERSION}/organizations/la-manu/campus/compiegne/promotions/b3/specialities`;
+const Speciality_URL = `/${VERSION}/organization/la-manu/campus/compiegne/promotion/b3/specialities`;
 
 jest.mock("models/promotions.model", () => ({
   Promotion: {
