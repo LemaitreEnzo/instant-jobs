@@ -1,8 +1,11 @@
 :root {
   --font-color: #000000;
   --background-color: #ffffff;
+  --body-color: #f7f9fa;
   --primary-color: #580bff;
   --secondary-color: #34c759;
+  --terciary-color: #e8f1fc;
+  --fourth-color: #a4a4a4;
   --success-color: #34c759;
   --warning-color: #ffae00;
   --error-color: #ff4638;
