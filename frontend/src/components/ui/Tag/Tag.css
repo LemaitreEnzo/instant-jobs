@@ -1,0 +1,47 @@
+.tag {
+  padding: 0.25em 0.5em;
+  display: flex;
+  flex-wrap: wrap;
+  width: fit-content;
+  align-items: center;
+  gap: 10px;
+  border-radius: 20px;
+
+  .round {
+    background: currentColor;
+    border-radius: 50%;
+    width: 10px;
+    height: 10px;
+  }
+
+  span {
+    flex: 1;
+    font-size: 14px;
+    line-height: 1.25em;
+  }
+}
+
+.tag-warn {
+  background: var(--warning-color);
+  color: var(--background-color);
+}
+.tag-success {
+  background: var(--success-color);
+  color: var(--background-color);
+}
+.tag-error {
+  background: var(--error-color);
+  color: var(--background-color);
+}
+.tag-primary {
+  background: var(--primary-color);
+  color: var(--background-color);
+}
+.tag-terciary {
+  background: var(--terciary-color);
+  color: #62a9ff;
+}
+.tag-none {
+  background: var(--fourth-color);
+  color: var(--background-color);
+}

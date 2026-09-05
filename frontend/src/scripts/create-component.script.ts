@@ -88,13 +88,14 @@ async function main() {
    * React component template (TSX)
    */
   const tsxTemplate = `import "./${componentName}.css";
-export default function ${componentName}() {
+const ${componentName} = () => {
   return (
     <div className="${className}">
       ${componentName}
     </div>
   );
-}`;
+}
+export default ${componentName}`;
 
   /**
    * CSS module template
