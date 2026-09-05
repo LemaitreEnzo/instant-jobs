@@ -5,7 +5,7 @@ export const getAllCampus = async (req: Request, res: Response) => {
   try {
     const campus = await Campus.findAll();
     res.status(200);
-    res.json({ campus });
+    res.json(campus);
   } catch (error) {
     res.status(500).json(error);
   }
@@ -16,7 +16,7 @@ export const getOneCampus = async (req: Request, res: Response) => {
     const { slug } = req.params;
     const campus = await Campus.findOne({ where: { slug: slug } });
     res.status(200);
-    res.json({ campus });
+    res.json(campus);
   } catch (error) {
     res.status(500).json(error);
   }
@@ -27,7 +27,7 @@ export const createCampus = async (req: Request, res: Response) => {
     const data = req.body;
     const campus = await Campus.create(data);
     res.status(201);
-    res.json({ campus });
+    res.json(campus);
   } catch (error) {
     res.status(500).json(error);
   }
@@ -40,7 +40,7 @@ export const updateCampus = async (req: Request, res: Response) => {
       where: { slug: req.params.slug },
     });
     res.status(206);
-    res.json({ campus });
+    res.json(campus);
   } catch (error) {
     res.status(500).json(error);
   }
@@ -48,7 +48,15 @@ export const updateCampus = async (req: Request, res: Response) => {
 
 export const deleteCampus = async (req: Request, res: Response) => {
   try {
-    const campus = await Campus.destroy({ where: { slug: req.params.slug } });
+    const campus = await Campus.findOne({
+      where: { slug: req.params.slug },
+    });
+
+    if (!campus) {
+      return res.status(404).json({ message: "Campus not found" });
+    }
+
+    await campus.destroy();
     res.status(204);
     res.json();
   } catch (error) {
