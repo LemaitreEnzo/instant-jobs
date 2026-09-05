@@ -1,0 +1,10 @@
+services:
+  adminer:
+    image: adminer:5.4.2
+    restart: "always"
+    environment:
+      ADMINER_DEFAULT_SERVER: pgsql
+    depends_on:
+      - pgsql
+    networks:
+      - proxy

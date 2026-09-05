@@ -1,0 +1,11 @@
+services:
+  backend:
+    build:
+      context: "../../../backend"
+      dockerfile: "../.docker/node/Dockerfile.base"
+    restart: "unless-stopped"
+    depends_on:
+      pgsql:
+        condition: service_healthy
+    networks:
+      - proxy
