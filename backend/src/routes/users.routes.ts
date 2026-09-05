@@ -3,6 +3,7 @@ import {
   deleteUser,
   getAllUsers,
   getOneUser,
+  login,
   updateUser,
   login,
 } from "controllers/users.controller";
@@ -11,6 +12,9 @@ import mediasRoutes from "routes/medias.routes";
 import applicationsRoutes from "./applications.routes";
 
 const usersRoutes = express.Router({ mergeParams: true });
+
+// LOGIN
+usersRoutes.post("/login", login);
 
 // GET
 usersRoutes.get("/", getAllUsers);

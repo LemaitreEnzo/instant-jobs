@@ -5,7 +5,7 @@ export const getAllOrganizations = async (req: Request, res: Response) => {
   try {
     const organizations = await Organization.findAll();
 
-    res.status(200).json({ organizations });
+    res.status(200).json(organizations);
   } catch (error) {
     res.status(500).json({
       error: "Erreur serveur.",
@@ -18,7 +18,7 @@ export const getOneOrganization = async (req: Request, res: Response) => {
     const slug = req.params.slug;
     const organization = await Organization.findOne({ where: { slug: slug } });
 
-    res.status(200).json({ organization });
+    res.status(200).json(organization);
   } catch (error) {
     res.status(500).json({
       error: "Erreur serveur.",
@@ -61,16 +61,15 @@ export const updateOrganization = async (req: Request, res: Response) => {
 
 export const deleteOrganization = async (req: Request, res: Response) => {
   try {
-    const slug = req.params.slug;
-    const organization = await Organization.findOne({ where: { slug: slug } });
-    if (!organization) {
-      return res.status(404).json({ error: "Organisation non trouvée." });
-    }
-
-    const deletedOrganization = await Organization.destroy({
-      where: { slug: slug },
+    const organization = await Organization.findOne({
+      where: { slug: req.params.slug },
     });
-    res.status(204).json({ deletedOrganization });
+
+    if (!organization) {
+      return res.status(404).json({ message: "Organization not found" });
+    }
+    await organization.destroy();
+    res.status(204).json();
   } catch (error) {
     res.status(500).json({
       error: "Erreur serveur.",

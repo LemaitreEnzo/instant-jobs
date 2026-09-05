@@ -4,7 +4,7 @@ import { Application } from "src/models";
 export const getAllApplications = async (req: Request, res: Response) => {
   try {
     const applications = await Application.findAll();
-    res.status(200).json({ applications });
+    res.status(200).json(applications);
   } catch (error) {
     res.status(500).json(error);
   }
@@ -20,7 +20,7 @@ export const getOneApplication = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Application not found" });
     }
 
-    res.status(200).json({ application });
+    res.status(200).json(application);
   } catch (error) {
     res.status(500).json(error);
   }
@@ -49,7 +49,7 @@ export const updateApplication = async (req: Request, res: Response) => {
       where: { id: req.params.id },
     });
 
-    res.status(206).json({ applicationUpdated });
+    res.status(206).json(applicationUpdated);
   } catch (error) {
     res.status(500).json(error);
   }
@@ -65,7 +65,7 @@ export const deleteApplication = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Application not found" });
     }
 
-    await Application.destroy({ where: { id: req.params.id } });
+    await application.destroy();
     res.status(204).send();
   } catch (error) {
     res.status(500).json(error);
