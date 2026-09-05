@@ -79,8 +79,3 @@ export const User = sequelize.define<User>(
     freezeTableName: true,
   },
 );
-
-User.belongsTo(Campus, {
-  foreignKey: "campusSlug",
-  targetKey: "slug",
-});
