@@ -22,26 +22,30 @@ export interface Campus extends Model<
   organizationSlug: ForeignKey<Organization["slug"]>;
 }
 
-export const Campus = sequelize.define<Campus>("Campus", {
-  id: {
-    primaryKey: true,
-    autoIncrement: true,
-    type: DataTypes.INTEGER,
-  },
-  name: {
-    type: DataTypes.STRING,
-  },
-  slug: {
-    unique: true,
-    type: DataTypes.STRING,
-  },
-  createdAt: DataTypes.DATE,
-  updatedAt: DataTypes.DATE,
-  organizationSlug: {
-    type: DataTypes.STRING,
-    references: {
-      model: Organization,
-      key: "slug",
+export const Campus = sequelize.define<Campus>(
+  "Campus",
+  {
+    id: {
+      primaryKey: true,
+      autoIncrement: true,
+      type: DataTypes.INTEGER,
+    },
+    name: {
+      type: DataTypes.STRING,
+    },
+    slug: {
+      unique: true,
+      type: DataTypes.STRING,
+    },
+    createdAt: DataTypes.DATE,
+    updatedAt: DataTypes.DATE,
+    organizationSlug: {
+      type: DataTypes.STRING,
+      references: {
+        model: Organization,
+        key: "slug",
+      },
     },
   },
-});
+  { tableName: "Campus", freezeTableName: true },
+);
