@@ -1,5 +1,6 @@
 import type {
   CreationOptional,
+  ForeignKey,
   InferAttributes,
   InferCreationAttributes,
   Model,
@@ -7,17 +8,18 @@ import type {
 import { DataTypes } from "sequelize";
 
 import { sequelize } from "../../config/db";
+import { User } from "./users.model";
 
-interface Media extends Model<
+export interface Media extends Model<
   InferAttributes<Media>,
   InferCreationAttributes<Media>
 > {
   id: CreationOptional<number>;
   name: string;
   path: string;
-  score: number;
   createdAt: CreationOptional<Date>;
   updatedAt: CreationOptional<Date>;
+  userId: ForeignKey<User["id"]>;
 }
 
 export const Media = sequelize.define<Media>(
@@ -34,11 +36,15 @@ export const Media = sequelize.define<Media>(
     path: {
       type: DataTypes.STRING,
     },
-    score: {
-      type: DataTypes.INTEGER,
-    },
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,
+    userId: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: User,
+        key: "id",
+      },
+    },
   },
   {
     tableName: "Media",

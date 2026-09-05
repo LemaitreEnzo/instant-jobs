@@ -8,7 +8,7 @@ import type {
 } from "sequelize";
 import { DataTypes } from "sequelize";
 
-interface Organization extends Model<
+export interface Organization extends Model<
   InferAttributes<Organization>,
   InferCreationAttributes<Organization>
 > {
@@ -43,8 +43,9 @@ export const Organization = sequelize.define<Organization>(
       type: DataTypes.STRING,
     },
     phone: {
+      allowNull: true,
       unique: true,
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
     },
     role: {
       unique: true,

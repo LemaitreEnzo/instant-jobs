@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { Organization } from "models/organizations.model";
+import { Organization } from "src/models";
 
 export const getAllOrganizations = async (req: Request, res: Response) => {
   try {

@@ -1,5 +1,6 @@
 import type {
   CreationOptional,
+  ForeignKey,
   InferAttributes,
   InferCreationAttributes,
   Model,
@@ -7,17 +8,18 @@ import type {
 import { DataTypes } from "sequelize";
 
 import { sequelize } from "../../config/db";
+import { Organization } from "./organizations.model";
 
-interface Campus extends Model<
+export interface Campus extends Model<
   InferAttributes<Campus>,
   InferCreationAttributes<Campus>
 > {
   id: CreationOptional<number>;
   name: string;
   slug: string;
-  organisation_id: number;
   createdAt: CreationOptional<Date>;
   updatedAt: CreationOptional<Date>;
+  organizationSlug: ForeignKey<Organization["slug"]>;
 }
 
 export const Campus = sequelize.define<Campus>("Campus", {
@@ -33,10 +35,13 @@ export const Campus = sequelize.define<Campus>("Campus", {
     unique: true,
     type: DataTypes.STRING,
   },
-  organisation_id: {
-    allowNull: false,
-    type: DataTypes.INTEGER,
-  },
   createdAt: DataTypes.DATE,
   updatedAt: DataTypes.DATE,
+  organizationSlug: {
+    type: DataTypes.STRING,
+    references: {
+      model: Organization,
+      key: "slug",
+    },
+  },
 });

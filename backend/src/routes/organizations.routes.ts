@@ -13,9 +13,8 @@ import express from "express";
 
 import campusRoutes from "routes/campus.routes";
 import usersRoutes from "routes/users.routes";
-import promotionsRoutes from "./promotions.routes";
 
-const organizationsRoutes = express.Router();
+const organizationsRoutes = express.Router({ mergeParams: true });
 
 // GET ALL
 organizationsRoutes.get("/", getAllOrganizations);
@@ -37,8 +36,5 @@ organizationsRoutes.use("/:slug/users", usersRoutes);
 
 // CAMPUS ROUTES
 organizationsRoutes.use("/:slug/campus", campusRoutes);
-
-// SUBSPECIALITIES ROUTES
-organizationsRoutes.use("/:slug/promotion", promotionsRoutes);
 
 export default organizationsRoutes;

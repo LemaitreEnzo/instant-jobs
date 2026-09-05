@@ -1,5 +1,6 @@
 import type {
   CreationOptional,
+  ForeignKey,
   InferAttributes,
   InferCreationAttributes,
   Model,
@@ -7,8 +8,9 @@ import type {
 import { DataTypes } from "sequelize";
 
 import { sequelize } from "../../config/db";
-
-interface User extends Model<
+import { Campus } from "./campus.model";
+import { Organization } from "./organizations.model";
+export interface User extends Model<
   InferAttributes<User>,
   InferCreationAttributes<User>
 > {
@@ -18,9 +20,10 @@ interface User extends Model<
   email: string;
   phone: string;
   password_hash: string;
-  organisation_id: number;
   createdAt: CreationOptional<Date>;
   updatedAt: CreationOptional<Date>;
+  organizationSlug: ForeignKey<Organization["slug"]>;
+  campusSlug: ForeignKey<Campus["slug"]> | null;
 }
 
 export const User = sequelize.define<User>(
@@ -53,15 +56,31 @@ export const User = sequelize.define<User>(
       allowNull: false,
       type: DataTypes.STRING,
     },
-    organisation_id: {
-      allowNull: false,
-      type: DataTypes.INTEGER,
-    },
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,
+    organizationSlug: {
+      type: DataTypes.STRING,
+      references: {
+        model: Organization,
+        key: "slug",
+      },
+    },
+    campusSlug: {
+      allowNull: true,
+      type: DataTypes.STRING,
+      references: {
+        model: Campus,
+        key: "slug",
+      },
+    },
   },
   {
     tableName: "User",
     freezeTableName: true,
   },
 );
+
+User.belongsTo(Campus, {
+  foreignKey: "campusSlug",
+  targetKey: "slug",
+});

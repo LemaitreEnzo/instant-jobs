@@ -13,7 +13,7 @@ import {
 import express from "express";
 import subSpecialities from "routes/subSpecialities.routes";
 
-const specialitiesRoutes = express.Router();
+const specialitiesRoutes = express.Router({ mergeParams: true });
 
 // GET
 specialitiesRoutes.get("/", getAllSpecialities);

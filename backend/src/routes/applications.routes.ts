@@ -11,9 +11,8 @@ import {
 } from "controllers/application.controller";
 
 import express from "express";
-import mediasRoutes from "routes/medias.routes";
 
-const applicationsRoutes = express.Router();
+const applicationsRoutes = express.Router({ mergeParams: true });
 
 // GET
 applicationsRoutes.get("/", getAllApplications);
@@ -27,8 +26,5 @@ applicationsRoutes.patch("/:id", updateApplication);
 
 // DELETE
 applicationsRoutes.delete("/:id", deleteApplication);
-
-// Medias routes
-applicationsRoutes.use("/:id/docs/media", mediasRoutes);
 
 export default applicationsRoutes;

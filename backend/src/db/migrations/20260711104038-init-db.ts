@@ -10,44 +10,82 @@ export default {
         type: DataTypes.INTEGER,
       },
       name: {
+        allowNull: false,
         unique: true,
         type: DataTypes.STRING,
       },
       email: {
+        allowNull: false,
         unique: true,
         type: DataTypes.STRING,
       },
       phone: {
+        allowNull: true,
         unique: true,
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
       },
       role: {
-        unique: true,
         type: DataTypes.STRING,
       },
       postcode: {
-        unique: true,
         type: DataTypes.INTEGER,
       },
       city: {
-        unique: true,
         type: DataTypes.STRING,
       },
       adress: {
-        unique: true,
         type: DataTypes.STRING,
       },
       country: {
-        unique: true,
         type: DataTypes.STRING,
       },
       slug: {
+        allowNull: false,
         unique: true,
         type: DataTypes.STRING,
       },
-      createdAt: DataTypes.DATE,
-      updatedAt: DataTypes.DATE,
+      createdAt: {
+        allowNull: false,
+        type: DataTypes.DATE,
+      },
+      updatedAt: {
+        allowNull: false,
+        type: DataTypes.DATE,
+      },
     });
+
+    await queryInterface.createTable("Campus", {
+      id: {
+        primaryKey: true,
+        autoIncrement: true,
+        type: DataTypes.INTEGER,
+      },
+      name: {
+        type: DataTypes.STRING,
+      },
+      slug: {
+        allowNull: false,
+        unique: true,
+        type: DataTypes.STRING,
+      },
+      organizationSlug: {
+        allowNull: false,
+        type: DataTypes.STRING,
+        references: {
+          model: "Organization",
+          key: "slug",
+        },
+      },
+      createdAt: {
+        allowNull: false,
+        type: DataTypes.DATE,
+      },
+      updatedAt: {
+        allowNull: false,
+        type: DataTypes.DATE,
+      },
+    });
+
     await queryInterface.createTable("User", {
       id: {
         primaryKey: true,
@@ -76,25 +114,32 @@ export default {
         allowNull: false,
         type: DataTypes.STRING,
       },
-      createdAt: DataTypes.DATE,
-      updatedAt: DataTypes.DATE,
-    });
-    await queryInterface.createTable("Campus", {
-      id: {
-        primaryKey: true,
-        autoIncrement: true,
-        type: DataTypes.INTEGER,
-      },
-      name: {
+      organizationSlug: {
+        allowNull: false,
         type: DataTypes.STRING,
+        references: {
+          model: "Organization",
+          key: "slug",
+        },
       },
-      slug: {
-        unique: true,
+      campusSlug: {
+        allowNull: true,
         type: DataTypes.STRING,
+        references: {
+          model: "Campus",
+          key: "slug",
+        },
       },
-      createdAt: DataTypes.DATE,
-      updatedAt: DataTypes.DATE,
+      createdAt: {
+        allowNull: false,
+        type: DataTypes.DATE,
+      },
+      updatedAt: {
+        allowNull: false,
+        type: DataTypes.DATE,
+      },
     });
+
     await queryInterface.createTable("Application", {
       id: {
         primaryKey: true,
@@ -128,9 +173,24 @@ export default {
       description: {
         type: DataTypes.TEXT,
       },
-      createdAt: DataTypes.DATE,
-      updatedAt: DataTypes.DATE,
+      userId: {
+        allowNull: true,
+        type: DataTypes.INTEGER,
+        references: {
+          model: "User",
+          key: "id",
+        },
+      },
+      createdAt: {
+        allowNull: false,
+        type: DataTypes.DATE,
+      },
+      updatedAt: {
+        allowNull: false,
+        type: DataTypes.DATE,
+      },
     });
+
     await queryInterface.createTable("Media", {
       id: {
         primaryKey: true,
@@ -143,12 +203,24 @@ export default {
       path: {
         type: DataTypes.STRING,
       },
-      score: {
+      userId: {
+        allowNull: false,
         type: DataTypes.INTEGER,
+        references: {
+          model: "User",
+          key: "id",
+        },
       },
-      createdAt: DataTypes.DATE,
-      updatedAt: DataTypes.DATE,
+      createdAt: {
+        allowNull: false,
+        type: DataTypes.DATE,
+      },
+      updatedAt: {
+        allowNull: false,
+        type: DataTypes.DATE,
+      },
     });
+
     await queryInterface.createTable("Promotion", {
       id: {
         primaryKey: true,
@@ -156,14 +228,31 @@ export default {
         type: DataTypes.INTEGER,
       },
       slug: {
+        allowNull: false,
+        unique: true,
         type: DataTypes.STRING,
       },
       name: {
         type: DataTypes.STRING,
       },
-      createdAt: DataTypes.DATE,
-      updatedAt: DataTypes.DATE,
+      campusSlug: {
+        allowNull: false,
+        type: DataTypes.STRING,
+        references: {
+          model: "Campus",
+          key: "slug",
+        },
+      },
+      createdAt: {
+        allowNull: false,
+        type: DataTypes.DATE,
+      },
+      updatedAt: {
+        allowNull: false,
+        type: DataTypes.DATE,
+      },
     });
+
     await queryInterface.createTable("Speciality", {
       id: {
         primaryKey: true,
@@ -171,28 +260,62 @@ export default {
         type: DataTypes.INTEGER,
       },
       slug: {
+        allowNull: false,
+        unique: true,
         type: DataTypes.STRING,
       },
       name: {
         type: DataTypes.STRING,
       },
-      createdAt: DataTypes.DATE,
-      updatedAt: DataTypes.DATE,
+      promotionSlug: {
+        allowNull: false,
+        type: DataTypes.STRING,
+        references: {
+          model: "Promotion",
+          key: "slug",
+        },
+      },
+      createdAt: {
+        allowNull: false,
+        type: DataTypes.DATE,
+      },
+      updatedAt: {
+        allowNull: false,
+        type: DataTypes.DATE,
+      },
     });
+
     await queryInterface.createTable("SubSpeciality", {
       id: {
         primaryKey: true,
         autoIncrement: true,
         type: DataTypes.INTEGER,
       },
-      slug: {
-        type: DataTypes.STRING,
-      },
       name: {
+        allowNull: false,
         type: DataTypes.STRING,
       },
-      createdAt: DataTypes.DATE,
-      updatedAt: DataTypes.DATE,
+      slug: {
+        allowNull: false,
+        unique: true,
+        type: DataTypes.STRING,
+      },
+      specialitySlug: {
+        allowNull: false,
+        type: DataTypes.STRING,
+        references: {
+          model: "Speciality",
+          key: "slug",
+        },
+      },
+      createdAt: {
+        allowNull: false,
+        type: DataTypes.DATE,
+      },
+      updatedAt: {
+        allowNull: false,
+        type: DataTypes.DATE,
+      },
     });
   },
 
@@ -202,8 +325,8 @@ export default {
     await queryInterface.dropTable("Promotion");
     await queryInterface.dropTable("Media");
     await queryInterface.dropTable("Application");
-    await queryInterface.dropTable("Campus");
     await queryInterface.dropTable("User");
+    await queryInterface.dropTable("Campus");
     await queryInterface.dropTable("Organization");
   },
 };

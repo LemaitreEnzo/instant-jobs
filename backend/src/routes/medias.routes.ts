@@ -7,7 +7,7 @@ import {
 } from "controllers/medias.controller";
 import express from "express";
 
-const mediasRoutes = express.Router();
+const mediasRoutes = express.Router({ mergeParams: true });
 
 // GET
 mediasRoutes.get("/", getAllMedias);
