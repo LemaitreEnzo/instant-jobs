@@ -1,0 +1,89 @@
+import type { ApplicationStatus } from "../types/enum.type";
+
+export interface Organization {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  role: string;
+  postcode: number;
+  city: string;
+  adress: string;
+  country: string;
+  slug: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Campus {
+  id: number;
+  name: string;
+  slug: string;
+  organizationSlug: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface User {
+  id: number;
+  firstname: string;
+  lastname: string;
+  email: string;
+  phone: string;
+  organizationSlug: string;
+  campusSlug: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Application {
+  id: number;
+  title: string;
+  type: string;
+  logo: string;
+  company: string;
+  city: string;
+  date: string;
+  status: ApplicationStatus;
+  resend: string;
+  description: string;
+  userId: number | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Media {
+  id: number;
+  name: string;
+  path: string;
+  userId: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Promotion {
+  id: number;
+  slug: string;
+  name: string;
+  campusSlug: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Speciality {
+  id: number;
+  slug: string;
+  name: string;
+  promotionSlug: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SubSpeciality {
+  id: number;
+  name: string;
+  slug: string;
+  specialitySlug: string;
+  createdAt: string;
+  updatedAt: string;
+}

@@ -22,6 +22,11 @@ export type PropsProfile = {
   data: Student;
 };
 
+export type PropsStatsCards = {
+  className?: string;
+  data: Student["application"];
+};
+
 export type PropsCardStudent = {
   className?: string;
   data: Student;
