@@ -1,25 +1,28 @@
-import type { Status } from "../types/enum.type";
-
+import type { StudentStatus } from "../types/enum.type";
 import type {
+  Application,
   Campus,
+  Media,
   Promotion,
   Speciality,
   SubSpeciality,
-} from "../types/models.type";
-
+} from "./models.interface";
 export interface User {
   id: number;
   firstname: string;
   lastname: string;
   email: string;
   phone: string;
-  organisation_id: number;
+  media: Media[] | null;
+  organizationSlug: string;
+  campusSlug: string | null;
 }
 
 export interface Student extends User {
-  campus: Campus;
-  promotion: Promotion;
-  speciality: Speciality;
-  subSpeciality: SubSpeciality;
-  status: Status;
+  campus: Campus | null;
+  promotion: Promotion | null;
+  speciality: Speciality | null;
+  subSpeciality: SubSpeciality | null;
+  application: Application[];
+  status: StudentStatus;
 }
