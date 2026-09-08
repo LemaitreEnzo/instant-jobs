@@ -10,14 +10,15 @@ export const login = async (req: Request, res: Response) => {
     const email: string = req.body.email;
     const password: string = req.body.password;
     const user = await User.findOne({ where: { email } });
-    //Check if à user with the email exist
+    //Check if a user with the email exist
     if (user) {
-      const passwordCheck = await bcrypt.compare(password, user.password_hash);
+      const data = user?.dataValues // CRÉER LE TYPE  
+      const passwordCheck = await bcrypt.compare(password, data.password_hash);
       if (passwordCheck) {
         const secret = getEnv("SECRET");
-        const payload = { id: user.id };
+        const payload = { id: data.id, email: data.email}; // AJOUTER LE ROLE 
         const jwtToken = jwt.sign(payload, secret);
-        res.cookie("token", jwtToken, {
+        res.cookie(getEnv('TOKEN'), jwtToken, {
           httpOnly: true,
           secure: true,
           sameSite: "strict",
