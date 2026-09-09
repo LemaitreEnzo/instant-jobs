@@ -1,8 +1,9 @@
+import type { SetStateAction } from "react";
 import type { Student } from "../interfaces/user.interface";
 import type { PropsBase } from "../types/global.type";
 export interface PropsButton extends PropsBase {
-  className?: "btn-primary" | "btn-secondary";
-  shape?: "rectangle" | "oval";
+  className?: "btn-primary" | "btn-secondary" | "btn-terciary";
+  shape?: "rectangle" | "oval" | "icon";
   type?: "button" | "submit" | "reset";
   href?: string;
 }
@@ -31,3 +32,8 @@ export type PropsCardStudent = {
   className?: string;
   data: Student;
 };
+
+export type PropsUserModal = {
+  open: boolean
+  onOpenChange: React.Dispatch<SetStateAction<boolean>>
+}

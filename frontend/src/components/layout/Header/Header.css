@@ -1,0 +1,47 @@
+.header {
+    padding: 1em;
+    height: fit-content;
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    background-color: var(--background-color);
+    border-bottom: 1px solid var(--fourth-color);
+
+    .header_search {
+        width: 40%;
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
+
+        svg {
+            position: absolute;
+            top: 0.4em;
+            left: 0.5em;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.5em 1em 0.5em 2.5em;
+            background-color: var(--body-color);
+            border: none;
+            border-radius: 5px;
+        }
+
+        input:focus {
+            outline: none;
+            border: none;
+        }
+
+        input::placeholder {
+            color: var(--font-color);
+            font-weight: 300;
+        }
+    }
+
+    .header_actions {
+        display: flex;
+        gap: .5em;
+        align-items: center;
+    }
+}

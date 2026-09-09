@@ -1,3 +1,17 @@
+.btn-icon {
+  padding: 0.5em;
+  border-radius: 100px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+
+  span {
+    flex: 1;
+  }
+}
+
 .btn-oval {
   padding: 0.5em 1.5em;
   border-radius: 100px;
@@ -17,8 +31,9 @@
     flex: 1;
   }
 }
+
 .btn-rectangle {
-  padding: 0.25em 1em;
+  padding: 0.5em 1em;
   border-radius: 5px;
   display: flex;
   flex-wrap: wrap;
@@ -56,6 +71,30 @@
     background: var(--primary-color);
     color: var(--background-color);
   }
+}
+
+.btn-terciary {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--font-color);
+
+    svg {
+        path {
+            stroke: currentColor;
+        }
+    }
+
+    &:hover {
+      background: transparent;
+      border: 1px solid var(--primary-color);
+      color: var(--primary-color);
+
+      svg {
+          path {
+              stroke: currentColor;
+          }
+      }
+    }
 }
 
 .links {

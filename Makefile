@@ -26,6 +26,7 @@ help:
 	@echo "make db-cli          	Enter bash CLI in the PostgresSQL container";
 	@echo "";
 	@echo "=== INSTALLATION ===";
+	@echo "make build          	    Build project's images";
 	@echo "make update          	Update project (dependencies + migrations)";
 	@echo "make deps            	Install dependencies only";
 	@echo "make migrate         	Run database migrations only";
@@ -33,7 +34,7 @@ help:
 	@echo "make migrate-undo-all 	Undo all migrations";
 	@echo "make load [SEED=file] 	Load seed data (default: load-data.seeder.ts)";
 	@echo "make load-all         	Load all seed files";
-	
+
 	@echo "";
 
 base:
@@ -44,22 +45,19 @@ base:
 	@until docker info > /dev/null 2>&1; do sleep 1; done;
 	@echo "Docker is running";
 
-up: base
-	@echo "$(STEP) Building images... $(STEP)";
+build:
 	@$(DOCKER_COMPOSE) build;
 	@echo "$(STEP) Starting up containers... $(STEP)";
 	@$(DOCKER_COMPOSE) up -d;
-	@echo "$(STEP) Installing backend dependencies... $(STEP)";
-	@docker container exec -it instant-jobs_backend npm install;
-	@echo "$(STEP) Installing frontend dependencies... $(STEP)";
-	@docker container exec -it instant-jobs_frontend npm install;
-	@echo "$(STEP) Finished! $(STEP)";
 
 deps:
 	@echo "$(STEP) Installing backend dependencies... $(STEP)";
 	@docker container exec -it instant-jobs_backend npm install;
 	@echo "$(STEP) Installing frontend dependencies... $(STEP)";
 	@docker container exec -it instant-jobs_frontend npm install;
+
+up: base build deps
+	@echo "$(STEP) Finished! $(STEP)";
 
 migrate:
 	@echo "$(STEP) Running database migrations... $(STEP)";
