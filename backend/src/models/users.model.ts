@@ -15,15 +15,17 @@ export interface User extends Model<
   InferCreationAttributes<User>
 > {
   id: CreationOptional<number>;
+  uuid: number;
   firstname: string;
   lastname: string;
   email: string;
   phone: string;
+  role: string;
   password_hash: string;
   createdAt: CreationOptional<Date>;
   updatedAt: CreationOptional<Date>;
-  organizationSlug: ForeignKey<Organization["slug"]>;
-  campusSlug: ForeignKey<Campus["slug"]> | null;
+  organizationId: ForeignKey<Organization["id"]>;
+  campusId: ForeignKey<Campus["id"]> | null;
 }
 
 export const User = sequelize.define<User>(
@@ -34,7 +36,17 @@ export const User = sequelize.define<User>(
       autoIncrement: true,
       type: DataTypes.INTEGER,
     },
+    uuid: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      allowNull: false,
+      unique: true,
+    },
     firstname: {
+      allowNull: false,
+      type: DataTypes.STRING,
+    },
+    role: {
       allowNull: false,
       type: DataTypes.STRING,
     },
@@ -58,19 +70,19 @@ export const User = sequelize.define<User>(
     },
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,
-    organizationSlug: {
-      type: DataTypes.STRING,
+    organizationId: {
+      type: DataTypes.INTEGER,
       references: {
         model: Organization,
-        key: "slug",
+        key: "id",
       },
     },
-    campusSlug: {
+    campusId: {
       allowNull: true,
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       references: {
         model: Campus,
-        key: "slug",
+        key: "id",
       },
     },
   },

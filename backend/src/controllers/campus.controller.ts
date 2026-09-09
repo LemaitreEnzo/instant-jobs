@@ -1,9 +1,18 @@
 import type { Request, Response } from "express";
 import { Campus } from "src/models";
 
+const excludedData: string[] = ["createdAt", "updatedAt"];
+
 export const getAllCampus = async (req: Request, res: Response) => {
   try {
-    const campus = await Campus.findAll();
+    const { organizationId } = req.params;
+
+    const campus = await Campus.findAll({
+      where: { organizationId },
+      attributes: {
+        exclude: excludedData,
+      },
+    });
     res.status(200);
     res.json(campus);
   } catch (error) {
@@ -13,8 +22,14 @@ export const getAllCampus = async (req: Request, res: Response) => {
 
 export const getOneCampus = async (req: Request, res: Response) => {
   try {
-    const { slug } = req.params;
-    const campus = await Campus.findOne({ where: { slug: slug } });
+    const { organizationId, id } = req.params;
+
+    const campus = await Campus.findOne({
+      where: { organizationId, id },
+      attributes: {
+        exclude: excludedData,
+      },
+    });
     res.status(200);
     res.json(campus);
   } catch (error) {
@@ -35,9 +50,10 @@ export const createCampus = async (req: Request, res: Response) => {
 
 export const updateCampus = async (req: Request, res: Response) => {
   try {
+    const { organizationId, id } = req.params;
     const data = req.body;
     const campus = await Campus.update(data, {
-      where: { slug: req.params.slug },
+      where: { organizationId, id },
     });
     res.status(206);
     res.json(campus);
@@ -48,8 +64,12 @@ export const updateCampus = async (req: Request, res: Response) => {
 
 export const deleteCampus = async (req: Request, res: Response) => {
   try {
+    const { organizationId, id } = req.params;
     const campus = await Campus.findOne({
-      where: { slug: req.params.slug },
+      where: { organizationId, id },
+      attributes: {
+        exclude: excludedData,
+      },
     });
 
     if (!campus) {

@@ -5,7 +5,6 @@ import { Application } from "src/models/applications.model";
 import request from "supertest";
 import app from "../../../app";
 import getEnv from "../../../utils/envHelper";
-import getSlug from "../../../utils/slugHelper";
 
 const VERSION = getEnv("VERSION");
 const APPLICATIONS_URL = `/${VERSION}/organization/la-manu/users/1/application`;
@@ -49,7 +48,7 @@ describe("GET APPLICATIONS", () => {
 
   it("Returns all applications", async () => {
     jest.mocked(Organization.findOne).mockResolvedValue({
-      slug: getSlug("La Manu"),
+      id: 1,
     } as any);
     jest.mocked(User.findOne).mockResolvedValue({ id: 1, name: "ee" } as any);
 

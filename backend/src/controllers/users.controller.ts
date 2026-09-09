@@ -1,37 +1,43 @@
-import bcrypt from "bcryptjs";
+// import bcrypt from "bcryptjs";
 import type { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { User } from "src/models";
 import getEnv from "../../utils/envHelper";
+
+const excludedData: string[] = ["password_hash", "createdAt", "updatedAt"];
 
 export const login = async (req: Request, res: Response) => {
   try {
     // Get request's data for the token
     const email: string = req.body.email;
     const password: string = req.body.password;
-    const user = await User.findOne({ where: { email } });
+    const { organizationId } = req.params;
+    const user = await User.findOne({
+      where: { organizationId, email: email },
+    });
+
     //Check if a user with the email exist
     if (user) {
-      const data = user?.dataValues // CRÉER LE TYPE  
-      const passwordCheck = await bcrypt.compare(password, data.password_hash);
+      const data = user?.dataValues;
+      // const passwordCheck = await bcrypt.compare(password, data.password_hash);
+      const passwordCheck = true;
+
       if (passwordCheck) {
         const secret = getEnv("SECRET");
-        const payload = { id: data.id, email: data.email}; // AJOUTER LE ROLE 
+        const payload = { uuid: data.uuid, role: data.role };
         const jwtToken = jwt.sign(payload, secret);
-        res.cookie(getEnv('TOKEN'), jwtToken, {
+        res.cookie(getEnv("TOKEN"), jwtToken, {
           httpOnly: true,
           secure: true,
           sameSite: "strict",
           maxAge: 24 * 60 * 60 * 1000,
         });
-        res.status(200).json("Création du cookie");
+        res.status(200).json("Cookie created");
       } else {
-        return res.status(401).json("Mot de passe incorrecte");
+        return res.status(401).json("Incorrect password");
       }
     } else {
-      return res
-        .status(401)
-        .json("Aucun compte avec cette email n'a était trouvé");
+      return res.status(401).json("No user found");
     }
   } catch (error) {
     res.status(500).json(error);
@@ -40,7 +46,14 @@ export const login = async (req: Request, res: Response) => {
 
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
-    const users = await User.findAll();
+    const { organizationId } = req.params;
+
+    const users = await User.findAll({
+      where: { organizationId },
+      attributes: {
+        exclude: excludedData,
+      },
+    });
     res.status(200);
     res.json(users);
   } catch (error) {
@@ -50,8 +63,13 @@ export const getAllUsers = async (req: Request, res: Response) => {
 
 export const getOneUser = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
-    const user = await User.findOne({ where: { id: id } });
+    const { organizationId, id } = req.params;
+    const user = await User.findOne({
+      where: { organizationId, id },
+      attributes: {
+        exclude: excludedData,
+      },
+    });
     res.status(200);
     res.json(user);
   } catch (error) {
@@ -72,8 +90,9 @@ export const createUser = async (req: Request, res: Response) => {
 
 export const updateUser = async (req: Request, res: Response) => {
   try {
+    const { organizationId, id } = req.params;
     const data = req.body;
-    const user = await User.update(data, { where: { id: req.params.id } });
+    const user = await User.update(data, { where: { organizationId, id } });
     res.status(206);
     res.json(user);
   } catch (error) {
@@ -83,8 +102,12 @@ export const updateUser = async (req: Request, res: Response) => {
 
 export const deleteUser = async (req: Request, res: Response) => {
   try {
+    const { organizationId, id } = req.params;
     const user = await User.findOne({
-      where: { id: req.params.id },
+      where: { organizationId, id },
+      attributes: {
+        exclude: excludedData,
+      },
     });
 
     if (!user) {

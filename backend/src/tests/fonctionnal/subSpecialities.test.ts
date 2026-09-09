@@ -3,7 +3,6 @@ import { SubSpeciality } from "src/models/subSpecialities.model";
 import request from "supertest";
 import app from "../../../app";
 import getEnv from "../../../utils/envHelper";
-import getSlug from "../../../utils/slugHelper";
 
 const VERSION = getEnv("VERSION");
 const SubSpeciality_URL = `/${VERSION}/organization/la-manu/campus/compiegne/promotion/b3/speciality/dev/sub-speciality`;
@@ -33,13 +32,11 @@ describe("GET SubSpeciality", () => {
       {
         id: 1,
         name: "frontend",
-        slug: getSlug("frontend"),
         specialityId: 1,
       } as any,
       {
         id: 2,
         name: "backend",
-        slug: getSlug("backend"),
         specialityId: 1,
       } as any,
     ]);
@@ -49,8 +46,8 @@ describe("GET SubSpeciality", () => {
     expect(res.statusCode).toBe(200);
     expect(res.body).toEqual({
       SubSpeciality: [
-        { id: 1, name: "frontend", slug: getSlug("frontend"), specialityId: 1 },
-        { id: 2, name: "backend", slug: getSlug("backend"), specialityId: 1 },
+        { id: 1, name: "frontend", specialityId: 1 },
+        { id: 2, name: "backend", specialityId: 1 },
       ],
     });
   });
@@ -59,20 +56,16 @@ describe("GET SubSpeciality", () => {
     jest.mocked(SubSpeciality.findOne).mockResolvedValue({
       id: 1,
       name: "frontend",
-      slug: getSlug("frontend"),
       specialityId: 1,
     } as any);
 
-    const res = await request(app).get(
-      `${SubSpeciality_URL}/${getSlug("test")}`,
-    );
+    const res = await request(app).get(`${SubSpeciality_URL}/1`);
 
     expect(res.statusCode).toBe(200);
     expect(res.body).toEqual({
       subSpeciality: {
         id: 1,
         name: "frontend",
-        slug: getSlug("frontend"),
         specialityId: 1,
       },
     });
@@ -84,20 +77,18 @@ describe("CREATE subSpeciality", () => {
     jest.mocked(SubSpeciality.create).mockResolvedValue({
       id: 1,
       name: "frontend",
-      slug: getSlug("frontend"),
       specialityId: 1,
     } as any);
 
     const res = await request(app)
       .post(SubSpeciality_URL)
-      .send({ name: "frontend", slug: getSlug("frontend"), specialityId: 1 });
+      .send({ name: "frontend", specialityId: 1 });
 
     expect(res.statusCode).toBe(201);
     expect(res.body).toMatchObject({
       subSpeciality: {
         id: expect.any(Number),
         name: "frontend",
-        slug: getSlug("frontend"),
         specialityId: 1,
       },
     });
@@ -106,26 +97,22 @@ describe("CREATE subSpeciality", () => {
 
 describe("UPDATE subSpeciality", () => {
   it("Update one subSpeciality", async () => {
-    jest
-      .mocked(SubSpeciality.findOne)
-      .mockResolvedValue({ slug: getSlug("frontend") } as any);
+    jest.mocked(SubSpeciality.findOne).mockResolvedValue({ id: 1 } as any);
     jest.mocked(SubSpeciality.update).mockResolvedValue({
       id: 1,
       name: "backend",
-      slug: getSlug("backend"),
       specialityId: 1,
     } as any);
 
     const res = await request(app)
-      .patch(`${SubSpeciality_URL}/${getSlug("frontend")}`)
-      .send({ name: "backend", slug: getSlug("backend"), specialityId: 1 });
+      .patch(`${SubSpeciality_URL}/1`)
+      .send({ name: "backend", specialityId: 1 });
 
     expect(res.statusCode).toBe(206);
     expect(res.body).toMatchObject({
       subSpeciality: {
         id: expect.any(Number),
         name: "backend",
-        slug: getSlug("backend"),
         specialityId: 1,
       },
     });
@@ -137,13 +124,10 @@ describe("DELETE subSpeciality", () => {
     jest.mocked(SubSpeciality.destroy).mockResolvedValue({
       id: 1,
       name: "frontend",
-      slug: getSlug("frontebd"),
       specialityId: 1,
     } as any);
 
-    const res = await request(app).delete(
-      `${SubSpeciality_URL}/${getSlug("frontend")}`,
-    );
+    const res = await request(app).delete(`${SubSpeciality_URL}/1`);
 
     expect(res.statusCode).toBe(204);
     expect(SubSpeciality.destroy).toHaveBeenCalled();

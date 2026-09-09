@@ -20,21 +20,21 @@ const organizationsRoutes = express.Router({ mergeParams: true });
 organizationsRoutes.get("/", getAllOrganizations);
 
 // GET ONE
-organizationsRoutes.get("/:slug", getOneOrganization);
+organizationsRoutes.get("/:id", getOneOrganization);
 
 // CREATE
 organizationsRoutes.post("/", createOrganization);
 
 // UPDATE
-organizationsRoutes.put("/:slug", updateOrganization);
+organizationsRoutes.put("/:id", updateOrganization);
 
 // DELETE
-organizationsRoutes.delete("/:slug", deleteOrganization);
+organizationsRoutes.delete("/:id", deleteOrganization);
 
 // USERS ROUTES
-organizationsRoutes.use("/:slug/users", usersRoutes);
+organizationsRoutes.use("/:organizationId/users", usersRoutes);
 
 // CAMPUS ROUTES
-organizationsRoutes.use("/:slug/campus", campusRoutes);
+organizationsRoutes.use("/:organizationId/campus", campusRoutes);
 
 export default organizationsRoutes;

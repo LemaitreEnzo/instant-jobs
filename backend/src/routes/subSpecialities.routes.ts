@@ -11,15 +11,15 @@ const subSpecialities = express.Router({ mergeParams: true });
 
 //GET
 subSpecialities.get("/", getAllSubSpecialities);
-subSpecialities.get("/:slug", getOneSubSpeciality);
+subSpecialities.get("/:id", getOneSubSpeciality);
 
 //CREATE
 subSpecialities.post("/", createSubSpeciality);
 
 //UPDATE
-subSpecialities.patch("/:slug", updateSubSpeciality);
+subSpecialities.patch("/:id", updateSubSpeciality);
 
 //DELETE
-subSpecialities.delete("/:slug", deleteSubSpeciality);
+subSpecialities.delete("/:id", deleteSubSpeciality);
 
 export default subSpecialities;

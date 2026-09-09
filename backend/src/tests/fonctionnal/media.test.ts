@@ -5,7 +5,6 @@ import { User } from "src/models/users.model";
 import request from "supertest";
 import app from "../../../app";
 import getEnv from "../../../utils/envHelper";
-import getSlug from "../../../utils/slugHelper";
 
 const VERSION = getEnv("VERSION");
 const MEDIA_URL = `/${VERSION}/organization/la-manu/user/1/docs/media`;
@@ -48,7 +47,6 @@ describe("GET MEDIA", () => {
     jest.mocked(Organization.findOne).mockResolvedValue({
       id: 1,
       name: "La Manu",
-      slug: getSlug("La Manu"),
     } as any);
     // Create mock for findAll fuction
     jest
@@ -73,7 +71,6 @@ describe("GET MEDIA", () => {
     jest.mocked(Organization.findOne).mockResolvedValue({
       id: 1,
       name: "La Manu",
-      slug: getSlug("La Manu"),
     } as any);
     jest.mocked(User.findOne).mockResolvedValue({ id: 1, name: "ee" } as any);
     jest.mocked(Media.findOne).mockResolvedValue({ id: 1, name: "ee" } as any);
@@ -95,7 +92,6 @@ describe("CREATE ONE MEDIA", () => {
     jest.mocked(Organization.findOne).mockResolvedValue({
       id: 1,
       name: "La Manu",
-      slug: getSlug("La Manu"),
     } as any);
     jest.mocked(User.findOne).mockResolvedValue({ id: 1, name: "ee" } as any);
     jest
@@ -124,7 +120,6 @@ describe("UPDATE MEDIA", () => {
     jest.mocked(Organization.findOne).mockResolvedValue({
       id: 1,
       name: "La Manu",
-      slug: getSlug("La Manu"),
     } as any);
     jest.mocked(User.findOne).mockResolvedValue({ id: 1, name: "ee" } as any);
     jest.mocked(Media.findOne).mockResolvedValue({ id: 1, name: "ee" } as any);
@@ -145,7 +140,6 @@ describe("DELETE ONE MEDIA", () => {
     jest.mocked(Organization.findOne).mockResolvedValue({
       id: 1,
       name: "La Manu",
-      slug: getSlug("La Manu"),
     } as any);
     jest.mocked(User.findOne).mockResolvedValue({ id: 1, name: "ee" } as any);
     jest

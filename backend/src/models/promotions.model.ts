@@ -15,12 +15,10 @@ export interface Promotion extends Model<
   InferCreationAttributes<Promotion>
 > {
   id: CreationOptional<number>;
-  slug: string;
   name: string;
-  organisationId: number;
   createdAt: CreationOptional<Date>;
   updatedAt: CreationOptional<Date>;
-  campusSlug: ForeignKey<Campus["slug"]>;
+  campusId: ForeignKey<Campus["id"]>;
 }
 
 export const Promotion = sequelize.define<Promotion>(
@@ -31,23 +29,16 @@ export const Promotion = sequelize.define<Promotion>(
       autoIncrement: true,
       type: DataTypes.INTEGER,
     },
-    slug: {
-      type: DataTypes.STRING,
-    },
     name: {
       type: DataTypes.STRING,
     },
-    organisationId: {
-      allowNull: false,
-      type: DataTypes.INTEGER,
-    },
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,
-    campusSlug: {
-      type: DataTypes.STRING,
+    campusId: {
+      type: DataTypes.INTEGER,
       references: {
         model: Campus,
-        key: "slug",
+        key: "id",
       },
     },
   },

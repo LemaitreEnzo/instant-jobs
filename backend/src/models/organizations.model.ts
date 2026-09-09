@@ -21,7 +21,6 @@ export interface Organization extends Model<
   city: string;
   adress: string;
   country: string;
-  slug: string;
   createdAt: CreationOptional<Date>;
   updatedAt: CreationOptional<Date>;
 }
@@ -64,10 +63,6 @@ export const Organization = sequelize.define<Organization>(
       type: DataTypes.STRING,
     },
     country: {
-      unique: true,
-      type: DataTypes.STRING,
-    },
-    slug: {
       unique: true,
       type: DataTypes.STRING,
     },

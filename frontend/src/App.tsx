@@ -2,9 +2,12 @@ import { Route, Routes } from "react-router";
 import "./assets/css/default.css";
 import "./assets/css/global.css";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { getAllCampus } from "./hooks/campus.hook";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import Unauthorized from "./pages/Unauthorized";
+
+getAllCampus("acme-corp");
 
 function App() {
   return (
