@@ -37,3 +37,11 @@ export type PropsUserModal = {
   open: boolean
   onOpenChange: React.Dispatch<SetStateAction<boolean>>
 }
+
+export type PropsCardDocument = {
+  name: string;
+  added_at: Date;
+  stockage: number;
+  used: number;
+  pdf_url: string
+}
