@@ -1,6 +1,7 @@
 import cors from "cors";
 import express, { type Request, type Response } from "express";
 import helmet from "helmet";
+import cookieParser from 'cookie-parser';
 
 import organizationsRoutes from "routes/organizations.routes";
 import getEnv from "./utils/envHelper";
@@ -20,6 +21,7 @@ app.get(`/${VERSION}`, (req: Request, res: Response) => {
   res.status(200).send("Hello world!");
 });
 
+app.use(cookieParser());
 app.use(express.json());
 
 app.use(`/${VERSION}/organization`, organizationsRoutes);

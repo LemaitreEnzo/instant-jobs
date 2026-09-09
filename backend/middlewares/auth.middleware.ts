@@ -1,6 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { User } from "../src/models/users.model";
+import cookieParser from 'cookie-parser';
+import getEnv from "../utils/envHelper";
+import bcrypt from "bcryptjs";
+
 
 declare global {
   namespace Express {
@@ -15,47 +19,18 @@ const authenticateUser = async (
   res: Response,
   next: NextFunction,
 ): Promise<void> => {
+  const tokenName = getEnv('TOKEN');
+  const secret = getEnv('SECRET');
+  res.json(req.cookies);
   try {
-    const token = req.cookies.jwt;
-
-    if (!token) {
-      res.status(401).json({ message: "Not authorized, no token" });
-      return;
+    if (req.cookies.tokenName) {
+      const token = req.cookies.tokenName;
+      const decoded = jwt.verify(token, secret);
+      console.log(token);
     }
-
-    const JWT_SECRET = process.env.JWT_SECRET;
-    if (!JWT_SECRET) {
-      res.status(500).json({ message: "JWT secret is not defined" });
-      return;
-    }
-
-    const decoded: jwt.JwtPayload | string = jwt.verify(token, JWT_SECRET) as {
-      userId: string;
-    };
-
-    const user = await User.findOne(decoded.userId);
-
-    if (!user) {
-      res.status(401).json({ message: "Not authorized, user not found" });
-      return;
-    }
-
-    req.user = user;
-
-    next();
+    // next();
   } catch (error) {
-    if (error instanceof jwt.TokenExpiredError) {
-      res.status(401).json({ message: "Token expired" });
-      return;
-    }
-    if (error instanceof jwt.JsonWebTokenError) {
-      res.status(401).json({ message: "Invalid token" });
-      return;
-    }
-
-    console.error("Authentication error:", error);
-    res.status(500).json({ message: "Server error during authentication" });
-    return;
+    res.status(500).json(error);
   }
 };
 
