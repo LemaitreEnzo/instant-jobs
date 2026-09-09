@@ -4,7 +4,6 @@ import { Speciality } from "src/models/specialities.model";
 import request from "supertest";
 import app from "../../../app";
 import getEnv from "../../../utils/envHelper";
-import getSlug from "../../../utils/slugHelper";
 
 const VERSION = getEnv("VERSION");
 const Speciality_URL = `/${VERSION}/organization/la-manu/campus/compiegne/promotion/b3/specialities`;
@@ -39,15 +38,15 @@ describe("GET Speciality", () => {
     jest
       .mocked(Speciality.findAll)
       .mockResolvedValue([
-        { id: 1, name: "Designeur", slug: getSlug("Designeur") } as any,
-        { id: 2, name: "Développeur", slug: getSlug("Développeur") } as any,
+        { id: 1, name: "Designeur" } as any,
+        { id: 2, name: "Développeur" } as any,
       ]);
 
     const res = await request(app).get(Speciality_URL);
     expect(res.body).toEqual({
       Speciality: [
-        { id: 1, name: "Designeur", slug: getSlug("Designeur") },
-        { id: 2, name: "Développeur", slug: getSlug("Développeur") },
+        { id: 1, name: "Designeur" },
+        { id: 2, name: "Développeur" },
       ],
     });
   });
@@ -56,17 +55,13 @@ describe("GET Speciality", () => {
     jest.mocked(Speciality.findOne).mockResolvedValue({
       id: 1,
       name: "Designeur",
-      slug: getSlug("Designeur"),
     } as any);
 
-    const res = await request(app).get(
-      `${Speciality_URL}/${getSlug("Designeur")}`,
-    );
+    const res = await request(app).get(`${Speciality_URL}/1`);
     expect(res.body).toEqual({
       speciality: {
         id: 1,
         name: "Designeur",
-        slug: getSlug("Designeur"),
       },
     });
   });
@@ -77,24 +72,21 @@ describe("CREATE SPECIALITY", () => {
     jest.mocked(Promotion.findOne).mockResolvedValue({
       id: 1,
       name: "b3",
-      slug: getSlug("B3"),
       organizationId: 1,
     } as any);
     jest.mocked(Speciality.create).mockResolvedValue({
       id: 1,
       name: "Designeur",
-      slug: getSlug("Designeur"),
     } as any);
 
     const res = await request(app)
       .post(Speciality_URL)
-      .send({ name: "Designeur", slug: getSlug("Designeur") });
+      .send({ name: "Designeur" });
 
     expect(res.status).toBe(201);
     expect(res.body).toMatchObject({
       id: expect.any(Number),
       name: "Designeur",
-      slug: getSlug("Designeur"),
     });
   });
 });
@@ -104,28 +96,23 @@ describe("UPDATE SPECIALITY", () => {
     jest.mocked(Promotion.findOne).mockResolvedValue({
       id: 1,
       name: "B3",
-      slug: getSlug("B3"),
       organizationId: 1,
     } as any);
-    jest
-      .mocked(Speciality.findOne)
-      .mockResolvedValue({ slug: getSlug("Designeur") } as any);
+    jest.mocked(Speciality.findOne).mockResolvedValue({ id: 1 } as any);
     jest.mocked(Speciality.update).mockResolvedValue({
       id: 1,
       name: "Marketing",
-      slug: getSlug("Marketing"),
     } as any);
 
     const res = await request(app)
-      .patch(`${Speciality_URL}/${getSlug("Designeur")}`)
-      .send({ name: "Marketing", slug: getSlug("Marketing") });
+      .patch(`${Speciality_URL}/1`)
+      .send({ name: "Marketing" });
 
     expect(res.status).toBe(206);
     expect(res.body).toMatchObject({
       specialityUpdated: {
         id: expect.any(Number),
         name: "Marketing",
-        slug: getSlug("Marketing"),
       },
     });
   });
@@ -136,12 +123,10 @@ describe("DELETE SPECIALITY", () => {
     jest.mocked(Promotion.findOne).mockResolvedValue({
       id: 1,
       name: "Compiègne",
-      slug: getSlug("Compiègne"),
     } as any);
     jest.mocked(Speciality.destroy).mockResolvedValue({
       id: 1,
       name: "Designeur",
-      slug: getSlug("Designeur"),
     } as any);
     const res = await request(app).delete(`${Speciality_URL}/designeur`);
 

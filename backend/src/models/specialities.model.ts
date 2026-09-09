@@ -15,11 +15,10 @@ export interface Speciality extends Model<
   InferCreationAttributes<Speciality>
 > {
   id: CreationOptional<number>;
-  slug: string;
   name: string;
   createdAt: CreationOptional<Date>;
   updatedAt: CreationOptional<Date>;
-  promotionSlug: ForeignKey<Promotion["slug"]>;
+  promotionId: ForeignKey<Promotion["id"]>;
 }
 
 export const Speciality = sequelize.define<Speciality>(
@@ -30,19 +29,16 @@ export const Speciality = sequelize.define<Speciality>(
       autoIncrement: true,
       type: DataTypes.INTEGER,
     },
-    slug: {
-      type: DataTypes.STRING,
-    },
     name: {
       type: DataTypes.STRING,
     },
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,
-    promotionSlug: {
-      type: DataTypes.STRING,
+    promotionId: {
+      type: DataTypes.INTEGER,
       references: {
         model: Promotion,
-        key: "slug",
+        key: "id",
       },
     },
   },

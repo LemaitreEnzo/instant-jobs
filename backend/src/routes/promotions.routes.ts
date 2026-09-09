@@ -12,18 +12,18 @@ const promotionsRoutes = express.Router({ mergeParams: true });
 
 //GET
 promotionsRoutes.get("/", getAllPromotions);
-promotionsRoutes.get("/:slug", getOnePromotion);
+promotionsRoutes.get("/:id", getOnePromotion);
 
 //CREATE
 promotionsRoutes.post("/", createPromotion);
 
 //UPDATE
-promotionsRoutes.patch("/:slug", updatePromotion);
+promotionsRoutes.patch("/:id", updatePromotion);
 
 //DELETE
-promotionsRoutes.delete("/:slug", deletePromotion);
+promotionsRoutes.delete("/:id", deletePromotion);
 
 // SPECIALITIES ROUTES
-promotionsRoutes.use("/:slug/speciality", specialitiesRoutes);
+promotionsRoutes.use("/:promotionId/speciality", specialitiesRoutes);
 
 export default promotionsRoutes;

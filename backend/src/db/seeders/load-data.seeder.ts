@@ -16,7 +16,6 @@ export default {
         city: "Compiègne",
         adress: "12 rue des Entrepreneurs",
         country: "France",
-        slug: "acme-corp",
         createdAt: now,
         updatedAt: now,
       },
@@ -29,7 +28,18 @@ export default {
         city: "Paris",
         adress: "1 avenue des Champs",
         country: "France",
-        slug: "globex-inc",
+        createdAt: now,
+        updatedAt: now,
+      },
+      {
+        name: "La manu",
+        email: "contact@lamanu.fr",
+        phone: "010000002",
+        role: "school",
+        postcode: 75001,
+        city: "Paris",
+        adress: "1 avenue des Champs",
+        country: "France",
         createdAt: now,
         updatedAt: now,
       },
@@ -39,15 +49,19 @@ export default {
     await queryInterface.bulkInsert("Campus", [
       {
         name: "Acme Campus Nord",
-        slug: "acme-campus-nord",
-        organizationSlug: "acme-corp",
+        organizationId: 1,
         createdAt: now,
         updatedAt: now,
       },
       {
         name: "Acme Campus Sud",
-        slug: "acme-campus-sud",
-        organizationSlug: "acme-corp",
+        organizationId: 1,
+        createdAt: now,
+        updatedAt: now,
+      },
+      {
+        name: "Compiègne",
+        organizationId: 3,
         createdAt: now,
         updatedAt: now,
       },
@@ -60,9 +74,10 @@ export default {
         lastname: "Dupont",
         email: "jean.dupont@acme-corp.com",
         phone: "0611111111",
+        role: "staff",
         password_hash: "$2b$10$exempleHashBcrypt1",
-        organizationSlug: "acme-corp",
-        campusSlug: "acme-campus-nord",
+        organizationId: 1,
+        campusId: 1,
         createdAt: now,
         updatedAt: now,
       },
@@ -71,9 +86,10 @@ export default {
         lastname: "Curie",
         email: "marie.curie@acme-corp.com",
         phone: "0622222222",
+        role: "admin",
         password_hash: "$2b$10$exempleHashBcrypt2",
-        organizationSlug: "acme-corp",
-        campusSlug: null, // user sans campus
+        organizationId: 1,
+        campusId: null, // user sans campus
         createdAt: now,
         updatedAt: now,
       },
@@ -82,9 +98,10 @@ export default {
         lastname: "Martin",
         email: "paul.martin@globex.com",
         phone: "0633333333",
+        role: "admin",
         password_hash: "$2b$10$exempleHashBcrypt3",
-        organizationSlug: "globex-inc",
-        campusSlug: null, // Globex n'a pas de campus
+        organizationId: 2,
+        campusId: null, // Globex n'a pas de campus
         createdAt: now,
         updatedAt: now,
       },
@@ -116,7 +133,7 @@ export default {
         status: "accepted",
         resend: "no",
         description: "Stage marketing digital.",
-        userId: 1, // application sans user rattaché
+        userId: 1,
         createdAt: now,
         updatedAt: now,
       },
@@ -143,16 +160,14 @@ export default {
     // --- Promotions (rattachées à des campus) ---
     await queryInterface.bulkInsert("Promotion", [
       {
-        slug: "promo-2026-nord",
         name: "Promotion 2026 - Nord",
-        campusSlug: "acme-campus-nord",
+        campusId: 1,
         createdAt: now,
         updatedAt: now,
       },
       {
-        slug: "promo-2026-sud",
         name: "Promotion 2026 - Sud",
-        campusSlug: "acme-campus-sud",
+        campusId: 2,
         createdAt: now,
         updatedAt: now,
       },
@@ -161,16 +176,14 @@ export default {
     // --- Specialities ---
     await queryInterface.bulkInsert("Speciality", [
       {
-        slug: "dev-web",
         name: "Développement Web",
-        promotionSlug: "promo-2026-nord",
+        promotionId: 1,
         createdAt: now,
         updatedAt: now,
       },
       {
-        slug: "data-science",
         name: "Data Science",
-        promotionSlug: "promo-2026-sud",
+        promotionId: 2,
         createdAt: now,
         updatedAt: now,
       },
@@ -180,22 +193,19 @@ export default {
     await queryInterface.bulkInsert("SubSpeciality", [
       {
         name: "Frontend",
-        slug: "frontend",
-        specialitySlug: "dev-web",
+        specialityId: 1,
         createdAt: now,
         updatedAt: now,
       },
       {
         name: "Backend",
-        slug: "backend",
-        specialitySlug: "dev-web",
+        specialityId: 1,
         createdAt: now,
         updatedAt: now,
       },
       {
         name: "Machine Learning",
-        slug: "machine-learning",
-        specialitySlug: "data-science",
+        specialityId: 2,
         createdAt: now,
         updatedAt: now,
       },

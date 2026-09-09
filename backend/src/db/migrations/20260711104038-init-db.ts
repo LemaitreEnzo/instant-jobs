@@ -1,4 +1,4 @@
-import { DataTypes, QueryInterface } from "sequelize";
+import { DataTypes, literal, QueryInterface } from "sequelize";
 
 /** @type {import("sequelize-cli").Migration} */
 export default {
@@ -39,11 +39,6 @@ export default {
       country: {
         type: DataTypes.STRING,
       },
-      slug: {
-        allowNull: false,
-        unique: true,
-        type: DataTypes.STRING,
-      },
       createdAt: {
         allowNull: false,
         type: DataTypes.DATE,
@@ -63,17 +58,12 @@ export default {
       name: {
         type: DataTypes.STRING,
       },
-      slug: {
+      organizationId: {
         allowNull: false,
-        unique: true,
-        type: DataTypes.STRING,
-      },
-      organizationSlug: {
-        allowNull: false,
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         references: {
           model: "Organization",
-          key: "slug",
+          key: "id",
         },
       },
       createdAt: {
@@ -92,7 +82,17 @@ export default {
         autoIncrement: true,
         type: DataTypes.INTEGER,
       },
+      uuid: {
+        type: DataTypes.UUID,
+        defaultValue: literal("gen_random_uuid()"),
+        allowNull: false,
+        unique: true,
+      },
       firstname: {
+        allowNull: false,
+        type: DataTypes.STRING,
+      },
+      role: {
         allowNull: false,
         type: DataTypes.STRING,
       },
@@ -114,20 +114,20 @@ export default {
         allowNull: false,
         type: DataTypes.STRING,
       },
-      organizationSlug: {
+      organizationId: {
         allowNull: false,
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         references: {
           model: "Organization",
-          key: "slug",
+          key: "id",
         },
       },
-      campusSlug: {
+      campusId: {
         allowNull: true,
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         references: {
           model: "Campus",
-          key: "slug",
+          key: "id",
         },
       },
       createdAt: {
@@ -227,20 +227,15 @@ export default {
         autoIncrement: true,
         type: DataTypes.INTEGER,
       },
-      slug: {
-        allowNull: false,
-        unique: true,
-        type: DataTypes.STRING,
-      },
       name: {
         type: DataTypes.STRING,
       },
-      campusSlug: {
+      campusId: {
         allowNull: false,
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         references: {
           model: "Campus",
-          key: "slug",
+          key: "id",
         },
       },
       createdAt: {
@@ -259,20 +254,15 @@ export default {
         autoIncrement: true,
         type: DataTypes.INTEGER,
       },
-      slug: {
-        allowNull: false,
-        unique: true,
-        type: DataTypes.STRING,
-      },
       name: {
         type: DataTypes.STRING,
       },
-      promotionSlug: {
+      promotionId: {
         allowNull: false,
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         references: {
           model: "Promotion",
-          key: "slug",
+          key: "id",
         },
       },
       createdAt: {
@@ -295,17 +285,12 @@ export default {
         allowNull: false,
         type: DataTypes.STRING,
       },
-      slug: {
+      specialityId: {
         allowNull: false,
-        unique: true,
-        type: DataTypes.STRING,
-      },
-      specialitySlug: {
-        allowNull: false,
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         references: {
           model: "Speciality",
-          key: "slug",
+          key: "id",
         },
       },
       createdAt: {

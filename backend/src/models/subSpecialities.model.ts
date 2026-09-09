@@ -15,11 +15,9 @@ export interface SubSpeciality extends Model<
 > {
   id: CreationOptional<number>;
   name: string;
-  slug: string;
-  specialityId: number;
   createdAt: CreationOptional<Date>;
   updatedAt: CreationOptional<Date>;
-  specialitySlug: ForeignKey<Speciality["slug"]>;
+  specialityId: ForeignKey<Speciality["id"]>;
 }
 
 export const SubSpeciality = sequelize.define<SubSpeciality>(
@@ -35,22 +33,13 @@ export const SubSpeciality = sequelize.define<SubSpeciality>(
       allowNull: false,
       type: DataTypes.STRING,
     },
-    slug: {
-      unique: true,
-      allowNull: false,
-      type: DataTypes.STRING,
-    },
-    specialityId: {
-      allowNull: false,
-      type: DataTypes.INTEGER,
-    },
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,
-    specialitySlug: {
-      type: DataTypes.STRING,
+    specialityId: {
+      type: DataTypes.INTEGER,
       references: {
         model: Speciality,
-        key: "slug",
+        key: "id",
       },
     },
   },

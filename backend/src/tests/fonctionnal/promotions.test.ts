@@ -3,7 +3,6 @@ import { Promotion } from "models/promotions.model";
 import request from "supertest";
 import app from "../../../app";
 import getEnv from "../../../utils/envHelper";
-import getSlug from "../../../utils/slugHelper";
 
 const VERSION = getEnv("VERSION");
 const Promotion_URL = `/${VERSION}/organization/la-manu/campus/compiegne/promotion`;
@@ -38,8 +37,8 @@ describe("GET Promotion", () => {
     jest
       .mocked(Promotion.findAll)
       .mockResolvedValue([
-        { id: 1, name: "B1", slug: getSlug("B1"), organisationId: 1 } as any,
-        { id: 2, name: "B2", slug: getSlug("B2"), organisationId: 1 } as any,
+        { id: 1, name: "B1", organisationId: 1 } as any,
+        { id: 2, name: "B2", organisationId: 1 } as any,
       ]);
 
     const res = await request(app).get(Promotion_URL);
@@ -47,8 +46,8 @@ describe("GET Promotion", () => {
     expect(res.statusCode).toBe(200);
     expect(res.body).toEqual({
       Promotion: [
-        { id: 1, name: "B1", slug: getSlug("B1"), organisationId: 1 },
-        { id: 2, name: "B2", slug: getSlug("B2"), organisationId: 1 },
+        { id: 1, name: "B1", organisationId: 1 },
+        { id: 2, name: "B2", organisationId: 1 },
       ],
     });
   });
@@ -57,15 +56,14 @@ describe("GET Promotion", () => {
     jest.mocked(Promotion.findOne).mockResolvedValue({
       id: 1,
       name: "B1",
-      slug: getSlug("B1"),
       organisationId: 1,
     } as any);
 
-    const res = await request(app).get(`${Promotion_URL}/${getSlug("B1")}`);
+    const res = await request(app).get(`${Promotion_URL}/1`);
 
     expect(res.statusCode).toBe(200);
     expect(res.body).toEqual({
-      promotion: { id: 1, name: "B1", slug: getSlug("B1"), organisationId: 1 },
+      promotion: { id: 1, name: "B1", organisationId: 1 },
     });
   });
 });
@@ -75,20 +73,18 @@ describe("CREATE Promotion", () => {
     jest.mocked(Promotion.create).mockResolvedValue({
       id: 1,
       name: "B1",
-      slug: getSlug("B1"),
       organisationId: 1,
     } as any);
 
     const res = await request(app)
       .post(Promotion_URL)
-      .send({ name: "B1", slug: getSlug("B1"), organisationId: 1 });
+      .send({ name: "B1", organisationId: 1 });
 
     expect(res.statusCode).toBe(201);
     expect(res.body).toMatchObject({
       promotion: {
         id: expect.any(Number),
         name: "B1",
-        slug: getSlug("B1"),
         organisationId: 1,
       },
     });
@@ -97,26 +93,22 @@ describe("CREATE Promotion", () => {
 
 describe("UPDATE Promotion", () => {
   it("Update one promotion", async () => {
-    jest
-      .mocked(Promotion.findOne)
-      .mockResolvedValue({ slug: getSlug("B1") } as any);
+    jest.mocked(Promotion.findOne).mockResolvedValue({ id: 1 } as any);
     jest.mocked(Promotion.update).mockResolvedValue({
       id: 1,
       name: "B3",
-      slug: getSlug("B3"),
       organisationId: 1,
     } as any);
 
     const res = await request(app)
-      .patch(`${Promotion_URL}/${getSlug("B1")}`)
-      .send({ name: "B3", slug: getSlug("B3"), organisationId: 1 });
+      .patch(`${Promotion_URL}/1`)
+      .send({ name: "B3", organisationId: 1 });
 
     expect(res.statusCode).toBe(206);
     expect(res.body).toMatchObject({
       promotion: {
         id: expect.any(Number),
         name: "B3",
-        slug: getSlug("B3"),
         organisationId: 1,
       },
     });
@@ -128,11 +120,10 @@ describe("DELETE Promotion", () => {
     jest.mocked(Promotion.destroy).mockResolvedValue({
       id: 1,
       name: "B3",
-      slug: getSlug("B3"),
       organisationId: 1,
     } as any);
 
-    const res = await request(app).delete(`${Promotion_URL}/${getSlug("B1")}`);
+    const res = await request(app).delete(`${Promotion_URL}/1`);
 
     expect(res.statusCode).toBe(204);
     expect(Promotion.destroy).toHaveBeenCalled();

@@ -1,9 +1,31 @@
 import type { Request, Response } from "express";
-import { Promotion } from "src/models";
+import { Campus, Organization, Promotion } from "src/models";
+
+const excludedData: string[] = ["createdAt", "updatedAt"];
 
 export const getAllPromotions = async (req: Request, res: Response) => {
   try {
-    const promotions = await Promotion.findAll();
+    const { campusId } = req.params;
+
+    const promotions = await Promotion.findAll({
+      where: { campusId },
+      attributes: {
+        exclude: excludedData,
+      },
+      include: [
+        {
+          model: Campus,
+          required: true,
+          attributes: [],
+          include: [
+            {
+              model: Organization,
+              attributes: ["id"],
+            },
+          ],
+        },
+      ],
+    });
 
     res.status(200);
     res.json(promotions);
@@ -15,8 +37,13 @@ export const getAllPromotions = async (req: Request, res: Response) => {
 
 export const getOnePromotion = async (req: Request, res: Response) => {
   try {
-    const slug = req.params.slug;
-    const promotion = await Promotion.findOne({ where: { slug: slug } });
+    const { campusId, id } = req.params;
+    const promotion = await Promotion.findOne({
+      where: { campusId, id },
+      attributes: {
+        exclude: excludedData,
+      },
+    });
 
     res.status(200);
     res.json(promotion);
@@ -41,9 +68,12 @@ export const createPromotion = async (req: Request, res: Response) => {
 
 export const updatePromotion = async (req: Request, res: Response) => {
   try {
-    const slug = req.params.slug;
+    const { campusId, id } = req.params;
+
     const data = req.body;
-    const promotion = await Promotion.update(data, { where: { slug: slug } });
+    const promotion = await Promotion.update(data, {
+      where: { campusId, id },
+    });
 
     res.status(206);
     res.json(promotion);
@@ -55,8 +85,9 @@ export const updatePromotion = async (req: Request, res: Response) => {
 
 export const deletePromotion = async (req: Request, res: Response) => {
   try {
+    const { campusId, id } = req.params;
     const promotion = await Promotion.findOne({
-      where: { slug: req.params.slug },
+      where: { campusId, id },
     });
 
     if (!promotion) {

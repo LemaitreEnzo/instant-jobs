@@ -10,7 +10,7 @@ export interface Organization {
   city: string;
   adress: string;
   country: string;
-  slug: string;
+  id: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -18,8 +18,8 @@ export interface Organization {
 export interface Campus {
   id: number;
   name: string;
-  slug: string;
-  organizationSlug: string;
+  id: string;
+  organizationid: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -30,8 +30,8 @@ export interface User {
   lastname: string;
   email: string;
   phone: string;
-  organizationSlug: string;
-  campusSlug: string | null;
+  organizationid: string;
+  campusid: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -63,18 +63,18 @@ export interface Media {
 
 export interface Promotion {
   id: number;
-  slug: string;
+  id: string;
   name: string;
-  campusSlug: string;
+  campusid: string;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface Speciality {
   id: number;
-  slug: string;
+  id: string;
   name: string;
-  promotionSlug: string;
+  promotionid: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -82,8 +82,8 @@ export interface Speciality {
 export interface SubSpeciality {
   id: number;
   name: string;
-  slug: string;
-  specialitySlug: string;
+  id: string;
+  specialityid: string;
   createdAt: string;
   updatedAt: string;
 }

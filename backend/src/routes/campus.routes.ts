@@ -12,18 +12,18 @@ const campusRoutes = express.Router({ mergeParams: true });
 
 // GET
 campusRoutes.get("/", getAllCampus);
-campusRoutes.get("/:slug", getOneCampus);
+campusRoutes.get("/:id", getOneCampus);
 
 // CREATE
 campusRoutes.post("/", createCampus);
 
 // UPDATE
-campusRoutes.put("/:slug", updateCampus);
+campusRoutes.put("/:id", updateCampus);
 
 // DELETE
-campusRoutes.delete("/:slug", deleteCampus);
+campusRoutes.delete("/:id", deleteCampus);
 
 // PROMOTIONS ROUTES
-campusRoutes.use("/:slug/promotion", promotionsRoutes);
+campusRoutes.use("/:campusId/promotion", promotionsRoutes);
 
 export default campusRoutes;

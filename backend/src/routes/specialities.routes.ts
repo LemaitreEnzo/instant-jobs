@@ -17,18 +17,18 @@ const specialitiesRoutes = express.Router({ mergeParams: true });
 
 // GET
 specialitiesRoutes.get("/", getAllSpecialities);
-specialitiesRoutes.get("/:slug", getOneSpeciality);
+specialitiesRoutes.get("/:id", getOneSpeciality);
 
 // CREATE
 specialitiesRoutes.post("/", createSpeciality);
 
 // UPDATE
-specialitiesRoutes.patch("/:slug", updateSpeciality);
+specialitiesRoutes.patch("/:id", updateSpeciality);
 
 // DELETE
-specialitiesRoutes.delete("/:slug", deleteSpeciality);
+specialitiesRoutes.delete("/:id", deleteSpeciality);
 
 // SubSpecialities routes
-specialitiesRoutes.use("/:slug/sub-speciality", subSpecialities);
+specialitiesRoutes.use("/:specialityId/sub-speciality", subSpecialities);
 
 export default specialitiesRoutes;

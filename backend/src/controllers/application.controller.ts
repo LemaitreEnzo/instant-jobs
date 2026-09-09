@@ -1,9 +1,18 @@
 import { type Request, type Response } from "express";
 import { Application } from "src/models";
 
+const excludedData: string[] = ["createdAt", "updatedAt"];
+
 export const getAllApplications = async (req: Request, res: Response) => {
   try {
-    const applications = await Application.findAll();
+    const { userId, id } = req.params;
+
+    const applications = await Application.findAll({
+      where: { userId },
+      attributes: {
+        exclude: excludedData,
+      },
+    });
     res.status(200).json(applications);
   } catch (error) {
     res.status(500).json(error);
@@ -12,8 +21,9 @@ export const getAllApplications = async (req: Request, res: Response) => {
 
 export const getOneApplication = async (req: Request, res: Response) => {
   try {
+    const { userId, id } = req.params;
     const application = await Application.findOne({
-      where: { id: req.params.id },
+      where: { userId, id },
     });
 
     if (!application) {
@@ -37,8 +47,12 @@ export const createApplication = async (req: Request, res: Response) => {
 
 export const updateApplication = async (req: Request, res: Response) => {
   try {
+    const { userId, id } = req.params;
     const application = await Application.findOne({
-      where: { id: req.params.id },
+      where: { userId, id },
+      attributes: {
+        exclude: excludedData,
+      },
     });
 
     if (!application) {
@@ -46,7 +60,7 @@ export const updateApplication = async (req: Request, res: Response) => {
     }
 
     const applicationUpdated = await Application.update(req.body, {
-      where: { id: req.params.id },
+      where: { userId, id },
     });
 
     res.status(206).json(applicationUpdated);
@@ -57,8 +71,12 @@ export const updateApplication = async (req: Request, res: Response) => {
 
 export const deleteApplication = async (req: Request, res: Response) => {
   try {
+    const { userId, id } = req.params;
     const application = await Application.findOne({
-      where: { id: req.params.id },
+      where: { userId, id },
+      attributes: {
+        exclude: excludedData,
+      },
     });
 
     if (!application) {

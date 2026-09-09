@@ -1,9 +1,17 @@
 import type { Request, Response } from "express";
 import { SubSpeciality } from "src/models";
 
+const excludedData: string[] = ["createdAt", "updatedAt"];
+
 export const getAllSubSpecialities = async (req: Request, res: Response) => {
   try {
-    const subSpecialities = await SubSpeciality.findAll();
+    const { specialityId } = req.params;
+    const subSpecialities = await SubSpeciality.findAll({
+      where: { specialityId },
+      attributes: {
+        exclude: excludedData,
+      },
+    });
 
     res.status(200);
     res.json(subSpecialities);
@@ -15,9 +23,9 @@ export const getAllSubSpecialities = async (req: Request, res: Response) => {
 
 export const getOneSubSpeciality = async (req: Request, res: Response) => {
   try {
-    const slug = req.params.slug;
+    const { specialityId, id } = req.params;
     const subSpeciality = await SubSpeciality.findOne({
-      where: { slug: slug },
+      where: { specialityId, id },
     });
 
     res.status(200);
@@ -43,10 +51,10 @@ export const createSubSpeciality = async (req: Request, res: Response) => {
 
 export const updateSubSpeciality = async (req: Request, res: Response) => {
   try {
-    const slug = req.params.slug;
+    const { specialityId, id } = req.params;
     const data = req.body;
     const subSpeciality = await SubSpeciality.update(data, {
-      where: { slug: slug },
+      where: { specialityId, id },
     });
 
     res.status(206);
@@ -59,8 +67,12 @@ export const updateSubSpeciality = async (req: Request, res: Response) => {
 
 export const deleteSubSpeciality = async (req: Request, res: Response) => {
   try {
+    const { specialityId, id } = req.params;
     const subSpeciality = await SubSpeciality.findOne({
-      where: { slug: req.params.slug },
+      where: { specialityId, id },
+      attributes: {
+        exclude: excludedData,
+      },
     });
 
     if (!subSpeciality) {

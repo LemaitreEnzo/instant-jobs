@@ -16,10 +16,9 @@ export interface Campus extends Model<
 > {
   id: CreationOptional<number>;
   name: string;
-  slug: string;
   createdAt: CreationOptional<Date>;
   updatedAt: CreationOptional<Date>;
-  organizationSlug: ForeignKey<Organization["slug"]>;
+  organizationId: ForeignKey<Organization["id"]>;
 }
 
 export const Campus = sequelize.define<Campus>(
@@ -33,17 +32,13 @@ export const Campus = sequelize.define<Campus>(
     name: {
       type: DataTypes.STRING,
     },
-    slug: {
-      unique: true,
-      type: DataTypes.STRING,
-    },
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,
-    organizationSlug: {
-      type: DataTypes.STRING,
+    organizationId: {
+      type: DataTypes.INTEGER,
       references: {
         model: Organization,
-        key: "slug",
+        key: "id",
       },
     },
   },

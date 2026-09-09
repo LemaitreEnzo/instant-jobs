@@ -1,9 +1,18 @@
 import type { Request, Response } from "express";
 import { Speciality } from "src/models";
 
+const excludedData: string[] = ["createdAt", "updatedAt"];
+
 export const getAllSpecialities = async (req: Request, res: Response) => {
   try {
-    const specialities = await Speciality.findAll();
+    const { promotionId } = req.params;
+
+    const specialities = await Speciality.findAll({
+      where: { promotionId },
+      attributes: {
+        exclude: excludedData,
+      },
+    });
     res.status(200).json(specialities);
   } catch (error) {
     res.status(500).json(error);
@@ -12,8 +21,10 @@ export const getAllSpecialities = async (req: Request, res: Response) => {
 
 export const getOneSpeciality = async (req: Request, res: Response) => {
   try {
+    const { promotionId, id } = req.params;
+
     const speciality = await Speciality.findOne({
-      where: { slug: req.params.slug },
+      where: { promotionId, id },
     });
 
     if (!speciality) {
@@ -37,8 +48,12 @@ export const createSpeciality = async (req: Request, res: Response) => {
 
 export const updateSpeciality = async (req: Request, res: Response) => {
   try {
+    const { promotionId, id } = req.params;
     const speciality = await Speciality.findOne({
-      where: { slug: req.params.slug },
+      where: { promotionId, id },
+      attributes: {
+        exclude: excludedData,
+      },
     });
 
     if (!speciality) {
@@ -46,7 +61,7 @@ export const updateSpeciality = async (req: Request, res: Response) => {
     }
 
     const specialityUpdated = await Speciality.update(req.body, {
-      where: { slug: req.params.slug },
+      where: { promotionId, id },
     });
 
     res.status(206).json(specialityUpdated);
@@ -57,8 +72,12 @@ export const updateSpeciality = async (req: Request, res: Response) => {
 
 export const deleteSpeciality = async (req: Request, res: Response) => {
   try {
+    const { promotionId, id } = req.params;
     const speciality = await Speciality.findOne({
-      where: { slug: req.params.slug },
+      where: { promotionId, id },
+      attributes: {
+        exclude: excludedData,
+      },
     });
 
     if (!speciality) {

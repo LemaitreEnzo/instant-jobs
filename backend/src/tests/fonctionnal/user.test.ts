@@ -4,7 +4,6 @@ import { Organization } from "src/models/organizations.model";
 import request from "supertest";
 import app from "../../../app";
 import getEnv from "../../../utils/envHelper";
-import getSlug from "../../../utils/slugHelper";
 
 const VERSION = getEnv("VERSION");
 const USERS_URL = `/${VERSION}/organization/la-manu/user`;
@@ -37,13 +36,10 @@ describe("GET USER", () => {
   });
 
   it("Returns all users", async () => {
-    jest
-      .mocked(Organization.findOne)
-      .mockResolvedValue({
-        id: 1,
-        name: "La Manu",
-        slug: getSlug("La Manu"),
-      } as any);
+    jest.mocked(Organization.findOne).mockResolvedValue({
+      id: 1,
+      name: "La Manu",
+    } as any);
     // Create mock for findAll fuction
     jest
       .mocked(User.findAll)
@@ -63,20 +59,15 @@ describe("GET USER", () => {
   });
 
   it("Returns one user", async () => {
-    jest
-      .mocked(Organization.findOne)
-      .mockResolvedValue({
-        id: 1,
-        name: "La Manu",
-        slug: getSlug("La Manu"),
-      } as any);
-    jest
-      .mocked(User.findOne)
-      .mockResolvedValue({
-        id: 1,
-        firstname: "ee",
-        email: "test@test.fr",
-      } as any);
+    jest.mocked(Organization.findOne).mockResolvedValue({
+      id: 1,
+      name: "La Manu",
+    } as any);
+    jest.mocked(User.findOne).mockResolvedValue({
+      id: 1,
+      firstname: "ee",
+      email: "test@test.fr",
+    } as any);
 
     const res = await request(app).get(`${USERS_URL}/1`);
     expect(res.status).toBe(200);
@@ -92,35 +83,28 @@ describe("CREATE ONE USER", () => {
   });
 
   it("Create one user", async () => {
-    jest
-      .mocked(Organization.findOne)
-      .mockResolvedValue({
-        id: 1,
-        name: "La Manu",
-        slug: getSlug("La Manu"),
-      } as any);
-    jest
-      .mocked(User.create)
-      .mockResolvedValue({
-        id: 1,
-        firstname: "instant-jobs",
-        lastname: "instant-jobs",
-        email: "test@test.fr",
-        phone: "0606060606",
-        password_hash: "test",
-        organisation_id: 1,
-      } as any);
+    jest.mocked(Organization.findOne).mockResolvedValue({
+      id: 1,
+      name: "La Manu",
+    } as any);
+    jest.mocked(User.create).mockResolvedValue({
+      id: 1,
+      firstname: "instant-jobs",
+      lastname: "instant-jobs",
+      email: "test@test.fr",
+      phone: "0606060606",
+      password_hash: "test",
+      organisation_id: 1,
+    } as any);
 
-    const res = await request(app)
-      .post(USERS_URL)
-      .send({
-        firstname: "instant-jobs",
-        lastname: "instant-jobs",
-        email: "test@test.fr",
-        phone: "0606060606",
-        password_hash: "test",
-        organisation_id: 1,
-      });
+    const res = await request(app).post(USERS_URL).send({
+      firstname: "instant-jobs",
+      lastname: "instant-jobs",
+      email: "test@test.fr",
+      phone: "0606060606",
+      password_hash: "test",
+      organisation_id: 1,
+    });
     expect(res.status).toBe(201);
     expect(res.body).toMatchObject({
       user: {
@@ -137,13 +121,10 @@ describe("UPDATE USER", () => {
   });
 
   it("update one user", async () => {
-    jest
-      .mocked(Organization.findOne)
-      .mockResolvedValue({
-        id: 1,
-        firstname: "La Manu",
-        slug: getSlug("La Manu"),
-      } as any);
+    jest.mocked(Organization.findOne).mockResolvedValue({
+      id: 1,
+      firstname: "La Manu",
+    } as any);
     jest
       .mocked(User.update)
       .mockResolvedValue({ id: 1, firstname: "oo" } as any);
@@ -167,13 +148,10 @@ describe("DELETE ONE USER", () => {
   });
 
   it("Delete", async () => {
-    jest
-      .mocked(Organization.findOne)
-      .mockResolvedValue({
-        id: 1,
-        name: "La Manu",
-        slug: getSlug("La Manu"),
-      } as any);
+    jest.mocked(Organization.findOne).mockResolvedValue({
+      id: 1,
+      name: "La Manu",
+    } as any);
     jest
       .mocked(User.destroy)
       .mockResolvedValue({ id: 1, name: "instant-jobs" } as any);

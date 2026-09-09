@@ -3,7 +3,6 @@ import { Organization } from "models/organizations.model";
 import request from "supertest";
 import app from "../../../app";
 import getEnv from "../../../utils/envHelper";
-import getSlug from "../../../utils/slugHelper";
 
 const VERSION = getEnv("VERSION");
 const ORGANIZATION_URL = `/${VERSION}/organization`;
@@ -13,7 +12,7 @@ jest.mock("models/organizations.model", () => ({
     findAll: jest.fn(),
     findOne: jest.fn(),
     create: jest.fn(),
-    update: jest.fn({ id: 1, name: "La Manu", slug: "la-manu" } as any),
+    update: jest.fn({ id: 1, name: "La Manu" } as any),
     destroy: jest.fn(),
   },
 }));
@@ -29,41 +28,34 @@ describe("GET ORGANIZATIONS", () => {
   });
 
   it("Returns all organizations", async () => {
-    jest
-      .mocked(Organization.findAll)
-      .mockResolvedValue([
-        { id: 1, name: "La Manu", slug: getSlug("La Manu") } as any,
-        {
-          id: 2,
-          name: "Credit Agricole",
-          slug: getSlug("Credit Agricole"),
-        } as any,
-      ]);
+    jest.mocked(Organization.findAll).mockResolvedValue([
+      { id: 1, name: "La Manu" } as any,
+      {
+        id: 2,
+        name: "Credit Agricole",
+      } as any,
+    ]);
 
     const res = await request(app).get(ORGANIZATION_URL);
     expect(res.body).toEqual({
       organizations: [
-        { id: 1, name: "La Manu", slug: getSlug("La Manu") },
-        { id: 2, name: "Credit Agricole", slug: getSlug("Credit Agricole") },
+        { id: 1, name: "La Manu" },
+        { id: 2, name: "Credit Agricole" },
       ],
     });
   });
 
   it("Returns one organization", async () => {
-    jest
-      .mocked(Organization.findOne)
-      .mockResolvedValue({
-        id: 1,
-        name: "La Manu",
-        slug: getSlug("La Manu"),
-      } as any);
+    jest.mocked(Organization.findOne).mockResolvedValue({
+      id: 1,
+      name: "La Manu",
+    } as any);
 
     const res = await request(app).get(`${ORGANIZATION_URL}/la-manu`);
     expect(res.body).toEqual({
       organization: {
         id: 1,
         name: "La Manu",
-        slug: getSlug("La Manu"),
       },
     });
   });
@@ -76,23 +68,19 @@ describe("CREATE ORGANIZATION", () => {
 
   it("POST -> should return 201", async () => {
     jest.mocked(Organization.findOne).mockResolvedValue(null);
-    jest
-      .mocked(Organization.create)
-      .mockResolvedValue({
-        id: 1,
-        name: "La Manu",
-        slug: getSlug("La Manu"),
-      } as any);
+    jest.mocked(Organization.create).mockResolvedValue({
+      id: 1,
+      name: "La Manu",
+    } as any);
 
     const res = await request(app)
       .post(ORGANIZATION_URL)
-      .send({ name: "La Manu", slug: getSlug("La Manu") });
+      .send({ name: "La Manu" });
 
     expect(res.status).toBe(201);
     expect(res.body).toMatchObject({
       id: expect.any(Number),
       name: "La Manu",
-      slug: getSlug("La Manu"),
     });
   });
 });
@@ -103,26 +91,20 @@ describe("UPDATE ORGANIZATION", () => {
   });
 
   it("PUT -> should return 206", async () => {
-    jest
-      .mocked(Organization.findOne)
-      .mockResolvedValue({ slug: getSlug("La Manu") } as any);
-    jest
-      .mocked(Organization.update)
-      .mockResolvedValue({
-        id: 1,
-        name: "ESC Compiègne",
-        slug: getSlug("ESC Compiègne"),
-      } as any);
+    jest.mocked(Organization.findOne).mockResolvedValue({ id: 1 } as any);
+    jest.mocked(Organization.update).mockResolvedValue({
+      id: 1,
+      name: "ESC Compiègne",
+    } as any);
 
     const res = await request(app)
       .put(`${ORGANIZATION_URL}/la-manu`)
-      .send({ name: "ESC Compiègne", slug: getSlug("ESC Compiègne") });
+      .send({ name: "ESC Compiègne" });
 
     expect(res.status).toBe(206);
     expect(res.body).toMatchObject({
       id: 1,
       name: "ESC Compiègne",
-      slug: getSlug("ESC Compiègne"),
     });
   });
 });
@@ -133,13 +115,10 @@ describe("DELETE ORGANIZATION", () => {
   });
 
   it("should return 204", async () => {
-    jest
-      .mocked(Organization.destroy)
-      .mockResolvedValue({
-        id: 1,
-        name: "La Manu",
-        slug: getSlug("La Manu"),
-      } as any);
+    jest.mocked(Organization.destroy).mockResolvedValue({
+      id: 1,
+      name: "La Manu",
+    } as any);
 
     const res = await request(app).delete(`${ORGANIZATION_URL}/la-manu`);
     expect(res.status).toBe(204);
