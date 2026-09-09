@@ -1,3 +1,99 @@
 .stats-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px 25px;
+}
 
+.stats-cards-childs{
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+    width: calc(50% - 20px);
+    border-radius: 10px;
+    border: 1px solid #EAEAEA;
+    padding: 14px 18px;
+    background: var(--background-color);
+
+    .icon{
+        padding: 10px;
+        width: fit-content;
+        border-radius: 10px;
+    }
+
+    h2{
+        color: #CFCFCF;
+        font-size: 14px;
+        margin-bottom: 0;
+    }
+
+    p{
+        font-size: 36px;
+        line-height: normal;
+    }
+
+    .tag{
+        width: fit-content;
+        padding: 5px;
+        border-radius: 10px;
+    }
+}
+
+.application{
+    .icon{
+        background-color: color-mix(in srgb, var(--primary-color), transparent 85%);
+    }
+
+    .tag{
+        color: var(--primary-color);
+        background-color: #E4DDFF;
+    }
+
+    svg{
+        color: var(--primary-color);
+    }
+}
+
+.pending{
+    .icon{
+        background-color: color-mix(in srgb, var(--warning-color), transparent 85%);
+    }
+
+    .tag{
+        color: var(--warning-color);
+        background-color: #FFF0E0;
+    }
+
+    svg{
+        color: var(--warning-color);
+    }
+}
+
+.interview{
+    .icon{
+        background-color: color-mix(in srgb, var(--secondary-color), transparent 85%);
+    }
+
+    .tag{
+        color: var(--secondary-color);
+        background-color: #E4F5EC;
+    }
+
+    svg{
+        color: var(--secondary-color);
+    }
+}
+
+.refused{
+    .icon{
+        background-color: color-mix(in srgb, var(--error-color), transparent 85%);
+    }
+
+    .tag{
+        color: var(--error-color);
+        background-color: #FDEAEA;
+    }
+
+    svg{
+        color: var(--error-color);
+    }
 }
