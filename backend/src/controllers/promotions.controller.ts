@@ -64,14 +64,20 @@ export const createPromotion = async (req: Request, res: Response) => {
 export const updatePromotion = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-
     const data = req.body;
-    const promotion = await Promotion.update(data, {
+    const promotion = await Promotion.findOne({
       where: { id },
+      attributes: {
+        exclude: excludedData,
+      },
     });
 
-    res.status(206);
-    res.json(promotion);
+    if (!promotion) {
+      return res.status(404).json({ error: "Promotion not found." });
+    }
+
+    promotion.update(data);
+    res.status(206).json({ message: "Promotion updated"});
   } catch (error) {
     res.status(500);
     res.json(error);
@@ -91,8 +97,7 @@ export const deletePromotion = async (req: Request, res: Response) => {
 
     await promotion.destroy();
 
-    res.status(204);
-    res.json();
+    res.status(204).json({ message: "Promotion deleted" });
   } catch (error) {
     res.status(500);
     res.json(error);

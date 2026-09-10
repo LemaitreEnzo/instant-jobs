@@ -64,16 +64,20 @@ export const updateSubSpeciality = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const data = req.body;
-    const subSpeciality = await SubSpeciality.update(data, {
+    const subSpeciality = await SubSpeciality.findOne({
       where: { id },
+      attributes: {
+        exclude: excludedData,
+      },
     });
 
     if (!subSpeciality) {
       return res.status(404).json({ message: "Sub-speciality not found" });
     }
 
+    subSpeciality.update(data);
     res.status(206);
-    res.json({ subSpeciality });
+    res.json({ message: "Sub-speciality updated" });
   } catch (error) {
     res.status(500);
     res.json(error);
@@ -97,7 +101,7 @@ export const deleteSubSpeciality = async (req: Request, res: Response) => {
     await subSpeciality.destroy();
 
     res.status(204);
-    res.json();
+    res.json({ message: "Sub-speciality deleted" });
   } catch (error) {
     res.status(500);
     res.json(error);

@@ -48,15 +48,19 @@ export const updateOrganization = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const data = req.body;
+    const organization = await Organization.findOne({
+      where: { id },
+      attributes: {
+        exclude: excludedData,
+      },
+    });
 
-    const organization = await Organization.findOne({ where: { id } });
     if (!organization) {
       return res.status(404).json({ error: "Organisation not found." });
     }
-    const updatedOrganization = await Organization.update(data, {
-      where: { id },
-    });
-    res.status(206).json(updatedOrganization);
+
+    organization.update(data);
+    res.status(206).json({ message: "Organization updated"});
   } catch (error) {
     res.status(500);
     res.json(error);

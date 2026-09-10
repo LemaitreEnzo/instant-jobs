@@ -62,10 +62,19 @@ export const updateCampus = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const data = req.body;
-    const campus = await Campus.update(data, {
+    const campus = await Campus.findOne({
       where: { id },
+      attributes: {
+        exclude: excludedData,
+      },
     });
-    res.status(206).json(campus);
+
+    if (!campus) {
+      return res.status(404).json({ message: "Campus not found" });
+    }
+
+    campus.update(data);
+    res.status(206).json({ message: "Campus updated" });
   } catch (error) {
     console.error("UPDATE CAMPUS ERROR:", error);
     res.status(500).json(error);
@@ -87,7 +96,7 @@ export const deleteCampus = async (req: Request, res: Response) => {
     }
 
     await campus.destroy();
-    res.status(204).json();
+    res.status(204).json({ message: "Campus deleted" });
   } catch (error) {
     console.error("DELETE CAMPUS ERROR:", error);
     res.status(500).json(error);

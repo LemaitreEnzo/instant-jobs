@@ -14,6 +14,10 @@ export const getAllMedias = async (req: Request, res: Response) => {
       },
     });
 
+    if (!medias) {
+      return res.status(404).json({ message: "Medias not found" });
+    }
+
     res.status(200).json(medias);
   } catch (error) {
     res.status(500).json(error);
@@ -22,13 +26,14 @@ export const getAllMedias = async (req: Request, res: Response) => {
 
 export const getOneMedia = async (req: Request, res: Response) => {
   try {
-    const { userId, id } = req.params;
+    const { id } = req.params;
     const media = await Media.findOne({
-      where: { userId, id },
+      where: { id },
       attributes: {
         exclude: excludedData,
       },
     });
+
     if (!media) {
       return res.status(404).json({ error: "Media non trouvé." });
     }
@@ -52,15 +57,21 @@ export const createMedia = async (req: Request, res: Response) => {
 
 export const updateMedia = async (req: Request, res: Response) => {
   try {
-    const { userId, id } = req.params;
+    const { id } = req.params;
     const data = req.body;
+    const media = await Media.findOne({
+      where: { id },
+      attributes: {
+        exclude: excludedData,
+      },
+    });
 
-    const media = await Media.findOne({ where: { userId, id } });
     if (!media) {
       return res.status(404).json({ error: "Media not found." });
     }
-    const updatedMedia = await Media.update(data, { where: { userId, id } });
-    res.status(206).json(updatedMedia);
+
+    media.update(data);
+    res.status(206).json({ message: "Media updated" });
   } catch (error) {
     res.status(500).json(error);
   }
@@ -68,13 +79,15 @@ export const updateMedia = async (req: Request, res: Response) => {
 
 export const deleteMedia = async (req: Request, res: Response) => {
   try {
-    const { userId, id } = req.params;
-    const media = await Media.findOne({ where: { userId, id } });
+    const { id } = req.params;
+    const media = await Media.findOne({ where: { id } });
+
     if (!media) {
       return res.status(404).json({ error: "Media not found." });
     }
+
     await media.destroy();
-    res.status(204).json();
+    res.status(204).json({ message: "Media deleted"});
   } catch (error) {
     res.status(500).json(error);
   }
