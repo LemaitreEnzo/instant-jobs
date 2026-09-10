@@ -1,7 +1,7 @@
 import type { Campus } from "../interfaces/models.interface";
 import { BASE_URL } from "../utils/globals.util";
 
-export const getAllCampus = async (organizationId: string) => {
+export const getAllCampus = async (organizationId: number) => {
   try {
     const res = await fetch(
       `${BASE_URL}/organization/${organizationId}/campus`,
@@ -20,14 +20,9 @@ export const getAllCampus = async (organizationId: string) => {
   }
 };
 
-export const getOneCampus = async (
-  organizationId: string,
-  campusId: string,
-) => {
+export const getOneCampus = async (id: number) => {
   try {
-    const res = await fetch(
-      `${BASE_URL}/organization/${organizationId}/campus/${campusId}`,
-    );
+    const res = await fetch(`${BASE_URL}/campus/${id}`);
 
     if (!res.ok) {
       throw new Error("Error retrieving the campus");
@@ -57,17 +52,11 @@ export const updateCampus = async () => {
   }
 };
 
-export const deleteCampus = async (
-  organizationId: string,
-  campusId: string,
-) => {
+export const deleteCampus = async (id: number) => {
   try {
-    const res = await fetch(
-      `${BASE_URL}/organization/${organizationId}/campus/${campusId}`,
-      {
-        method: "DELETE",
-      },
-    );
+    const res = await fetch(`${BASE_URL}/campus/${id}`, {
+      method: "DELETE",
+    });
 
     if (!res.ok) {
       throw new Error("Error deleting the campus");

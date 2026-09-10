@@ -1,11 +1,9 @@
 import type { Media } from "../interfaces/models.interface";
 import { BASE_URL } from "../utils/globals.util";
 
-export const getAllMedias = async (organizationId: string, userId: number) => {
+export const getAllMedias = async (userId: number) => {
   try {
-    const res = await fetch(
-      `${BASE_URL}/organization/${organizationId}/users/${userId}/docs/media`,
-    );
+    const res = await fetch(`${BASE_URL}/user/${userId}/medias`);
 
     if (!res.ok) {
       throw new Error("Error retrieving medias");
@@ -18,15 +16,9 @@ export const getAllMedias = async (organizationId: string, userId: number) => {
   }
 };
 
-export const getOneMedia = async (
-  organizationId: string,
-  userId: number,
-  id: number,
-) => {
+export const getOneMedia = async (userId: number, id: number) => {
   try {
-    const res = await fetch(
-      `${BASE_URL}/organization/${organizationId}/users/${userId}/docs/media/${id}`,
-    );
+    const res = await fetch(`${BASE_URL}/user/${userId}/media/${id}`);
 
     if (!res.ok) {
       throw new Error("Error retrieving the media");
@@ -55,18 +47,11 @@ export const updateMedia = async () => {
   }
 };
 
-export const deleteMedia = async (
-  organizationId: string,
-  userId: number,
-  id: number,
-) => {
+export const deleteMedia = async (userId: number, id: number) => {
   try {
-    const res = await fetch(
-      `${BASE_URL}/organization/${organizationId}/users/${userId}/docs/media/${id}`,
-      {
-        method: "DELETE",
-      },
-    );
+    const res = await fetch(`${BASE_URL}/user/${userId}/media/${id}`, {
+      method: "DELETE",
+    });
 
     if (!res.ok) {
       throw new Error("Error deleting the media");

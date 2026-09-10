@@ -1,14 +1,9 @@
 import type { Application } from "../interfaces/models.interface";
 import { BASE_URL } from "../utils/globals.util";
 
-export const getAllApplications = async (
-  organizationId: string,
-  userId: number,
-) => {
+export const getAllApplications = async (userId: number) => {
   try {
-    const res = await fetch(
-      `${BASE_URL}/organization/${organizationId}/users/${userId}/application`,
-    );
+    const res = await fetch(`${BASE_URL}/user/${userId}/application`);
 
     if (!res.ok) {
       throw new Error("Error retrieving applications");
@@ -21,15 +16,9 @@ export const getAllApplications = async (
   }
 };
 
-export const getOneApplication = async (
-  organizationId: string,
-  userId: number,
-  id: number,
-) => {
+export const getOneApplication = async (id: number) => {
   try {
-    const res = await fetch(
-      `${BASE_URL}/organization/${organizationId}/users/${userId}/application/${id}`,
-    );
+    const res = await fetch(`${BASE_URL}/application/${id}`);
 
     if (!res.ok) {
       throw new Error("Error retrieving the application");
@@ -58,18 +47,11 @@ export const updateApplication = async () => {
   }
 };
 
-export const deleteApplication = async (
-  organizationId: string,
-  userId: number,
-  id: number,
-) => {
+export const deleteApplication = async (id: number) => {
   try {
-    const res = await fetch(
-      `${BASE_URL}/organization/${organizationId}/users/${userId}/application/${id}`,
-      {
-        method: "DELETE",
-      },
-    );
+    const res = await fetch(`${BASE_URL}/application/${id}`, {
+      method: "DELETE",
+    });
 
     if (!res.ok) {
       throw new Error("Error deleting the application");
