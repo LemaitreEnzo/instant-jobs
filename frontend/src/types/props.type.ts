@@ -14,6 +14,7 @@ export interface PropsTag extends PropsBase {
     | "tag-warn"
     | "tag-error"
     | "tag-none"
+    | "tag-primary"
     | "tag-terciary";
   round?: boolean;
 }
@@ -44,4 +45,16 @@ export type PropsCardDocument = {
   stockage: number;
   used: number;
   pdf_url: string
+}
+
+export type PropsApplications = {
+  logo: string;
+  name: string;
+  company: string;
+  sendDate: Date;
+  city: string;
+  type: string;
+  status: string;
+  resend: string;
+  resendDate: Date | string;
 }
