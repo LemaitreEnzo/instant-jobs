@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { Campus } from "src/models";
+import { Campus, Organization } from "src/models";
 
 const excludedData: string[] = ["createdAt", "updatedAt"];
 
@@ -13,27 +13,37 @@ export const getAllCampus = async (req: Request, res: Response) => {
         exclude: excludedData,
       },
     });
-    res.status(200);
-    res.json(campus);
+
+    if (!campus) {
+      return res.status(404).json({ message: "Campus not found" });
+    }
+
+    res.status(200).json(campus);
   } catch (error) {
+    console.error("GET ALL CAMPUS ERROR:", error);
     res.status(500).json(error);
   }
 };
 
 export const getOneCampus = async (req: Request, res: Response) => {
   try {
-    const { organizationId, id } = req.params;
+    const { id } = req.params;
 
     const campus = await Campus.findOne({
-      where: { organizationId, id },
+      where: { id },
       attributes: {
         exclude: excludedData,
       },
     });
-    res.status(200);
-    res.json(campus);
+
+    if (!campus) {
+      return res.status(404).json({ message: "Campus not found" });
+    }
+
+    res.status(200).json(campus);
   } catch (error) {
-    res.status(500).json(error);
+    console.error("GET ONE CAMPUS ERROR:", error);
+    res.status(500).json({ error: String(error) });
   }
 };
 
@@ -41,32 +51,32 @@ export const createCampus = async (req: Request, res: Response) => {
   try {
     const data = req.body;
     const campus = await Campus.create(data);
-    res.status(201);
-    res.json(campus);
+    res.status(201).json(campus);
   } catch (error) {
+    console.error("CREATE CAMPUS ERROR:", error);
     res.status(500).json(error);
   }
 };
 
 export const updateCampus = async (req: Request, res: Response) => {
   try {
-    const { organizationId, id } = req.params;
+    const { id } = req.params;
     const data = req.body;
     const campus = await Campus.update(data, {
-      where: { organizationId, id },
+      where: { id },
     });
-    res.status(206);
-    res.json(campus);
+    res.status(206).json(campus);
   } catch (error) {
+    console.error("UPDATE CAMPUS ERROR:", error);
     res.status(500).json(error);
   }
 };
 
 export const deleteCampus = async (req: Request, res: Response) => {
   try {
-    const { organizationId, id } = req.params;
+    const { id } = req.params;
     const campus = await Campus.findOne({
-      where: { organizationId, id },
+      where: { id },
       attributes: {
         exclude: excludedData,
       },
@@ -77,9 +87,9 @@ export const deleteCampus = async (req: Request, res: Response) => {
     }
 
     await campus.destroy();
-    res.status(204);
-    res.json();
+    res.status(204).json();
   } catch (error) {
+    console.error("DELETE CAMPUS ERROR:", error);
     res.status(500).json(error);
   }
 };

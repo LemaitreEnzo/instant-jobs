@@ -3,7 +3,11 @@ import cors from "cors";
 import express, { type Request, type Response } from "express";
 import helmet from "helmet";
 
+import campusRoutes from "routes/campus.routes";
 import organizationsRoutes from "routes/organizations.routes";
+import promotionsRoutes from "routes/promotions.routes";
+import specialitiesRoutes from "routes/specialities.routes";
+import subSpecialitiesRoutes from "routes/subSpecialities.routes";
 import getEnv from "./utils/envHelper";
 
 const app = express();
@@ -24,6 +28,15 @@ app.use(
 app.get(`/${VERSION}`, (req: Request, res: Response) => {
   res.status(200).send("Hello world!");
 });
+
 app.use(`/${VERSION}/organization`, organizationsRoutes);
+
+app.use(`/${VERSION}/campus`, campusRoutes);
+
+app.use(`/${VERSION}/promotion`, promotionsRoutes);
+
+app.use(`/${VERSION}/speciality`, specialitiesRoutes);
+
+app.use(`/${VERSION}/sub-speciality`, subSpecialitiesRoutes);
 
 export default app;

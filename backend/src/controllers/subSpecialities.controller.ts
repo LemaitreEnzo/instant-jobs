@@ -13,6 +13,10 @@ export const getAllSubSpecialities = async (req: Request, res: Response) => {
       },
     });
 
+    if (!subSpecialities) {
+      return res.status(404).json({ message: "Sub-specialities not found" });
+    }
+
     res.status(200);
     res.json(subSpecialities);
   } catch (error) {
@@ -23,10 +27,17 @@ export const getAllSubSpecialities = async (req: Request, res: Response) => {
 
 export const getOneSubSpeciality = async (req: Request, res: Response) => {
   try {
-    const { specialityId, id } = req.params;
+    const { id } = req.params;
     const subSpeciality = await SubSpeciality.findOne({
-      where: { specialityId, id },
+      where: { id },
+      attributes: {
+        exclude: excludedData,
+      },
     });
+
+    if (!subSpeciality) {
+      return res.status(404).json({ message: "Sub-speciality not found" });
+    }
 
     res.status(200);
     res.json(subSpeciality);
@@ -51,11 +62,15 @@ export const createSubSpeciality = async (req: Request, res: Response) => {
 
 export const updateSubSpeciality = async (req: Request, res: Response) => {
   try {
-    const { specialityId, id } = req.params;
+    const { id } = req.params;
     const data = req.body;
     const subSpeciality = await SubSpeciality.update(data, {
-      where: { specialityId, id },
+      where: { id },
     });
+
+    if (!subSpeciality) {
+      return res.status(404).json({ message: "Sub-speciality not found" });
+    }
 
     res.status(206);
     res.json({ subSpeciality });
@@ -67,9 +82,9 @@ export const updateSubSpeciality = async (req: Request, res: Response) => {
 
 export const deleteSubSpeciality = async (req: Request, res: Response) => {
   try {
-    const { specialityId, id } = req.params;
+    const { id } = req.params;
     const subSpeciality = await SubSpeciality.findOne({
-      where: { specialityId, id },
+      where: { id },
       attributes: {
         exclude: excludedData,
       },

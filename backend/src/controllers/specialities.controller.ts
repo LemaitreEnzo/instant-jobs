@@ -13,6 +13,11 @@ export const getAllSpecialities = async (req: Request, res: Response) => {
         exclude: excludedData,
       },
     });
+
+    if (!specialities) {
+      return res.status(404).json({ message: "Specialities not found" });
+    }
+
     res.status(200).json(specialities);
   } catch (error) {
     res.status(500).json(error);
@@ -21,10 +26,13 @@ export const getAllSpecialities = async (req: Request, res: Response) => {
 
 export const getOneSpeciality = async (req: Request, res: Response) => {
   try {
-    const { promotionId, id } = req.params;
+    const { id } = req.params;
 
     const speciality = await Speciality.findOne({
-      where: { promotionId, id },
+      where: { id },
+      attributes: {
+        exclude: excludedData,
+      },
     });
 
     if (!speciality) {
@@ -48,9 +56,9 @@ export const createSpeciality = async (req: Request, res: Response) => {
 
 export const updateSpeciality = async (req: Request, res: Response) => {
   try {
-    const { promotionId, id } = req.params;
+    const { id } = req.params;
     const speciality = await Speciality.findOne({
-      where: { promotionId, id },
+      where: { id },
       attributes: {
         exclude: excludedData,
       },
@@ -61,7 +69,7 @@ export const updateSpeciality = async (req: Request, res: Response) => {
     }
 
     const specialityUpdated = await Speciality.update(req.body, {
-      where: { promotionId, id },
+      where: { id },
     });
 
     res.status(206).json(specialityUpdated);
@@ -72,9 +80,9 @@ export const updateSpeciality = async (req: Request, res: Response) => {
 
 export const deleteSpeciality = async (req: Request, res: Response) => {
   try {
-    const { promotionId, id } = req.params;
+    const { id } = req.params;
     const speciality = await Speciality.findOne({
-      where: { promotionId, id },
+      where: { id },
       attributes: {
         exclude: excludedData,
       },
