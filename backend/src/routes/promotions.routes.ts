@@ -1,29 +1,27 @@
+/* =========================
+   RESSOURCE : PROMOTIONS
+========================= */
+
 import express from "express";
 import {
   createPromotion,
   deletePromotion,
-  getAllPromotions,
   getOnePromotion,
   updatePromotion,
-} from "src/controllers/promotions.controller";
-import specialitiesRoutes from "./specialities.routes";
+} from "controllers/promotions.controller";
+import {
+  getAllSpecialities,
+} from "controllers/specialities.controller";
 
 const promotionsRoutes = express.Router({ mergeParams: true });
 
-//GET
-promotionsRoutes.get("/", getAllPromotions);
-promotionsRoutes.get("/:id", getOnePromotion);
-
-//CREATE
 promotionsRoutes.post("/", createPromotion);
 
-//UPDATE
+promotionsRoutes.get("/:id", getOnePromotion);
 promotionsRoutes.patch("/:id", updatePromotion);
-
-//DELETE
+promotionsRoutes.put("/:id", updatePromotion);
 promotionsRoutes.delete("/:id", deletePromotion);
 
-// SPECIALITIES ROUTES
-promotionsRoutes.use("/:promotionId/speciality", specialitiesRoutes);
+promotionsRoutes.get("/:promotionId/specialities", getAllSpecialities);
 
 export default promotionsRoutes;

@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { Campus, Organization, Promotion } from "src/models";
+import { Promotion } from "src/models";
 
 const excludedData: string[] = ["createdAt", "updatedAt"];
 
@@ -11,21 +11,12 @@ export const getAllPromotions = async (req: Request, res: Response) => {
       where: { campusId },
       attributes: {
         exclude: excludedData,
-      },
-      include: [
-        {
-          model: Campus,
-          required: true,
-          attributes: [],
-          include: [
-            {
-              model: Organization,
-              attributes: ["id"],
-            },
-          ],
-        },
-      ],
+      }
     });
+
+    if (!promotions) {
+      return res.status(404).json({ message: "Promotions not found" });
+    }
 
     res.status(200);
     res.json(promotions);
@@ -37,13 +28,17 @@ export const getAllPromotions = async (req: Request, res: Response) => {
 
 export const getOnePromotion = async (req: Request, res: Response) => {
   try {
-    const { campusId, id } = req.params;
+    const { id } = req.params;
     const promotion = await Promotion.findOne({
-      where: { campusId, id },
+      where: { id },
       attributes: {
         exclude: excludedData,
       },
     });
+
+    if (!promotion) {
+      return res.status(404).json({ message: "Promotion not found" });
+    }
 
     res.status(200);
     res.json(promotion);
@@ -68,11 +63,11 @@ export const createPromotion = async (req: Request, res: Response) => {
 
 export const updatePromotion = async (req: Request, res: Response) => {
   try {
-    const { campusId, id } = req.params;
+    const { id } = req.params;
 
     const data = req.body;
     const promotion = await Promotion.update(data, {
-      where: { campusId, id },
+      where: { id },
     });
 
     res.status(206);
@@ -85,9 +80,9 @@ export const updatePromotion = async (req: Request, res: Response) => {
 
 export const deletePromotion = async (req: Request, res: Response) => {
   try {
-    const { campusId, id } = req.params;
+    const { id } = req.params;
     const promotion = await Promotion.findOne({
-      where: { campusId, id },
+      where: { id },
     });
 
     if (!promotion) {

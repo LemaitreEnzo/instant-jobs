@@ -9,32 +9,27 @@ import {
   getOneOrganization,
   updateOrganization,
 } from "controllers/organizations.controller";
+import {
+  getAllCampus,
+} from "controllers/campus.controller";
 import express from "express";
-
-import campusRoutes from "routes/campus.routes";
 import usersRoutes from "routes/users.routes";
 
 const organizationsRoutes = express.Router({ mergeParams: true });
 
-// GET ALL
 organizationsRoutes.get("/", getAllOrganizations);
 
-// GET ONE
-organizationsRoutes.get("/:id", getOneOrganization);
-
-// CREATE
 organizationsRoutes.post("/", createOrganization);
 
-// UPDATE
+organizationsRoutes.get("/:id", getOneOrganization);
+
+organizationsRoutes.patch("/:id", updateOrganization);
 organizationsRoutes.put("/:id", updateOrganization);
 
-// DELETE
 organizationsRoutes.delete("/:id", deleteOrganization);
 
-// USERS ROUTES
-organizationsRoutes.use("/:organizationId/users", usersRoutes);
+organizationsRoutes.get("/:organizationId/campus", getAllCampus);
 
-// CAMPUS ROUTES
-organizationsRoutes.use("/:organizationId/campus", campusRoutes);
+organizationsRoutes.use("/:organizationId/users", usersRoutes);
 
 export default organizationsRoutes;

@@ -26,6 +26,7 @@ help:
 	@echo "make db-cli          	Enter bash CLI in the PostgresSQL container";
 	@echo "";
 	@echo "=== INSTALLATION ===";
+	@echo "make init          	    Init project with migrations and seeders";
 	@echo "make build          	    Build project's images";
 	@echo "make update          	Update project (dependencies + migrations)";
 	@echo "make deps            	Install dependencies only";
@@ -112,3 +113,6 @@ load:
 load-all:
 	@echo "$(STEP) Loading all seed files... $(STEP)";
 	@docker container exec -it instant-jobs_backend npm run load:all;
+
+init: migrate-undo-all migrate load
+	@echo "$(STEP) Finished! $(STEP)";
