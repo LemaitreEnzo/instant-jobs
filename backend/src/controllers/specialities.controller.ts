@@ -57,6 +57,7 @@ export const createSpeciality = async (req: Request, res: Response) => {
 export const updateSpeciality = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+    const data = req.body;
     const speciality = await Speciality.findOne({
       where: { id },
       attributes: {
@@ -68,11 +69,9 @@ export const updateSpeciality = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Speciality not found" });
     }
 
-    const specialityUpdated = await Speciality.update(req.body, {
-      where: { id },
-    });
+    speciality.update(data);
 
-    res.status(206).json(specialityUpdated);
+    res.status(206).json({ message: "Speciality updated" });
   } catch (error) {
     res.status(500).json(error);
   }
@@ -93,7 +92,7 @@ export const deleteSpeciality = async (req: Request, res: Response) => {
     }
 
     await speciality.destroy();
-    res.status(204).send();
+    res.status(204).json({ message: "Speciality deleted" });
   } catch (error) {
     res.status(500).json(error);
   }
