@@ -1,10 +1,10 @@
 import type { Campus } from "../interfaces/models.interface";
 import { BASE_URL } from "../utils/globals.util";
 
-export const getAllCampus = async (organizationid: string) => {
+export const getAllCampus = async (organizationId: string) => {
   try {
     const res = await fetch(
-      `${BASE_URL}/organization/${organizationid}/campus`,
+      `${BASE_URL}/organization/${organizationId}/campus`,
     );
 
     if (!res.ok) {
@@ -21,12 +21,12 @@ export const getAllCampus = async (organizationid: string) => {
 };
 
 export const getOneCampus = async (
-  organizationid: string,
-  campusid: string,
+  organizationId: string,
+  campusId: string,
 ) => {
   try {
     const res = await fetch(
-      `${BASE_URL}/organization/${organizationid}/campus/${campusid}`,
+      `${BASE_URL}/organization/${organizationId}/campus/${campusId}`,
     );
 
     if (!res.ok) {
@@ -58,12 +58,12 @@ export const updateCampus = async () => {
 };
 
 export const deleteCampus = async (
-  organizationid: string,
-  campusid: string,
+  organizationId: string,
+  campusId: string,
 ) => {
   try {
     const res = await fetch(
-      `${BASE_URL}/organization/${organizationid}/campus/${campusid}`,
+      `${BASE_URL}/organization/${organizationId}/campus/${campusId}`,
       {
         method: "DELETE",
       },

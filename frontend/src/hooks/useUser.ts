@@ -1,9 +1,9 @@
 import type { User } from "../interfaces/models.interface";
 import { BASE_URL } from "../utils/globals.util";
 
-export const getAllUsers = async (organizationid: string) => {
+export const getAllUsers = async (organizationId: string) => {
   try {
-    const res = await fetch(`${BASE_URL}/organization/${organizationid}/users`);
+    const res = await fetch(`${BASE_URL}/organization/${organizationId}/users`);
 
     if (!res.ok) {
       throw new Error("Error retrieving users");
@@ -16,10 +16,10 @@ export const getAllUsers = async (organizationid: string) => {
   }
 };
 
-export const getOneUser = async (organizationid: string, id: number) => {
+export const getOneUser = async (organizationId: string, id: number) => {
   try {
     const res = await fetch(
-      `${BASE_URL}/organization/${organizationid}/users/${id}`,
+      `${BASE_URL}/organization/${organizationId}/users/${id}`,
     );
 
     if (!res.ok) {
@@ -49,10 +49,10 @@ export const updateUser = async () => {
   }
 };
 
-export const deleteUser = async (organizationid: string, id: number) => {
+export const deleteUser = async (organizationId: string, id: number) => {
   try {
     const res = await fetch(
-      `${BASE_URL}/organization/${organizationid}/users/${id}`,
+      `${BASE_URL}/organization/${organizationId}/users/${id}`,
       {
         method: "DELETE",
       },

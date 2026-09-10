@@ -2,12 +2,12 @@ import type { Application } from "../interfaces/models.interface";
 import { BASE_URL } from "../utils/globals.util";
 
 export const getAllApplications = async (
-  organizationid: string,
+  organizationId: string,
   userId: number,
 ) => {
   try {
     const res = await fetch(
-      `${BASE_URL}/organization/${organizationid}/users/${userId}/application`,
+      `${BASE_URL}/organization/${organizationId}/users/${userId}/application`,
     );
 
     if (!res.ok) {
@@ -22,13 +22,13 @@ export const getAllApplications = async (
 };
 
 export const getOneApplication = async (
-  organizationid: string,
+  organizationId: string,
   userId: number,
   id: number,
 ) => {
   try {
     const res = await fetch(
-      `${BASE_URL}/organization/${organizationid}/users/${userId}/application/${id}`,
+      `${BASE_URL}/organization/${organizationId}/users/${userId}/application/${id}`,
     );
 
     if (!res.ok) {
@@ -59,13 +59,13 @@ export const updateApplication = async () => {
 };
 
 export const deleteApplication = async (
-  organizationid: string,
+  organizationId: string,
   userId: number,
   id: number,
 ) => {
   try {
     const res = await fetch(
-      `${BASE_URL}/organization/${organizationid}/users/${userId}/application/${id}`,
+      `${BASE_URL}/organization/${organizationId}/users/${userId}/application/${id}`,
       {
         method: "DELETE",
       },

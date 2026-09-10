@@ -10,7 +10,6 @@ export interface Organization {
   city: string;
   adress: string;
   country: string;
-  id: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -18,7 +17,6 @@ export interface Organization {
 export interface Campus {
   id: number;
   name: string;
-  id: string;
   organizationid: string;
   createdAt: string;
   updatedAt: string;
@@ -63,7 +61,6 @@ export interface Media {
 
 export interface Promotion {
   id: number;
-  id: string;
   name: string;
   campusid: string;
   createdAt: string;
@@ -72,7 +69,6 @@ export interface Promotion {
 
 export interface Speciality {
   id: number;
-  id: string;
   name: string;
   promotionid: string;
   createdAt: string;
@@ -82,7 +78,6 @@ export interface Speciality {
 export interface SubSpeciality {
   id: number;
   name: string;
-  id: string;
   specialityid: string;
   createdAt: string;
   updatedAt: string;

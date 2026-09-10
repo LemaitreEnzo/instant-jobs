@@ -1,10 +1,10 @@
 import type { Media } from "../interfaces/models.interface";
 import { BASE_URL } from "../utils/globals.util";
 
-export const getAllMedias = async (organizationid: string, userId: number) => {
+export const getAllMedias = async (organizationId: string, userId: number) => {
   try {
     const res = await fetch(
-      `${BASE_URL}/organization/${organizationid}/users/${userId}/docs/media`,
+      `${BASE_URL}/organization/${organizationId}/users/${userId}/docs/media`,
     );
 
     if (!res.ok) {
@@ -19,13 +19,13 @@ export const getAllMedias = async (organizationid: string, userId: number) => {
 };
 
 export const getOneMedia = async (
-  organizationid: string,
+  organizationId: string,
   userId: number,
   id: number,
 ) => {
   try {
     const res = await fetch(
-      `${BASE_URL}/organization/${organizationid}/users/${userId}/docs/media/${id}`,
+      `${BASE_URL}/organization/${organizationId}/users/${userId}/docs/media/${id}`,
     );
 
     if (!res.ok) {
@@ -56,13 +56,13 @@ export const updateMedia = async () => {
 };
 
 export const deleteMedia = async (
-  organizationid: string,
+  organizationId: string,
   userId: number,
   id: number,
 ) => {
   try {
     const res = await fetch(
-      `${BASE_URL}/organization/${organizationid}/users/${userId}/docs/media/${id}`,
+      `${BASE_URL}/organization/${organizationId}/users/${userId}/docs/media/${id}`,
       {
         method: "DELETE",
       },

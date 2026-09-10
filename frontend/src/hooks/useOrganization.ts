@@ -16,9 +16,9 @@ export const getAllOrganizations = async () => {
   }
 };
 
-export const getOneOrganization = async (organizationid: string) => {
+export const getOneOrganization = async (id: string) => {
   try {
-    const res = await fetch(`${BASE_URL}/organization/${organizationid}`);
+    const res = await fetch(`${BASE_URL}/organization/${id}`);
 
     if (!res.ok) {
       throw new Error("Error retrieving the organization");
@@ -47,9 +47,9 @@ export const updateOrganization = async () => {
   }
 };
 
-export const deleteOrganization = async (organizationid: string) => {
+export const deleteOrganization = async (id: string) => {
   try {
-    const res = await fetch(`${BASE_URL}/organization/${organizationid}`, {
+    const res = await fetch(`${BASE_URL}/organization/${id}`, {
       method: "DELETE",
     });
 
