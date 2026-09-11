@@ -1,12 +1,12 @@
 .sidebar {
     padding: 0.5em 1em;
+    width: auto;
     max-width: 200px;
-    min-height: 100vh;
     background-color: var(--background-color);
     border-right: 1px solid var(--fourth-color);
 
     & .sidebar_list {
-        margin-top: 1.5em;
+        margin-top: 1em;
         display: flex;
         flex-direction: column;
         gap: 0.75em;

@@ -7,8 +7,16 @@
     background-color: var(--background-color);
     border-bottom: 1px solid var(--fourth-color);
 
+    .header_logo {
+        width: auto;
+        max-width: 10.5em;
+        fill: var(--primary-color);
+    }
+
     .header_search {
-        width: 40%;
+        width: 100%;
+        border-left: 1px solid var(--fourth-color);
+        padding-left: 1em;
         position: relative;
         display: flex;
         align-items: center;
@@ -17,7 +25,7 @@
         svg {
             position: absolute;
             top: 0.4em;
-            left: 0.5em;
+            left: 1.5em;
         }
 
         input {
@@ -41,7 +49,7 @@
 
     .header_actions {
         display: flex;
-        gap: .5em;
+        gap: 0.5em;
         align-items: center;
     }
 }

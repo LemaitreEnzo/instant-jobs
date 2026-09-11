@@ -163,7 +163,6 @@ const STUDENT_SIDEBAR: BtnSideBar[] = [
 const SideBar = () => {
   return (
     <aside className="sidebar">
-      <img src="src/assets/img/Logo.webp" alt="Logo instant-jobs" />
       <div className="sidebar_list">
         {STUDENT_SIDEBAR.map((btn, index) => {
           return (
