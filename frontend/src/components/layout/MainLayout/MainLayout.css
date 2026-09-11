@@ -1,4 +1,12 @@
 .main-layout {
-    display: flex;
-    flex-direction: row;
+    .main_layout_body {
+        display: flex;
+        flex-wrap: wrap;
+        background-color: var(--body-color);
+
+        .main_layout_children {
+            flex: 1;
+            padding: 1.5em;
+        }
+    }
 }

@@ -1,12 +1,7 @@
-import MainLayout from "../components/layout/MainLayout/MainLayout";
-import "../assets/css/pages/dashboard.css"
+import "../assets/css/pages/dashboard.css";
 
 function Dashboard() {
-  return (
-    <div className="dashboard">
-      <MainLayout />
-    </div>
-  );
+  return <div className="dashboard"></div>;
 }
 
 export default Dashboard;
