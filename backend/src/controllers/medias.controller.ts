@@ -1,7 +1,8 @@
 import type { Request, Response } from "express";
+import { Attributes } from "sequelize";
 import { Media } from "src/models";
 
-const excludedData: string[] = ["createdAt", "updatedAt"];
+const excludedData: (keyof Attributes<Media>)[] = ["createdAt", "updatedAt"];
 
 export const getAllMedias = async (req: Request, res: Response) => {
   try {
@@ -87,7 +88,7 @@ export const deleteMedia = async (req: Request, res: Response) => {
     }
 
     await media.destroy();
-    res.status(204).json({ message: "Media deleted"});
+    res.status(204).json({ message: "Media deleted" });
   } catch (error) {
     res.status(500).json(error);
   }

@@ -33,25 +33,60 @@ export const getOneUser = async (id: number): Promise<User | undefined> => {
   }
 };
 
-export const createUser = async (): Promise<void> => {
+export const createUser = async (data: Partial<User>) => {
   try {
-    // Code here
+    const res = await fetch(`${BASE_URL}/user`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!res.ok) {
+      throw new Error("Error creating the user");
+    }
   } catch (error) {
     console.error(error);
   }
 };
 
-export const loginUser = async (): Promise<void> => {
+export const updateUser = async (id: number, data: Partial<User>) => {
   try {
-    // Code here
+    const res = await fetch(`${BASE_URL}/user/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!res.ok) {
+      throw new Error("Error updating the user");
+    }
   } catch (error) {
     console.error(error);
   }
 };
 
-export const updateUser = async (): Promise<void> => {
+export const loginUser = async (
+  data: Partial<User>,
+): Promise<User | undefined> => {
   try {
-    // Code here
+    const res = await fetch(`${BASE_URL}/user/login`, {
+      method: "POST",
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      throw new Error("Error logging the user");
+    }
+    const user: User = await res.json();
+    return user;
   } catch (error) {
     console.error(error);
   }
@@ -66,8 +101,6 @@ export const deleteUser = async (id: number): Promise<void> => {
     if (!res.ok) {
       throw new Error("Error deleting the user");
     }
-
-    console.log("Deleted user");
   } catch (error) {
     console.error(error);
   }

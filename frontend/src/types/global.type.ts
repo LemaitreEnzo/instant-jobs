@@ -4,8 +4,8 @@ export interface PropsBase {
 }
 
 export type BtnSideBar = {
-  label: string,
-  link: string,
-  icon: React.ReactNode,
-  isActive: boolean
-}
+  label: string;
+  link: string;
+  icon: React.ReactNode;
+  isActive: boolean;
+};

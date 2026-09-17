@@ -1,7 +1,11 @@
 import type { Request, Response } from "express";
+import { Attributes } from "sequelize";
 import { Organization } from "src/models";
 
-const excludedData: string[] = ["createdAt", "updatedAt"];
+const excludedData: (keyof Attributes<Organization>)[] = [
+  "createdAt",
+  "updatedAt",
+];
 
 export const getAllOrganizations = async (req: Request, res: Response) => {
   try {
@@ -60,7 +64,7 @@ export const updateOrganization = async (req: Request, res: Response) => {
     }
 
     organization.update(data);
-    res.status(206).json({ message: "Organization updated"});
+    res.status(206).json({ message: "Organization updated" });
   } catch (error) {
     res.status(500);
     res.json(error);

@@ -36,17 +36,37 @@ export const getOneCampus = async (id: number) => {
   }
 };
 
-export const createCampus = async () => {
+export const createCampus = async (data: Partial<Campus>) => {
   try {
-    // Code here
+    const res = await fetch(`${BASE_URL}/campus`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!res.ok) {
+      throw new Error("Error creating the campus");
+    }
   } catch (error) {
     console.error(error);
   }
 };
 
-export const updateCampus = async () => {
+export const updateCampus = async (id: number, data: Partial<Campus>) => {
   try {
-    // Code here
+    const res = await fetch(`${BASE_URL}/campus/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!res.ok) {
+      throw new Error("Error updating the campus");
+    }
   } catch (error) {
     console.error(error);
   }
@@ -61,8 +81,6 @@ export const deleteCampus = async (id: number) => {
     if (!res.ok) {
       throw new Error("Error deleting the campus");
     }
-
-    console.log("Deleted Campus");
   } catch (error) {
     console.error(error);
   }

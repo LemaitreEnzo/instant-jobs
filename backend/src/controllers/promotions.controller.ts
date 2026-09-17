@@ -1,7 +1,11 @@
 import type { Request, Response } from "express";
+import { Attributes } from "sequelize";
 import { Promotion } from "src/models";
 
-const excludedData: string[] = ["createdAt", "updatedAt"];
+const excludedData: (keyof Attributes<Promotion>)[] = [
+  "createdAt",
+  "updatedAt",
+];
 
 export const getAllPromotions = async (req: Request, res: Response) => {
   try {
@@ -11,7 +15,7 @@ export const getAllPromotions = async (req: Request, res: Response) => {
       where: { campusId },
       attributes: {
         exclude: excludedData,
-      }
+      },
     });
 
     if (!promotions) {
@@ -77,7 +81,7 @@ export const updatePromotion = async (req: Request, res: Response) => {
     }
 
     promotion.update(data);
-    res.status(206).json({ message: "Promotion updated"});
+    res.status(206).json({ message: "Promotion updated" });
   } catch (error) {
     res.status(500);
     res.json(error);

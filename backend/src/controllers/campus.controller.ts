@@ -1,7 +1,8 @@
 import type { Request, Response } from "express";
-import { Campus, Organization } from "src/models";
+import { Attributes } from "sequelize";
+import { Campus } from "src/models";
 
-const excludedData: string[] = ["createdAt", "updatedAt"];
+const excludedData: (keyof Attributes<Campus>)[] = ["createdAt", "updatedAt"];
 
 export const getAllCampus = async (req: Request, res: Response) => {
   try {

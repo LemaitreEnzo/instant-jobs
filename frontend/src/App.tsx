@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router";
+import { Route, Routes } from "react-router-dom";
 import "./assets/css/default.css";
 import "./assets/css/global.css";
 import ProtectedRoute from "./components/ProtectedRoute";

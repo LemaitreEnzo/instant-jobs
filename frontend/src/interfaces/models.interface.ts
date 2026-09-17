@@ -10,16 +10,12 @@ export interface Organization {
   city: string;
   adress: string;
   country: string;
-  createdAt: string;
-  updatedAt: string;
 }
 
 export interface Campus {
   id: number;
   name: string;
-  organizationid: string;
-  createdAt: string;
-  updatedAt: string;
+  organizationId: string;
 }
 
 export interface User {
@@ -28,10 +24,8 @@ export interface User {
   lastname: string;
   email: string;
   phone: string;
-  organizationid: string;
-  campusid: string | null;
-  createdAt: string;
-  updatedAt: string;
+  organizationId: string;
+  campusId: string | null;
 }
 
 export interface Application {
@@ -46,8 +40,6 @@ export interface Application {
   resend: string;
   description: string;
   userId: number | null;
-  createdAt: string;
-  updatedAt: string;
 }
 
 export interface Media {
@@ -55,30 +47,22 @@ export interface Media {
   name: string;
   path: string;
   userId: number;
-  createdAt: string;
-  updatedAt: string;
 }
 
 export interface Promotion {
   id: number;
   name: string;
-  campusid: string;
-  createdAt: string;
-  updatedAt: string;
+  campusId: string;
 }
 
 export interface Speciality {
   id: number;
   name: string;
-  promotionid: string;
-  createdAt: string;
-  updatedAt: string;
+  promotionId: string;
 }
 
 export interface SubSpeciality {
   id: number;
   name: string;
-  specialityid: string;
-  createdAt: string;
-  updatedAt: string;
+  specialityId: string;
 }

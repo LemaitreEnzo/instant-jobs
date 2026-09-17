@@ -3,16 +3,16 @@ import cors from "cors";
 import express, { type Request, type Response } from "express";
 import helmet from "helmet";
 
-import getEnv from "./utils/envHelper"
+import getEnv from "./utils/envHelper";
 
 import campusRoutes from "routes/campus.routes";
 import organizationsRoutes from "routes/organizations.routes";
 import promotionsRoutes from "routes/promotions.routes";
 import specialitiesRoutes from "routes/specialities.routes";
 import subSpecialitiesRoutes from "routes/subSpecialities.routes";
-import usersRoutes from "src/routes/users.routes";
-import mediasRoutes from "src/routes/medias.routes";
 import applicationsRoutes from "src/routes/applications.routes";
+import mediasRoutes from "src/routes/medias.routes";
+import usersRoutes from "src/routes/users.routes";
 
 const app = express();
 
@@ -26,6 +26,7 @@ app.use(express.json());
 app.use(
   cors({
     origin: "http://localhost:5173",
+    credentials: true,
   }),
 );
 

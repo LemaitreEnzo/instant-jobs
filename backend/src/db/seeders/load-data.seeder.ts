@@ -1,4 +1,5 @@
 import { QueryInterface, QueryTypes } from "sequelize";
+import { hashPassword } from "../../../utils/passwordHash";
 
 /** @type {import("sequelize-cli").Migration} */
 export default {
@@ -137,8 +138,13 @@ export default {
 
     const insertedOrgs = (await queryInterface.sequelize.query(
       `SELECT id, name, email, role FROM "Organization" ORDER BY id ASC;`,
-      { type: QueryTypes.SELECT }
-    )) as unknown as Array<{ id: number; name: string; email: string; role: string }>;
+      { type: QueryTypes.SELECT },
+    )) as unknown as Array<{
+      id: number;
+      name: string;
+      email: string;
+      role: string;
+    }>;
 
     const schoolOrgs = insertedOrgs.filter((org) => org.role === "school");
 
@@ -148,12 +154,27 @@ export default {
     // 7 écoles : [3, 2, 3, 2, 3, 2, 3] = 18 campus au total
     const schoolCampusConfig: Record<string, string[]> = {
       "La Manu": ["Campus Compiègne", "Campus Amiens", "Campus Noyon"],
-      "École Supérieure du Numérique (ESN)": ["Campus Paris Bastille", "Campus Montrouge"],
-      "Institut Digital de France (IDF)": ["Campus Versailles", "Campus Saint-Quentin", "Campus Cergy"],
+      "École Supérieure du Numérique (ESN)": [
+        "Campus Paris Bastille",
+        "Campus Montrouge",
+      ],
+      "Institut Digital de France (IDF)": [
+        "Campus Versailles",
+        "Campus Saint-Quentin",
+        "Campus Cergy",
+      ],
       "Polytech Web & Data": ["Campus Lyon Part-Dieu", "Campus Villeurbanne"],
-      "Aquitaine Tech Academy": ["Campus Bordeaux Victoire", "Campus Mérignac", "Campus Pau"],
+      "Aquitaine Tech Academy": [
+        "Campus Bordeaux Victoire",
+        "Campus Mérignac",
+        "Campus Pau",
+      ],
       "Grand Ouest Coding School": ["Campus Nantes Centre", "Campus Rennes"],
-      "Méditerranée Tech Campus": ["Campus Marseille Joliette", "Campus Aix-en-Provence", "Campus Nice"],
+      "Méditerranée Tech Campus": [
+        "Campus Marseille Joliette",
+        "Campus Aix-en-Provence",
+        "Campus Nice",
+      ],
     };
 
     const rawCampuses: Array<{
@@ -182,8 +203,12 @@ export default {
 
     const insertedCampuses = (await queryInterface.sequelize.query(
       `SELECT id, name, "organizationId" FROM "Campus" ORDER BY id ASC;`,
-      { type: QueryTypes.SELECT }
-    )) as unknown as Array<{ id: number; name: string; organizationId: number }>;
+      { type: QueryTypes.SELECT },
+    )) as unknown as Array<{
+      id: number;
+      name: string;
+      organizationId: number;
+    }>;
 
     // ==========================================
     // 3. PROMOTIONS (3 à 4 promotions par campus)
@@ -212,7 +237,9 @@ export default {
       const promoCount = cIdx % 2 === 0 ? 4 : 3;
 
       for (let pIdx = 0; pIdx < promoCount; pIdx++) {
-        const tplName = promotionTemplates[(cIdx * 2 + pIdx) % promotionTemplates.length] ?? "Promotion Tech";
+        const tplName =
+          promotionTemplates[(cIdx * 2 + pIdx) % promotionTemplates.length] ??
+          "Promotion Tech";
         rawPromotions.push({
           name: `${tplName} - ${campus.name}`,
           campusId: campus.id,
@@ -226,7 +253,7 @@ export default {
 
     const insertedPromotions = (await queryInterface.sequelize.query(
       `SELECT id, name, "campusId" FROM "Promotion" ORDER BY id ASC;`,
-      { type: QueryTypes.SELECT }
+      { type: QueryTypes.SELECT },
     )) as unknown as Array<{ id: number; name: string; campusId: number }>;
 
     // ==========================================
@@ -238,7 +265,10 @@ export default {
       ["Cybersécurité des SI", "Administration Systèmes & Réseaux"],
       ["Ingénierie Logicielle & Qualité", "Conception d'Applications Mobiles"],
       ["Design d'Expérience UI/UX", "Développement Frontend Avancé"],
-      ["Gestion de Projet Numérique & Agile", "Architecture Microservices & API"],
+      [
+        "Gestion de Projet Numérique & Agile",
+        "Architecture Microservices & API",
+      ],
     ];
 
     const rawSpecialities: Array<{
@@ -275,25 +305,61 @@ export default {
 
     const insertedSpecialities = (await queryInterface.sequelize.query(
       `SELECT id, name, "promotionId" FROM "Speciality" ORDER BY id ASC;`,
-      { type: QueryTypes.SELECT }
+      { type: QueryTypes.SELECT },
     )) as unknown as Array<{ id: number; name: string; promotionId: number }>;
 
     // ==========================================
     // 5. SUB-SPÉCIALITÉS (2 sub-spécialités par spécialité)
     // ==========================================
     const subSpecialityCatalog: Record<string, [string, string]> = {
-      "Développement Web & Mobile": ["Frontend React & Next.js", "Backend Node.js & NestJS"],
-      "Architecture Cloud & DevOps": ["Docker, Kubernetes & CI/CD", "Cloud AWS & Terraform"],
-      "Data Science & Analytics": ["Data Engineering & Pipelines ETL", "Analyse Statistique & Power BI"],
-      "Intelligence Artificielle & NLP": ["Machine Learning & Scikit-Learn", "Deep Learning & LLMs"],
-      "Cybersécurité des SI": ["Tests d'Intrusion & Pentest", "Sécurité Réseau & Cryptographie"],
-      "Administration Systèmes & Réseaux": ["Linux Server & Scripting Bash", "Virtualisation & Supervision"],
-      "Ingénierie Logicielle & Qualité": ["Architecture Hexagonale & DDD", "Tests Automatisés & TDD"],
-      "Conception d'Applications Mobiles": ["React Native Cross-Platform", "Swift & Kotlin Natif"],
-      "Design d'Expérience UI/UX": ["Design System sur Figma", "Recherche & Tests Utilisateurs"],
-      "Développement Frontend Avancé": ["TypeScript Avancé & Vue.js", "Performance Web & Webpack/Vite"],
-      "Gestion de Projet Numérique & Agile": ["Méthodologie Scrum & Kanban", "Product Management & KPI"],
-      "Architecture Microservices & API": ["API RESTful & GraphQL", "Message Broker Kafka / RabbitMQ"],
+      "Développement Web & Mobile": [
+        "Frontend React & Next.js",
+        "Backend Node.js & NestJS",
+      ],
+      "Architecture Cloud & DevOps": [
+        "Docker, Kubernetes & CI/CD",
+        "Cloud AWS & Terraform",
+      ],
+      "Data Science & Analytics": [
+        "Data Engineering & Pipelines ETL",
+        "Analyse Statistique & Power BI",
+      ],
+      "Intelligence Artificielle & NLP": [
+        "Machine Learning & Scikit-Learn",
+        "Deep Learning & LLMs",
+      ],
+      "Cybersécurité des SI": [
+        "Tests d'Intrusion & Pentest",
+        "Sécurité Réseau & Cryptographie",
+      ],
+      "Administration Systèmes & Réseaux": [
+        "Linux Server & Scripting Bash",
+        "Virtualisation & Supervision",
+      ],
+      "Ingénierie Logicielle & Qualité": [
+        "Architecture Hexagonale & DDD",
+        "Tests Automatisés & TDD",
+      ],
+      "Conception d'Applications Mobiles": [
+        "React Native Cross-Platform",
+        "Swift & Kotlin Natif",
+      ],
+      "Design d'Expérience UI/UX": [
+        "Design System sur Figma",
+        "Recherche & Tests Utilisateurs",
+      ],
+      "Développement Frontend Avancé": [
+        "TypeScript Avancé & Vue.js",
+        "Performance Web & Webpack/Vite",
+      ],
+      "Gestion de Projet Numérique & Agile": [
+        "Méthodologie Scrum & Kanban",
+        "Product Management & KPI",
+      ],
+      "Architecture Microservices & API": [
+        "API RESTful & GraphQL",
+        "Message Broker Kafka / RabbitMQ",
+      ],
     };
 
     const rawSubSpecialities: Array<{
@@ -329,32 +395,212 @@ export default {
     // 6. USERS (10 users par organisation = 100 users au total)
     // ==========================================
     const firstnames = [
-      "Jean", "Marie", "Paul", "Sophie", "Lucas", "Emma", "Thomas", "Léa", "Hugo", "Chloé",
-      "Alexandre", "Camille", "Nicolas", "Sarah", "Julien", "Manon", "Maxime", "Inès", "Antoine", "Clara",
-      "Romain", "Julie", "Clément", "Marine", "Guillaume", "Laura", "Quentin", "Pauline", "Mathieu", "Anaïs",
-      "Florian", "Lucie", "Valentin", "Margaux", "Adrien", "Charlotte", "Paul", "Alice", "Bastien", "Juliette",
-      "Théo", "Noémie", "Gabriel", "Océane", "Louis", "Léna", "Nathan", "Élodie", "Arthur", "Amélie",
-      "Pierre", "Mélanie", "Enzo", "Eva", "Sébastien", "Justine", "Benoît", "Mathilde", "Rémi", "Romane",
-      "Benjamin", "Lucile", "Damien", "Célia", "Kévin", "Agathe", "Simon", "Lou", "David", "Victoire",
-      "Vincent", "Salomé", "Cédric", "Lisa", "Anthony", "Elsa", "Marc", "Capucine", "Franck", "Apolline",
-      "Jérôme", "Rose", "Laurent", "Zoé", "Stéphane", "Héloïse", "Fabien", "Jeanne", "Olivier", "Alix",
-      "Arnaud", "Iris", "Mickaël", "Roxane", "Thibault", "Coline", "Xavier", "Maëlys", "Yann", "Solène",
+      "Jean",
+      "Marie",
+      "Paul",
+      "Sophie",
+      "Lucas",
+      "Emma",
+      "Thomas",
+      "Léa",
+      "Hugo",
+      "Chloé",
+      "Alexandre",
+      "Camille",
+      "Nicolas",
+      "Sarah",
+      "Julien",
+      "Manon",
+      "Maxime",
+      "Inès",
+      "Antoine",
+      "Clara",
+      "Romain",
+      "Julie",
+      "Clément",
+      "Marine",
+      "Guillaume",
+      "Laura",
+      "Quentin",
+      "Pauline",
+      "Mathieu",
+      "Anaïs",
+      "Florian",
+      "Lucie",
+      "Valentin",
+      "Margaux",
+      "Adrien",
+      "Charlotte",
+      "Paul",
+      "Alice",
+      "Bastien",
+      "Juliette",
+      "Théo",
+      "Noémie",
+      "Gabriel",
+      "Océane",
+      "Louis",
+      "Léna",
+      "Nathan",
+      "Élodie",
+      "Arthur",
+      "Amélie",
+      "Pierre",
+      "Mélanie",
+      "Enzo",
+      "Eva",
+      "Sébastien",
+      "Justine",
+      "Benoît",
+      "Mathilde",
+      "Rémi",
+      "Romane",
+      "Benjamin",
+      "Lucile",
+      "Damien",
+      "Célia",
+      "Kévin",
+      "Agathe",
+      "Simon",
+      "Lou",
+      "David",
+      "Victoire",
+      "Vincent",
+      "Salomé",
+      "Cédric",
+      "Lisa",
+      "Anthony",
+      "Elsa",
+      "Marc",
+      "Capucine",
+      "Franck",
+      "Apolline",
+      "Jérôme",
+      "Rose",
+      "Laurent",
+      "Zoé",
+      "Stéphane",
+      "Héloïse",
+      "Fabien",
+      "Jeanne",
+      "Olivier",
+      "Alix",
+      "Arnaud",
+      "Iris",
+      "Mickaël",
+      "Roxane",
+      "Thibault",
+      "Coline",
+      "Xavier",
+      "Maëlys",
+      "Yann",
+      "Solène",
     ];
 
     const lastnames = [
-      "Dupont", "Curie", "Martin", "Bernard", "Dubois", "Thomas", "Robert", "Richard", "Petit", "Durand",
-      "Leroy", "Moreau", "Simon", "Laurent", "Lefebvre", "Michel", "Garcia", "David", "Bertrand", "Roux",
-      "Vincent", "Fournier", "Morel", "Girard", "Andre", "Lefevre", "Mercier", "Dupuis", "Lambert", "Bonnet",
-      "Francois", "Martinez", "Legrand", "Garnier", "Faure", "Rousseau", "Blanc", "Guerin", "Muller", "Henry",
-      "Roussel", "Nicolas", "Perrin", "Morin", "Mathieu", "Clement", "Gauthier", "Dumont", "Lopez", "Fontaine",
-      "Chevalier", "Robin", "Masson", "Sanchez", "Gerard", "Nguyen", "Boyer", "Denis", "Lemaire", "Duval",
-      "Joly", "Gautier", "Caron", "Picard", "Brun", "Verdier", "Gaillard", "Barbier", "Arnaud", "Rolland",
-      "Leclerc", "Vidal", "Bourgeois", "Renaud", "Lemoine", "Picard", "Colin", "Cousin", "Aubry", "Giraud",
-      "Marchand", "Benoit", "Rey", "Baron", "Guyot", "Leveque", "Pons", "Blanchard", "Peltier", "Boucher",
-      "Perrot", "Gros", "Renard", "Roy", "Lebrun", "Colin", "Fernandez", "Moulin", "Vasseur", "Allard",
+      "Dupont",
+      "Curie",
+      "Martin",
+      "Bernard",
+      "Dubois",
+      "Thomas",
+      "Robert",
+      "Richard",
+      "Petit",
+      "Durand",
+      "Leroy",
+      "Moreau",
+      "Simon",
+      "Laurent",
+      "Lefebvre",
+      "Michel",
+      "Garcia",
+      "David",
+      "Bertrand",
+      "Roux",
+      "Vincent",
+      "Fournier",
+      "Morel",
+      "Girard",
+      "Andre",
+      "Lefevre",
+      "Mercier",
+      "Dupuis",
+      "Lambert",
+      "Bonnet",
+      "Francois",
+      "Martinez",
+      "Legrand",
+      "Garnier",
+      "Faure",
+      "Rousseau",
+      "Blanc",
+      "Guerin",
+      "Muller",
+      "Henry",
+      "Roussel",
+      "Nicolas",
+      "Perrin",
+      "Morin",
+      "Mathieu",
+      "Clement",
+      "Gauthier",
+      "Dumont",
+      "Lopez",
+      "Fontaine",
+      "Chevalier",
+      "Robin",
+      "Masson",
+      "Sanchez",
+      "Gerard",
+      "Nguyen",
+      "Boyer",
+      "Denis",
+      "Lemaire",
+      "Duval",
+      "Joly",
+      "Gautier",
+      "Caron",
+      "Picard",
+      "Brun",
+      "Verdier",
+      "Gaillard",
+      "Barbier",
+      "Arnaud",
+      "Rolland",
+      "Leclerc",
+      "Vidal",
+      "Bourgeois",
+      "Renaud",
+      "Lemoine",
+      "Picard",
+      "Colin",
+      "Cousin",
+      "Aubry",
+      "Giraud",
+      "Marchand",
+      "Benoit",
+      "Rey",
+      "Baron",
+      "Guyot",
+      "Leveque",
+      "Pons",
+      "Blanchard",
+      "Peltier",
+      "Boucher",
+      "Perrot",
+      "Gros",
+      "Renard",
+      "Roy",
+      "Lebrun",
+      "Colin",
+      "Fernandez",
+      "Moulin",
+      "Vasseur",
+      "Allard",
     ];
 
-    const defaultPasswordHash = "$2b$10$epRnT3MmKsnsp1234567890abcdefghijklmnopqrstuvwxyz";
+    const defaultPasswordHash = await hashPassword("Azerty1234*&");
 
     const rawUsers: Array<{
       firstname: string;
@@ -401,8 +647,12 @@ export default {
           }
         }
 
-        const firstname = firstnames[(globalUserCounter - 1) % firstnames.length] ?? "Utilisateur";
-        const lastname = lastnames[(globalUserCounter - 1) % lastnames.length] ?? `${globalUserCounter}`;
+        const firstname =
+          firstnames[(globalUserCounter - 1) % firstnames.length] ??
+          "Utilisateur";
+        const lastname =
+          lastnames[(globalUserCounter - 1) % lastnames.length] ??
+          `${globalUserCounter}`;
         const domain = org.email.split("@")[1] ?? "instantjobs.fr";
         const email = `${firstname.toLowerCase()}.${lastname.toLowerCase()}.${globalUserCounter}@${domain}`;
         const phone = `06${String(10000000 + globalUserCounter).padStart(8, "0")}`;
@@ -426,7 +676,7 @@ export default {
 
     const insertedUsers = (await queryInterface.sequelize.query(
       `SELECT id, firstname, lastname, email, role, "organizationId" FROM "User" ORDER BY id ASC;`,
-      { type: QueryTypes.SELECT }
+      { type: QueryTypes.SELECT },
     )) as unknown as Array<{
       id: number;
       firstname: string;
@@ -452,7 +702,8 @@ export default {
         date: "2026-09-01",
         status: "pending",
         resend: "no",
-        description: "Poste de développeur full-stack au sein de l'équipe produit SaaS.",
+        description:
+          "Poste de développeur full-stack au sein de l'équipe produit SaaS.",
         userId: studentUsers[0]?.id ?? fallbackUserId,
         createdAt: now,
         updatedAt: now,
@@ -466,7 +717,8 @@ export default {
         date: "2026-10-15",
         status: "accepted",
         resend: "no",
-        description: "Stage de fin d'études en intégration web et optimisation de performance.",
+        description:
+          "Stage de fin d'études en intégration web et optimisation de performance.",
         userId: studentUsers[1]?.id ?? fallbackUserId,
         createdAt: now,
         updatedAt: now,
@@ -574,7 +826,7 @@ export default {
 
     for (const table of tables) {
       await queryInterface.sequelize.query(
-        `ALTER SEQUENCE IF EXISTS "${table}_id_seq" RESTART WITH 1;`
+        `ALTER SEQUENCE IF EXISTS "${table}_id_seq" RESTART WITH 1;`,
       );
     }
   },
