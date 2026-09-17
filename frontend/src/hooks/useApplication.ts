@@ -31,17 +31,40 @@ export const getOneApplication = async (id: number) => {
   }
 };
 
-export const createApplication = async () => {
+export const createApplication = async (data: Partial<Application>) => {
   try {
-    // Code here
+    const res = await fetch(`${BASE_URL}/application`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!res.ok) {
+      throw new Error("Error creating the application");
+    }
   } catch (error) {
     console.error(error);
   }
 };
 
-export const updateApplication = async () => {
+export const updateApplication = async (
+  id: number,
+  data: Partial<Application>,
+) => {
   try {
-    // Code here
+    const res = await fetch(`${BASE_URL}/application/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!res.ok) {
+      throw new Error("Error updating the application");
+    }
   } catch (error) {
     console.error(error);
   }
@@ -56,8 +79,6 @@ export const deleteApplication = async (id: number) => {
     if (!res.ok) {
       throw new Error("Error deleting the application");
     }
-
-    console.log("Deleted application");
   } catch (error) {
     console.error(error);
   }

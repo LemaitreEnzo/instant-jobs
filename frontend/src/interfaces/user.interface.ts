@@ -14,8 +14,8 @@ export interface User {
   email: string;
   phone: string;
   media: Media[] | null;
-  organizationid: string;
-  campusid: string | null;
+  organizationId: string;
+  campusId: string | null;
 }
 
 export interface Student extends User {

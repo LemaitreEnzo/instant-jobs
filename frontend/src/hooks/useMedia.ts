@@ -31,33 +31,51 @@ export const getOneMedia = async (userId: number, id: number) => {
   }
 };
 
-export const createMedia = async () => {
+export const createMedia = async (data: Partial<Media>) => {
   try {
-    // Code here
+    const res = await fetch(`${BASE_URL}/media`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!res.ok) {
+      throw new Error("Error creating the media");
+    }
   } catch (error) {
     console.error(error);
   }
 };
 
-export const updateMedia = async () => {
+export const updateMedia = async (id: number, data: Partial<Media>) => {
   try {
-    // Code here
+    const res = await fetch(`${BASE_URL}/media/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!res.ok) {
+      throw new Error("Error updating the Media");
+    }
   } catch (error) {
     console.error(error);
   }
 };
 
-export const deleteMedia = async (userId: number, id: number) => {
+export const deleteMedia = async (id: number) => {
   try {
-    const res = await fetch(`${BASE_URL}/user/${userId}/media/${id}`, {
+    const res = await fetch(`${BASE_URL}/media/${id}`, {
       method: "DELETE",
     });
 
     if (!res.ok) {
       throw new Error("Error deleting the media");
     }
-
-    console.log("Deleted user");
   } catch (error) {
     console.error(error);
   }

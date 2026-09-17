@@ -1,7 +1,11 @@
 import type { Request, Response } from "express";
+import { Attributes } from "sequelize";
 import { Speciality } from "src/models";
 
-const excludedData: string[] = ["createdAt", "updatedAt"];
+const excludedData: (keyof Attributes<Speciality>)[] = [
+  "createdAt",
+  "updatedAt",
+];
 
 export const getAllSpecialities = async (req: Request, res: Response) => {
   try {

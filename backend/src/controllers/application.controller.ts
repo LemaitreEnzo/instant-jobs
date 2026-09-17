@@ -1,7 +1,11 @@
 import { type Request, type Response } from "express";
+import { Attributes } from "sequelize";
 import { Application } from "src/models";
 
-const excludedData: string[] = ["createdAt", "updatedAt"];
+const excludedData: (keyof Attributes<Application>)[] = [
+  "createdAt",
+  "updatedAt",
+];
 
 export const getAllApplications = async (req: Request, res: Response) => {
   try {
@@ -66,7 +70,7 @@ export const updateApplication = async (req: Request, res: Response) => {
     }
 
     application.update(data);
-    res.status(206).json({ message: "Application updated"});
+    res.status(206).json({ message: "Application updated" });
   } catch (error) {
     res.status(500).json(error);
   }
