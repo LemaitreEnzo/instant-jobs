@@ -1,0 +1,25 @@
+.recent-applications {
+    width: 100%;
+    padding: 1rem;
+    background-color: #ffffff;
+    border: 1px #afafaf solid;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+.recent-applications-table {
+    width: 100%;
+}
+
+.recent-applications-table thead {
+    color: #727272;
+    border-bottom: 1px #E6E9ED solid;
+}
+
+.recent-applications-table th,
+.recent-applications-table td {
+    text-align: left;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    vertical-align: middle;
+}
