@@ -1,5 +1,6 @@
 import Header from "../Header/Header";
 import SideBar from "../SideBar/SideBar";
+
 import "./MainLayout.css";
 
 const MainLayout = ({ children }) => {
