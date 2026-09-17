@@ -1,0 +1,27 @@
+.applications-row {
+    display: grid;
+    grid-template-columns: var(--grid-columns);
+    align-items: center;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px #E6E9ED solid;
+}
+
+.applications-row:last-child {
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.applications-company {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.applications-company img {
+    width: 50px;
+    height: 50px;
+    border-radius: 6px;
+    object-fit: cover;
+}

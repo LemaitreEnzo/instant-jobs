@@ -1,0 +1,15 @@
+.applications-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 2rem;
+}
+
+.applications-header h4 {
+    font-weight: 500;
+}
+
+.applications-header-buttons {
+    display: flex;
+    gap: 1rem;
+}
