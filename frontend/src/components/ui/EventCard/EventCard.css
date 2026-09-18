@@ -1,0 +1,52 @@
+.calendar-informations-containers{
+    display: flex;
+    column-gap: 30px;
+    padding: 20px;
+    border-radius: 10px;
+    border: solid 1px var(--stroke-color);
+}
+
+.informations-schedules, .informations-content{
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+}
+
+.informations-schedules, .informations-status{
+    flex: 1;
+}
+
+.informations-content{
+    flex: 2;
+}
+
+.schedule-day{
+    font-size: 12px;
+}
+
+.schedules-hour{
+    font-size: 15px;
+}
+
+.content-title{
+    font-size: 15px;
+}
+
+.content-description{
+    font-size: 12px;
+}
+
+.informations-status{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    p{
+        font-size: 10px;
+        padding: 2px 10px;
+        border-radius: 50px;
+        color: var(--background-color);
+        background-color: var(--primary-color);
+        text-align: center;
+    }
+}

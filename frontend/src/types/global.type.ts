@@ -9,3 +9,8 @@ export type BtnSideBar = {
   icon: React.ReactNode,
   isActive: boolean
 }
+
+export type DayInformations = {
+  date: number,
+  day: number
+}

@@ -1,6 +1,7 @@
 import type { SetStateAction } from "react";
 import type { Student } from "../interfaces/user.interface";
 import type { PropsBase } from "../types/global.type";
+import type { Application } from "../interfaces/models.interface";
 export interface PropsButton extends PropsBase {
   className?: "btn-primary" | "btn-secondary" | "btn-terciary";
   shape?: "rectangle" | "oval" | "icon";
@@ -44,4 +45,12 @@ export type PropsCardDocument = {
   stockage: number;
   used: number;
   pdf_url: string
+}
+
+export type PropsSmallCalendar = {
+  data: Application[];
+}
+
+export type PropsEventCard = {
+  data: Application[];
 }
