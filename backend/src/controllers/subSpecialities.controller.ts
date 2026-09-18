@@ -1,7 +1,11 @@
 import type { Request, Response } from "express";
+import { Attributes } from "sequelize";
 import { SubSpeciality } from "src/models";
 
-const excludedData: string[] = ["createdAt", "updatedAt"];
+const excludedData: (keyof Attributes<SubSpeciality>)[] = [
+  "createdAt",
+  "updatedAt",
+];
 
 export const getAllSubSpecialities = async (req: Request, res: Response) => {
   try {
@@ -13,6 +17,10 @@ export const getAllSubSpecialities = async (req: Request, res: Response) => {
       },
     });
 
+    if (!subSpecialities) {
+      return res.status(404).json({ message: "Sub-specialities not found" });
+    }
+
     res.status(200);
     res.json(subSpecialities);
   } catch (error) {
@@ -23,10 +31,17 @@ export const getAllSubSpecialities = async (req: Request, res: Response) => {
 
 export const getOneSubSpeciality = async (req: Request, res: Response) => {
   try {
-    const { specialityId, id } = req.params;
+    const { id } = req.params;
     const subSpeciality = await SubSpeciality.findOne({
-      where: { specialityId, id },
+      where: { id },
+      attributes: {
+        exclude: excludedData,
+      },
     });
+
+    if (!subSpeciality) {
+      return res.status(404).json({ message: "Sub-speciality not found" });
+    }
 
     res.status(200);
     res.json(subSpeciality);
@@ -51,14 +66,22 @@ export const createSubSpeciality = async (req: Request, res: Response) => {
 
 export const updateSubSpeciality = async (req: Request, res: Response) => {
   try {
-    const { specialityId, id } = req.params;
+    const { id } = req.params;
     const data = req.body;
-    const subSpeciality = await SubSpeciality.update(data, {
-      where: { specialityId, id },
+    const subSpeciality = await SubSpeciality.findOne({
+      where: { id },
+      attributes: {
+        exclude: excludedData,
+      },
     });
 
+    if (!subSpeciality) {
+      return res.status(404).json({ message: "Sub-speciality not found" });
+    }
+
+    subSpeciality.update(data);
     res.status(206);
-    res.json({ subSpeciality });
+    res.json({ message: "Sub-speciality updated" });
   } catch (error) {
     res.status(500);
     res.json(error);
@@ -67,9 +90,9 @@ export const updateSubSpeciality = async (req: Request, res: Response) => {
 
 export const deleteSubSpeciality = async (req: Request, res: Response) => {
   try {
-    const { specialityId, id } = req.params;
+    const { id } = req.params;
     const subSpeciality = await SubSpeciality.findOne({
-      where: { specialityId, id },
+      where: { id },
       attributes: {
         exclude: excludedData,
       },
@@ -82,7 +105,7 @@ export const deleteSubSpeciality = async (req: Request, res: Response) => {
     await subSpeciality.destroy();
 
     res.status(204);
-    res.json();
+    res.json({ message: "Sub-speciality deleted" });
   } catch (error) {
     res.status(500);
     res.json(error);

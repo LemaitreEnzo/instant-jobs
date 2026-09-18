@@ -1,11 +1,15 @@
 import { type Request, type Response } from "express";
+import { Attributes } from "sequelize";
 import { Application } from "src/models";
 
-const excludedData: string[] = ["createdAt", "updatedAt"];
+const excludedData: (keyof Attributes<Application>)[] = [
+  "createdAt",
+  "updatedAt",
+];
 
 export const getAllApplications = async (req: Request, res: Response) => {
   try {
-    const { userId, id } = req.params;
+    const { userId } = req.params;
 
     const applications = await Application.findAll({
       where: { userId },
@@ -13,6 +17,11 @@ export const getAllApplications = async (req: Request, res: Response) => {
         exclude: excludedData,
       },
     });
+
+    if (!applications) {
+      return res.status(404).json({ message: "Applications not found" });
+    }
+
     res.status(200).json(applications);
   } catch (error) {
     res.status(500).json(error);
@@ -21,9 +30,9 @@ export const getAllApplications = async (req: Request, res: Response) => {
 
 export const getOneApplication = async (req: Request, res: Response) => {
   try {
-    const { userId, id } = req.params;
+    const { id } = req.params;
     const application = await Application.findOne({
-      where: { userId, id },
+      where: { id },
     });
 
     if (!application) {
@@ -47,9 +56,10 @@ export const createApplication = async (req: Request, res: Response) => {
 
 export const updateApplication = async (req: Request, res: Response) => {
   try {
-    const { userId, id } = req.params;
+    const { id } = req.params;
+    const data = req.body;
     const application = await Application.findOne({
-      where: { userId, id },
+      where: { id },
       attributes: {
         exclude: excludedData,
       },
@@ -59,11 +69,8 @@ export const updateApplication = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Application not found" });
     }
 
-    const applicationUpdated = await Application.update(req.body, {
-      where: { userId, id },
-    });
-
-    res.status(206).json(applicationUpdated);
+    application.update(data);
+    res.status(206).json({ message: "Application updated" });
   } catch (error) {
     res.status(500).json(error);
   }
@@ -71,9 +78,9 @@ export const updateApplication = async (req: Request, res: Response) => {
 
 export const deleteApplication = async (req: Request, res: Response) => {
   try {
-    const { userId, id } = req.params;
+    const { id } = req.params;
     const application = await Application.findOne({
-      where: { userId, id },
+      where: { id },
       attributes: {
         exclude: excludedData,
       },
@@ -84,7 +91,7 @@ export const deleteApplication = async (req: Request, res: Response) => {
     }
 
     await application.destroy();
-    res.status(204).send();
+    res.status(204).json({ message: "Application deleted" });
   } catch (error) {
     res.status(500).json(error);
   }

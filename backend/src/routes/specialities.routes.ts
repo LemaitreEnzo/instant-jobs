@@ -5,30 +5,23 @@
 import {
   createSpeciality,
   deleteSpeciality,
-  getAllSpecialities,
   getOneSpeciality,
   updateSpeciality,
 } from "controllers/specialities.controller";
-
+import {
+  getAllSubSpecialities,
+} from "controllers/subSpecialities.controller";
 import express from "express";
-import subSpecialities from "routes/subSpecialities.routes";
 
 const specialitiesRoutes = express.Router({ mergeParams: true });
 
-// GET
-specialitiesRoutes.get("/", getAllSpecialities);
-specialitiesRoutes.get("/:id", getOneSpeciality);
-
-// CREATE
 specialitiesRoutes.post("/", createSpeciality);
 
-// UPDATE
+specialitiesRoutes.get("/:id", getOneSpeciality);
 specialitiesRoutes.patch("/:id", updateSpeciality);
-
-// DELETE
+specialitiesRoutes.put("/:id", updateSpeciality);
 specialitiesRoutes.delete("/:id", deleteSpeciality);
 
-// SubSpecialities routes
-specialitiesRoutes.use("/:specialityId/sub-speciality", subSpecialities);
+specialitiesRoutes.get("/:specialityId/sub-specialities", getAllSubSpecialities);
 
 export default specialitiesRoutes;

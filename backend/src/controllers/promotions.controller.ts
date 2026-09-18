@@ -1,7 +1,11 @@
 import type { Request, Response } from "express";
-import { Campus, Organization, Promotion } from "src/models";
+import { Attributes } from "sequelize";
+import { Promotion } from "src/models";
 
-const excludedData: string[] = ["createdAt", "updatedAt"];
+const excludedData: (keyof Attributes<Promotion>)[] = [
+  "createdAt",
+  "updatedAt",
+];
 
 export const getAllPromotions = async (req: Request, res: Response) => {
   try {
@@ -12,20 +16,11 @@ export const getAllPromotions = async (req: Request, res: Response) => {
       attributes: {
         exclude: excludedData,
       },
-      include: [
-        {
-          model: Campus,
-          required: true,
-          attributes: [],
-          include: [
-            {
-              model: Organization,
-              attributes: ["id"],
-            },
-          ],
-        },
-      ],
     });
+
+    if (!promotions) {
+      return res.status(404).json({ message: "Promotions not found" });
+    }
 
     res.status(200);
     res.json(promotions);
@@ -37,13 +32,17 @@ export const getAllPromotions = async (req: Request, res: Response) => {
 
 export const getOnePromotion = async (req: Request, res: Response) => {
   try {
-    const { campusId, id } = req.params;
+    const { id } = req.params;
     const promotion = await Promotion.findOne({
-      where: { campusId, id },
+      where: { id },
       attributes: {
         exclude: excludedData,
       },
     });
+
+    if (!promotion) {
+      return res.status(404).json({ message: "Promotion not found" });
+    }
 
     res.status(200);
     res.json(promotion);
@@ -68,15 +67,21 @@ export const createPromotion = async (req: Request, res: Response) => {
 
 export const updatePromotion = async (req: Request, res: Response) => {
   try {
-    const { campusId, id } = req.params;
-
+    const { id } = req.params;
     const data = req.body;
-    const promotion = await Promotion.update(data, {
-      where: { campusId, id },
+    const promotion = await Promotion.findOne({
+      where: { id },
+      attributes: {
+        exclude: excludedData,
+      },
     });
 
-    res.status(206);
-    res.json(promotion);
+    if (!promotion) {
+      return res.status(404).json({ error: "Promotion not found." });
+    }
+
+    promotion.update(data);
+    res.status(206).json({ message: "Promotion updated" });
   } catch (error) {
     res.status(500);
     res.json(error);
@@ -85,9 +90,9 @@ export const updatePromotion = async (req: Request, res: Response) => {
 
 export const deletePromotion = async (req: Request, res: Response) => {
   try {
-    const { campusId, id } = req.params;
+    const { id } = req.params;
     const promotion = await Promotion.findOne({
-      where: { campusId, id },
+      where: { id },
     });
 
     if (!promotion) {
@@ -96,8 +101,7 @@ export const deletePromotion = async (req: Request, res: Response) => {
 
     await promotion.destroy();
 
-    res.status(204);
-    res.json();
+    res.status(204).json({ message: "Promotion deleted" });
   } catch (error) {
     res.status(500);
     res.json(error);

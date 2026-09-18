@@ -15,6 +15,7 @@ export interface PropsTag extends PropsBase {
     | "tag-warn"
     | "tag-error"
     | "tag-none"
+    | "tag-primary"
     | "tag-terciary";
   round?: boolean;
 }
@@ -53,4 +54,16 @@ export type PropsSmallCalendar = {
 
 export type PropsEventCard = {
   data: Application[];
+}
+
+export type PropsApplications = {
+  logo: string;
+  name: string;
+  company: string;
+  sendDate: Date;
+  city: string;
+  type: string;
+  status: string;
+  resend: string;
+  resendDate: Date | string;
 }

@@ -1,13 +1,15 @@
-import { Route, Routes } from "react-router";
+import { Route, Routes } from "react-router-dom";
 import "./assets/css/default.css";
 import "./assets/css/global.css";
 import ProtectedRoute from "./components/ProtectedRoute";
-import { getAllCampus } from "./hooks/campus.hook";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import Unauthorized from "./pages/Unauthorized";
+import MainLayout from "./components/layout/MainLayout/MainLayout";
 
-getAllCampus("acme-corp");
+const ProtectedAppspaceRoute = ({ children }) => {
+  return <MainLayout>{children}</MainLayout>;
+};
 
 function App() {
   return (
@@ -17,9 +19,9 @@ function App() {
         <Route
           path="/"
           element={
-            <ProtectedRoute>
+            <ProtectedAppspaceRoute>
               <Dashboard />
-            </ProtectedRoute>
+            </ProtectedAppspaceRoute>
           }
         />
         <Route
