@@ -1,14 +1,24 @@
 import bcrypt from "bcryptjs";
 import type { Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { Attributes } from "sequelize";
-import { User } from "src/models";
+import { Attributes, Sequelize } from "sequelize";
+import { Application, Media, User } from "src/models";
 import getEnv from "../../utils/envHelper";
 
 const excludedData: (keyof Attributes<User>)[] = [
   "password_hash",
   "createdAt",
   "updatedAt",
+];
+const excludedMediaData: (keyof Attributes<Media>)[] = [
+  "createdAt",
+  "updatedAt",
+  "userId",
+];
+const excludedApplicationData: (keyof Attributes<Application>)[] = [
+  "createdAt",
+  "updatedAt",
+  "userId",
 ];
 
 export const login = async (req: Request, res: Response) => {
@@ -18,6 +28,21 @@ export const login = async (req: Request, res: Response) => {
     const password: string = req.body.password;
     const user = await User.findOne({
       where: { email: email },
+      include: [
+        {
+          model: Media,
+          as: "medias",
+          required: false,
+          attributes: { exclude: excludedMediaData },
+        },
+        {
+          model: Application,
+          as: "applications",
+          required: false,
+          where: Sequelize.literal(`"User"."role" = 'student'`),
+          attributes: { exclude: excludedApplicationData },
+        },
+      ],
     });
 
     //Check if a user exist
@@ -36,7 +61,22 @@ export const login = async (req: Request, res: Response) => {
           maxAge: 24 * 60 * 60 * 1000,
         });
 
-        const { password_hash, createdAt, updatedAt, ...userData } = data;
+        const rawUserData: any = user.get({ plain: true });
+
+        const {
+          password_hash,
+          createdAt,
+          updatedAt,
+          applications,
+          ...userData
+        } = rawUserData;
+
+        if (userData.role === "student") {
+          return res.status(200).json({
+            ...userData,
+            applications,
+          });
+        }
 
         return res.status(200).json(userData);
       } else {
@@ -56,9 +96,15 @@ export const getAllUsers = async (req: Request, res: Response) => {
 
     const users = await User.findAll({
       where: { organizationId },
-      attributes: {
-        exclude: excludedData,
-      },
+      attributes: { exclude: excludedData },
+      include: [
+        {
+          model: Media,
+          as: "medias",
+          required: false,
+          attributes: { exclude: excludedMediaData },
+        },
+      ],
     });
 
     if (!users) {
@@ -80,14 +126,40 @@ export const getOneUser = async (req: Request, res: Response) => {
       attributes: {
         exclude: excludedData,
       },
+      include: [
+        {
+          model: Media,
+          as: "medias",
+          required: false,
+          attributes: { exclude: excludedMediaData },
+        },
+        {
+          model: Application,
+          as: "applications",
+          required: false,
+          where: Sequelize.literal(`"User"."role" = 'student'`),
+          attributes: { exclude: excludedApplicationData },
+        },
+      ],
     });
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res.status(200);
-    res.json(user);
+    const rawUserData: any = user.get({ plain: true });
+
+    const { password_hash, createdAt, updatedAt, applications, ...userData } =
+      rawUserData;
+
+    if (userData.role === "student") {
+      res.status(200).json({
+        ...userData,
+        applications,
+      });
+    }
+
+    res.status(200).json(userData);
   } catch (error) {
     res.status(500).json(error);
   }

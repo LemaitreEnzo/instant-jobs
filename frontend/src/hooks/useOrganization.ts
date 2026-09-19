@@ -5,10 +5,7 @@ export const getAllOrganizations = async () => {
   try {
     const res = await fetch(`${BASE_URL}/organization/`);
 
-    if (!res.ok) {
-      throw new Error("Error retrieving organizations");
-    }
-
+    if (!res.ok) return;
     const data: Organization[] = await res.json();
     return data;
   } catch (error) {
@@ -20,9 +17,7 @@ export const getOneOrganization = async (id: string) => {
   try {
     const res = await fetch(`${BASE_URL}/organization/${id}`);
 
-    if (!res.ok) {
-      throw new Error("Error retrieving the organization");
-    }
+    if (!res.ok) return;
 
     const data: Organization = await res.json();
     return data;
@@ -41,9 +36,7 @@ export const createOrganization = async (data: Partial<Organization>) => {
       body: JSON.stringify(data),
     });
 
-    if (!res.ok) {
-      throw new Error("Error creating the organization");
-    }
+    if (!res.ok) return;
   } catch (error) {
     console.error(error);
   }
@@ -62,9 +55,7 @@ export const updateOrganization = async (
       body: JSON.stringify(data),
     });
 
-    if (!res.ok) {
-      throw new Error("Error updating the organization");
-    }
+    if (!res.ok) return;
   } catch (error) {
     console.error(error);
   }
@@ -76,9 +67,7 @@ export const deleteOrganization = async (id: string) => {
       method: "DELETE",
     });
 
-    if (!res.ok) {
-      throw new Error("Error deleting the organization");
-    }
+    if (!res.ok) return;
   } catch (error) {
     console.error(error);
   }

@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../assets/css/pages/login.css";
 import { loginUser } from "../hooks/useUser";
+import type { Student, User } from "../interfaces/user.interface";
 import type { dataLogin } from "../types/form.type";
 
 const Login = () => {
@@ -26,7 +27,10 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await loginUser(formData);
+      const user: User | Student | undefined = await loginUser(formData);
+
+      if (!user) return;
+
       navigate("/dashboard");
     } catch (error) {
       console.error(error);

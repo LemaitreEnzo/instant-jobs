@@ -628,8 +628,8 @@ export default {
         globalUserCounter++;
 
         // Répartition des rôles :
-        // 1 admin, 2 staff, 7 standard ("user")
-        let role = "user";
+        // 1 admin, 2 staff, 7 standard ("student")
+        let role = "student";
         if (uIdx === 0) {
           role = "admin";
         } else if (uIdx === 1 || uIdx === 2) {
@@ -689,7 +689,7 @@ export default {
     // ==========================================
     // 7. APPLICATIONS & MEDIAS
     // ==========================================
-    const studentUsers = insertedUsers.filter((u) => u.role === "user");
+    const studentUsers = insertedUsers.filter((u) => u.role === "student");
     const fallbackUserId = insertedUsers[0]?.id ?? 1;
 
     const rawApplications = [
