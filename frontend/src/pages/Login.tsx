@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { loginUser } from "../hooks/useUser";
 import { useFormValidation, validators } from "../hooks/useFormValidation";
 
+import type { Student, User } from "../interfaces/user.interface";
 import type { dataLogin } from "../types/form.type";
 
 import Input from "../components/ui/Input/Input";
@@ -40,7 +41,10 @@ const Login = () => {
     if (!validate(formData)) return;
 
     try {
-      await loginUser(formData);
+      const user: User | Student | undefined = await loginUser(formData);
+
+      if (!user) return;
+
       navigate("/dashboard");
     } catch (error) {
       console.error(error);

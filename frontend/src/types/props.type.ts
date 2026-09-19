@@ -1,7 +1,7 @@
 import type { SetStateAction } from "react";
+import type { Application } from "../interfaces/models.interface";
 import type { Student } from "../interfaces/user.interface";
 import type { PropsBase } from "../types/global.type";
-import type { Application } from "../interfaces/models.interface";
 
 export interface PropsButton extends PropsBase {
   className?: "btn-primary" | "btn-secondary" | "btn-terciary";
@@ -38,7 +38,7 @@ export type PropsProfile = {
 
 export type PropsStatsCards = {
   className?: string;
-  data: Student["application"];
+  data: Student["applications"];
 };
 
 export type PropsCardStudent = {

@@ -32,12 +32,20 @@ Campus.hasMany(User, { foreignKey: "campusId", sourceKey: "id" });
 User.belongsTo(Campus, { foreignKey: "campusId", targetKey: "id" });
 
 // User <-> Application
-User.hasMany(Application, { foreignKey: "userId", sourceKey: "id" });
-Application.belongsTo(User, { foreignKey: "userId", targetKey: "id" });
+User.hasMany(Application, {
+  foreignKey: "userId",
+  sourceKey: "id",
+  as: "applications",
+});
+Application.belongsTo(User, {
+  foreignKey: "userId",
+  targetKey: "id",
+  as: "user",
+});
 
 // User <-> Media
-User.hasMany(Media, { foreignKey: "userId", sourceKey: "id" });
-Media.belongsTo(User, { foreignKey: "userId", targetKey: "id" });
+User.hasMany(Media, { foreignKey: "userId", sourceKey: "id", as: "medias" });
+Media.belongsTo(User, { foreignKey: "userId", targetKey: "id", as: "user" });
 
 // Campus <-> Promotion
 Campus.hasMany(Promotion, { foreignKey: "campusId", sourceKey: "id" });

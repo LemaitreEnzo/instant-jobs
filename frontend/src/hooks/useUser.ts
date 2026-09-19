@@ -1,5 +1,5 @@
-import type { User } from "../interfaces/models.interface";
-import { BASE_URL } from "../utils/globals.util";
+import { BASE_URL } from "../constants/global.constant";
+import type { Student, User } from "../interfaces/user.interface";
 
 export const getAllUsers = async (
   organizationId: number,
@@ -7,9 +7,7 @@ export const getAllUsers = async (
   try {
     const res = await fetch(`${BASE_URL}/organization/${organizationId}/users`);
 
-    if (!res.ok) {
-      throw new Error("Error retrieving users");
-    }
+    if (!res.ok) return;
 
     const data: User[] = await res.json();
     return data;
@@ -18,14 +16,12 @@ export const getAllUsers = async (
   }
 };
 
-export const getOneUser = async (id: number): Promise<User | undefined> => {
+export const getOneUser = async (
+  id: number,
+): Promise<User | Student | undefined> => {
   try {
     const res = await fetch(`${BASE_URL}/user/${id}`);
-
-    if (!res.ok) {
-      throw new Error("Error retrieving the user");
-    }
-
+    if (!res.ok) return;
     const data: User = await res.json();
     return data;
   } catch (error) {
@@ -43,9 +39,7 @@ export const createUser = async (data: Partial<User>) => {
       body: JSON.stringify(data),
     });
 
-    if (!res.ok) {
-      throw new Error("Error creating the user");
-    }
+    if (!res.ok) return;
   } catch (error) {
     console.error(error);
   }
@@ -61,9 +55,7 @@ export const updateUser = async (id: number, data: Partial<User>) => {
       body: JSON.stringify(data),
     });
 
-    if (!res.ok) {
-      throw new Error("Error updating the user");
-    }
+    if (!res.ok) return;
   } catch (error) {
     console.error(error);
   }
@@ -71,7 +63,7 @@ export const updateUser = async (id: number, data: Partial<User>) => {
 
 export const loginUser = async (
   data: Partial<User>,
-): Promise<User | undefined> => {
+): Promise<User | Student | undefined> => {
   try {
     const res = await fetch(`${BASE_URL}/user/login`, {
       method: "POST",
@@ -82,9 +74,7 @@ export const loginUser = async (
       credentials: "include",
       body: JSON.stringify(data),
     });
-    if (!res.ok) {
-      throw new Error("Error logging the user");
-    }
+    if (!res.ok) return;
     const user: User = await res.json();
     return user;
   } catch (error) {
@@ -98,9 +88,7 @@ export const deleteUser = async (id: number): Promise<void> => {
       method: "DELETE",
     });
 
-    if (!res.ok) {
-      throw new Error("Error deleting the user");
-    }
+    if (!res.ok) return;
   } catch (error) {
     console.error(error);
   }

@@ -1,13 +1,11 @@
+import { BASE_URL } from "../constants/global.constant";
 import type { Application } from "../interfaces/models.interface";
-import { BASE_URL } from "../utils/globals.util";
 
 export const getAllApplications = async (userId: number) => {
   try {
     const res = await fetch(`${BASE_URL}/user/${userId}/application`);
 
-    if (!res.ok) {
-      throw new Error("Error retrieving applications");
-    }
+    if (!res.ok) return;
 
     const data: Application[] = await res.json();
     return data;
@@ -20,9 +18,7 @@ export const getOneApplication = async (id: number) => {
   try {
     const res = await fetch(`${BASE_URL}/application/${id}`);
 
-    if (!res.ok) {
-      throw new Error("Error retrieving the application");
-    }
+    if (!res.ok) return;
 
     const data: Application = await res.json();
     return data;
@@ -41,9 +37,7 @@ export const createApplication = async (data: Partial<Application>) => {
       body: JSON.stringify(data),
     });
 
-    if (!res.ok) {
-      throw new Error("Error creating the application");
-    }
+    if (!res.ok) return;
   } catch (error) {
     console.error(error);
   }
@@ -62,9 +56,7 @@ export const updateApplication = async (
       body: JSON.stringify(data),
     });
 
-    if (!res.ok) {
-      throw new Error("Error updating the application");
-    }
+    if (!res.ok) return;
   } catch (error) {
     console.error(error);
   }
@@ -76,9 +68,7 @@ export const deleteApplication = async (id: number) => {
       method: "DELETE",
     });
 
-    if (!res.ok) {
-      throw new Error("Error deleting the application");
-    }
+    if (!res.ok) return;
   } catch (error) {
     console.error(error);
   }
