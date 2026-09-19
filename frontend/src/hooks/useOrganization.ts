@@ -1,5 +1,5 @@
+import { BASE_URL } from "../constants/global.constant";
 import type { Organization } from "../interfaces/models.interface";
-import { BASE_URL } from "../utils/globals.util";
 
 export const getAllOrganizations = async () => {
   try {

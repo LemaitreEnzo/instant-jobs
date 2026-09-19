@@ -1,5 +1,5 @@
+import { BASE_URL } from "../constants/global.constant";
 import type { Application } from "../interfaces/models.interface";
-import { BASE_URL } from "../utils/globals.util";
 
 export const getAllApplications = async (userId: number) => {
   try {

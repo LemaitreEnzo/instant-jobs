@@ -1,5 +1,5 @@
+import { BASE_URL } from "../constants/global.constant";
 import type { Campus } from "../interfaces/models.interface";
-import { BASE_URL } from "../utils/globals.util";
 
 export const getAllCampus = async (organizationId: number) => {
   try {

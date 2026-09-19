@@ -1,3 +1,5 @@
+import type React from "react";
+
 export type Role = "student" | "admin" | "staff";
 export interface PropsBase {
   children: React.ReactNode;
@@ -17,4 +19,9 @@ export type DayInformations = {
   // link: string;
   // icon: React.ReactNode;
   // isActive: boolean;
+};
+
+export type Route = {
+  path: string;
+  element: React.ReactNode;
 };

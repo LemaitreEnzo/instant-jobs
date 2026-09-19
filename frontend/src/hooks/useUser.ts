@@ -1,5 +1,5 @@
+import { BASE_URL } from "../constants/global.constant";
 import type { Student, User } from "../interfaces/user.interface";
-import { BASE_URL } from "../utils/globals.util";
 
 export const getAllUsers = async (
   organizationId: number,
