@@ -2,11 +2,21 @@ import type { SetStateAction } from "react";
 import type { Application } from "../interfaces/models.interface";
 import type { Student } from "../interfaces/user.interface";
 import type { PropsBase } from "../types/global.type";
+
 export interface PropsButton extends PropsBase {
   className?: "btn-primary" | "btn-secondary" | "btn-terciary";
+  customClassName?: string;
   shape?: "rectangle" | "oval" | "icon";
   type?: "button" | "submit" | "reset";
   href?: string;
+}
+
+export interface PropsFormField extends PropsBase {
+  label: string;
+  name: string;
+  error: string;
+  required?: boolean;
+  customClassName?: string;
 }
 
 export interface PropsTag extends PropsBase {
@@ -17,6 +27,7 @@ export interface PropsTag extends PropsBase {
     | "tag-none"
     | "tag-primary"
     | "tag-terciary";
+  customClassName?: string;
   round?: boolean;
 }
 

@@ -18,7 +18,7 @@ const Button = ({
   className = "btn-primary",
   ...props
 }: PropsButton) => {
-  const finalClassName = [`btn-${shape}`, className].join(" ").trim();
+  const finalClassName = [`btn-${shape}`, className, props.customClassName].join(" ").trim();
 
   if (props.href) {
     return (

@@ -31,23 +31,6 @@
       }
 
       .form {
-        .field {
-          margin-bottom: 30px;
-
-          label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: bold;
-          }
-
-          input {
-            border: 1px solid #d9d9d9;
-            border-radius: 5px;
-            appearance: none;
-            width: 100%;
-            padding: 5px;
-          }
-        }
         .button {
           width: 100%;
           text-align: center;

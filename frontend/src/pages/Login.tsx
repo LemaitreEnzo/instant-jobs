@@ -4,13 +4,25 @@ import Button from "../components/ui/Button/Button";
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../assets/css/pages/login.css";
+
 import { loginUser } from "../hooks/useUser";
+import { useFormValidation, validators } from "../hooks/useFormValidation";
+
 import type { Student, User } from "../interfaces/user.interface";
 import type { dataLogin } from "../types/form.type";
 
+import Input from "../components/ui/Input/Input";
+import FormField from "../components/ui/FormField/FormField";
+
+import "../assets/css/pages/login.css";
+
 const Login = () => {
   const navigate = useNavigate();
+
+  const { validate, hasError, getError } = useFormValidation({
+    email: [validators.required("L'email est obligatoire"), validators.email()],
+    password: [validators.required("Le mot de passe est obligatoire")],
+  });
 
   const initData: dataLogin = {
     email: "",
@@ -26,6 +38,8 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!validate(formData)) return;
+
     try {
       const user: User | Student | undefined = await loginUser(formData);
 
@@ -54,25 +68,38 @@ const Login = () => {
             action=""
             className="form"
             method="post"
+            noValidate
           >
-            <div className="field">
-              <label htmlFor="email">Adresse mail</label>
-              <input
+            <FormField
+              label="Adresse mail"
+              name="email"
+              required
+              error={getError("email")}
+            >
+              <Input
                 type="email"
                 name="email"
                 id="email"
+                placeholder="vous@exemple.com"
                 onChange={handleChange}
+                error={hasError("email")}
               />
-            </div>
-            <div className="field">
-              <label htmlFor="password">Mot de passe</label>
-              <input
+            </FormField>
+            <FormField
+              label="Mot de passe"
+              name="password"
+              required
+              error={getError("password")}
+            >
+              <Input
                 type="password"
                 name="password"
                 id="password"
+                placeholder="••••••••"
                 onChange={handleChange}
+                error={hasError("password")}
               />
-            </div>
+            </FormField>
             <Button type="submit" className="btn-primary">
               <span>CONNEXION</span>
             </Button>
