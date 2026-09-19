@@ -1,5 +1,5 @@
+import { BASE_URL } from "../constants/global.constant";
 import type { Media } from "../interfaces/models.interface";
-import { BASE_URL } from "../utils/globals.util";
 
 export const getAllMedias = async (userId: number) => {
   try {
