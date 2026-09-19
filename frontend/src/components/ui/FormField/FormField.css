@@ -1,0 +1,21 @@
+.form-field {
+    margin-bottom: 30px;
+
+    .required {
+        margin-left: 0.5em;
+        color: var(--error-color);
+    }
+
+    &.error {
+        color: var(--error-color);
+        p {
+            font-size: 14px;
+            padding-top: 10px;
+        }
+
+        input {
+            outline: none;
+            border: 1px solid var(--error-color);
+        }
+    }
+}

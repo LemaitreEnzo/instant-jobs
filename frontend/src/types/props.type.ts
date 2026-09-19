@@ -2,11 +2,21 @@ import type { SetStateAction } from "react";
 import type { Student } from "../interfaces/user.interface";
 import type { PropsBase } from "../types/global.type";
 import type { Application } from "../interfaces/models.interface";
+
 export interface PropsButton extends PropsBase {
   className?: "btn-primary" | "btn-secondary" | "btn-terciary";
+  customClassName?: string;
   shape?: "rectangle" | "oval" | "icon";
   type?: "button" | "submit" | "reset";
   href?: string;
+}
+
+export interface PropsFormField extends PropsBase {
+  label: string;
+  name: string;
+  error: string;
+  required?: boolean;
+  customClassName?: string;
 }
 
 export interface PropsTag extends PropsBase {
@@ -17,6 +27,7 @@ export interface PropsTag extends PropsBase {
     | "tag-none"
     | "tag-primary"
     | "tag-terciary";
+  customClassName?: string;
   round?: boolean;
 }
 
@@ -36,25 +47,25 @@ export type PropsCardStudent = {
 };
 
 export type PropsUserModal = {
-  open: boolean
-  onOpenChange: React.Dispatch<SetStateAction<boolean>>
-}
+  open: boolean;
+  onOpenChange: React.Dispatch<SetStateAction<boolean>>;
+};
 
 export type PropsCardDocument = {
   name: string;
   added_at: Date;
   stockage: number;
   used: number;
-  pdf_url: string
-}
+  pdf_url: string;
+};
 
 export type PropsSmallCalendar = {
   data: Application[];
-}
+};
 
 export type PropsEventCard = {
   data: Application[];
-}
+};
 
 export type PropsApplications = {
   logo: string;
@@ -65,5 +76,5 @@ export type PropsApplications = {
   type: string;
   status: string;
   resend: string;
-  resendDate: Date | string;
-}
+  resendDate: Date | string;
+};
