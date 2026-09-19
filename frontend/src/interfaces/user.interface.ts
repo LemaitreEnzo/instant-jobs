@@ -1,4 +1,5 @@
 import type { StudentStatus } from "../types/enum.type";
+import type { Role } from "../types/global.type";
 import type {
   Application,
   Campus,
@@ -13,7 +14,8 @@ export interface User {
   lastname: string;
   email: string;
   phone: string;
-  media: Media[] | null;
+  role: Role;
+  medias: Media[] | null;
   organizationId: string;
   campusId: string | null;
 }
@@ -23,6 +25,6 @@ export interface Student extends User {
   promotion: Promotion | null;
   speciality: Speciality | null;
   subSpeciality: SubSpeciality | null;
-  application: Application[];
+  applications: Application[];
   status: StudentStatus;
 }

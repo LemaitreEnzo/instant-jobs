@@ -17,17 +17,6 @@ export interface Campus {
   name: string;
   organizationId: string;
 }
-
-export interface User {
-  id: number;
-  firstname: string;
-  lastname: string;
-  email: string;
-  phone: string;
-  organizationId: string;
-  campusId: string | null;
-}
-
 export interface Application {
   id: number;
   title: string;

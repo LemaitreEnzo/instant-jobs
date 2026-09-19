@@ -15,6 +15,10 @@ export const getAllOrganizations = async (req: Request, res: Response) => {
       },
     });
 
+    if (!organizations) {
+      return res.status(404).json({ message: "Organizations not found" });
+    }
+
     res.status(200).json(organizations);
   } catch (error) {
     res.status(500).json(error);

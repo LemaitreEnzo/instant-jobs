@@ -7,9 +7,7 @@ export const getAllCampus = async (organizationId: number) => {
       `${BASE_URL}/organization/${organizationId}/campus`,
     );
 
-    if (!res.ok) {
-      throw new Error("Error retrieving campus");
-    }
+    if (!res.ok) return;
 
     const data: Campus[] = await res.json();
     console.log(data);
@@ -24,9 +22,7 @@ export const getOneCampus = async (id: number) => {
   try {
     const res = await fetch(`${BASE_URL}/campus/${id}`);
 
-    if (!res.ok) {
-      throw new Error("Error retrieving the campus");
-    }
+    if (!res.ok) return;
 
     const data: Campus = await res.json();
     console.log(data);
@@ -46,9 +42,7 @@ export const createCampus = async (data: Partial<Campus>) => {
       body: JSON.stringify(data),
     });
 
-    if (!res.ok) {
-      throw new Error("Error creating the campus");
-    }
+    if (!res.ok) return;
   } catch (error) {
     console.error(error);
   }
@@ -64,9 +58,7 @@ export const updateCampus = async (id: number, data: Partial<Campus>) => {
       body: JSON.stringify(data),
     });
 
-    if (!res.ok) {
-      throw new Error("Error updating the campus");
-    }
+    if (!res.ok) return;
   } catch (error) {
     console.error(error);
   }
@@ -78,9 +70,7 @@ export const deleteCampus = async (id: number) => {
       method: "DELETE",
     });
 
-    if (!res.ok) {
-      throw new Error("Error deleting the campus");
-    }
+    if (!res.ok) return;
   } catch (error) {
     console.error(error);
   }

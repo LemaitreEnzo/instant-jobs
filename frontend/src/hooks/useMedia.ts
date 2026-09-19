@@ -20,9 +20,7 @@ export const getOneMedia = async (userId: number, id: number) => {
   try {
     const res = await fetch(`${BASE_URL}/user/${userId}/media/${id}`);
 
-    if (!res.ok) {
-      throw new Error("Error retrieving the media");
-    }
+    if (!res.ok) return;
 
     const data: Media = await res.json();
     return data;
@@ -41,9 +39,7 @@ export const createMedia = async (data: Partial<Media>) => {
       body: JSON.stringify(data),
     });
 
-    if (!res.ok) {
-      throw new Error("Error creating the media");
-    }
+    if (!res.ok) return;
   } catch (error) {
     console.error(error);
   }
@@ -59,9 +55,7 @@ export const updateMedia = async (id: number, data: Partial<Media>) => {
       body: JSON.stringify(data),
     });
 
-    if (!res.ok) {
-      throw new Error("Error updating the Media");
-    }
+    if (!res.ok) return;
   } catch (error) {
     console.error(error);
   }
@@ -73,9 +67,7 @@ export const deleteMedia = async (id: number) => {
       method: "DELETE",
     });
 
-    if (!res.ok) {
-      throw new Error("Error deleting the media");
-    }
+    if (!res.ok) return;
   } catch (error) {
     console.error(error);
   }

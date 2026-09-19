@@ -1,7 +1,7 @@
 import type { SetStateAction } from "react";
+import type { Application } from "../interfaces/models.interface";
 import type { Student } from "../interfaces/user.interface";
 import type { PropsBase } from "../types/global.type";
-import type { Application } from "../interfaces/models.interface";
 export interface PropsButton extends PropsBase {
   className?: "btn-primary" | "btn-secondary" | "btn-terciary";
   shape?: "rectangle" | "oval" | "icon";
@@ -27,7 +27,7 @@ export type PropsProfile = {
 
 export type PropsStatsCards = {
   className?: string;
-  data: Student["application"];
+  data: Student["applications"];
 };
 
 export type PropsCardStudent = {
@@ -36,25 +36,25 @@ export type PropsCardStudent = {
 };
 
 export type PropsUserModal = {
-  open: boolean
-  onOpenChange: React.Dispatch<SetStateAction<boolean>>
-}
+  open: boolean;
+  onOpenChange: React.Dispatch<SetStateAction<boolean>>;
+};
 
 export type PropsCardDocument = {
   name: string;
   added_at: Date;
   stockage: number;
   used: number;
-  pdf_url: string
-}
+  pdf_url: string;
+};
 
 export type PropsSmallCalendar = {
   data: Application[];
-}
+};
 
 export type PropsEventCard = {
   data: Application[];
-}
+};
 
 export type PropsApplications = {
   logo: string;
@@ -65,5 +65,5 @@ export type PropsApplications = {
   type: string;
   status: string;
   resend: string;
-  resendDate: Date | string;
-}
+  resendDate: Date | string;
+};
