@@ -1,15 +1,41 @@
-// import React from "react";
-// import { Navigate } from "react-router-dom";
-// import { useAuth } from "../context/AuthContext";
-// import type { ProtectedRouteProps } from "../interfaces/Auth.interface";
+import React from "react";
+import { Navigate, useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import type { ProtectedRouteProps } from "../interfaces/Auth.interface";
+import type { Role } from "../types/global.type";
 
-const ProtectedRoute = ({ children }) => {
-  // const { isLoggedIn, loading } = useAuth();
+const VALID_ROLES: Role[] = ["student", "admin", "staff"];
 
-  // if (loading) return <div>Loading...</div>;
+export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
+  children,
+  allowedRoles,
+}) => {
+  const { isAuthenticated, role, loading } = useAuth();
+  const location = useLocation();
 
-  // return isLoggedIn ? children : <Navigate to="/login" replace />;
-  return;
+  if (loading) {
+    return <div className="loading-container">Loading...</div>;
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace state={{ from: location }} />;
+  }
+
+  // If the user's role is not recognized by the system (e.g. "staffie")
+  if (!role || !VALID_ROLES.includes(role)) {
+    return <Navigate to="/unauthorized" replace />;
+  }
+
+  // If specific roles are restricted for this route
+  if (
+    allowedRoles &&
+    allowedRoles.length > 0 &&
+    !allowedRoles.includes(role)
+  ) {
+    return <Navigate to="/unauthorized" replace />;
+  }
+
+  return children;
 };
 
 export default ProtectedRoute;

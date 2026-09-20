@@ -7,12 +7,12 @@ const PORT = Number(getEnv("PORT"));
 sequelize
   .authenticate()
   .then(() => {
-    console.log("✅ Connecté à la base de données");
+    console.log("✅ Connected to database");
     app.listen(PORT, () =>
-      console.log(`🚀 Serveur sur http://localhost:${PORT}`),
+      console.log(`🚀 Server running on http://localhost:${PORT}`),
     );
   })
   .catch((err) => {
-    console.error("❌ Erreur de connexion à la DB :", err);
+    console.error("❌ Database connection error:", err);
     process.exit(1);
   });

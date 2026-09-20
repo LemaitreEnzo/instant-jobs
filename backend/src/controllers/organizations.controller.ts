@@ -38,7 +38,7 @@ export const getAllOrganizations = async (req: Request, res: Response) => {
 
     res.status(200).json(organizations);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -58,7 +58,7 @@ export const getOneOrganization = async (req: Request, res: Response) => {
 
     res.status(200).json(organization);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -69,7 +69,7 @@ export const createOrganization = async (req: Request, res: Response) => {
 
     res.status(201).json(organization);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -85,13 +85,13 @@ export const updateOrganization = async (req: Request, res: Response) => {
     });
 
     if (!organization) {
-      return res.status(404).json({ error: "Organisation not found." });
+      return res.status(404).json({ message: "Organization not found" });
     }
 
     await organization.update(data);
-    res.status(206).json({ message: "Organization updated" });
+    res.status(206).json(organization);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -111,9 +111,7 @@ export const deleteOrganization = async (req: Request, res: Response) => {
     await organization.destroy();
     res.status(204).end();
   } catch (error) {
-    res.status(500).json({
-      error: "Erreur serveur.",
-    });
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -134,8 +132,7 @@ export const getCampuses = async (req: Request, res: Response) => {
 
     res.status(200).json(campuses);
   } catch (error) {
-    console.error("GET ORGANIZATION CAMPUSES ERROR:", error);
-    res.status(500).json(error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -162,6 +159,6 @@ export const getUsers = async (req: Request, res: Response) => {
 
     res.status(200).json(users);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };

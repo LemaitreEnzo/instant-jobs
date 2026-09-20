@@ -1,7 +1,7 @@
 import "dotenv/config";
 
 /**
- * Transforms a string into a valid slug.
+ * Retrieves the value of an environment variable or throws an error if undefined.
  *
  * @example
  * getEnv("VERSION"); // "v1"
@@ -12,7 +12,7 @@ import "dotenv/config";
  */
 const getEnv = (key: string): string => {
   const value = process.env[key];
-  if (!value) throw new Error(`Variable d'environnement manquante : ${key}`);
+  if (!value) throw new Error(`Missing environment variable: ${key}`);
   return value;
 };
 

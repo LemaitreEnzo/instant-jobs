@@ -29,7 +29,7 @@ export const getOneSpeciality = async (req: Request, res: Response) => {
 
     res.status(200).json(speciality);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -38,7 +38,7 @@ export const createSpeciality = async (req: Request, res: Response) => {
     const speciality = await Speciality.create(req.body);
     res.status(201).json(speciality);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -58,9 +58,9 @@ export const updateSpeciality = async (req: Request, res: Response) => {
     }
 
     await speciality.update(data);
-    res.status(206).json({ message: "Speciality updated" });
+    res.status(206).json(speciality);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -81,7 +81,7 @@ export const deleteSpeciality = async (req: Request, res: Response) => {
     await speciality.destroy();
     res.status(204).end();
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -105,6 +105,6 @@ export const getSubSpecialities = async (
 
     res.status(200).json(subSpecialities);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };

@@ -18,7 +18,7 @@ export const useSubSpeciality = () => {
       const msg =
         err instanceof Error
           ? err.message
-          : "Erreur lors de la récupération de la sous-spécialité";
+          : "Error fetching sub-speciality";
       setError(msg);
       throw err;
     } finally {
@@ -38,7 +38,7 @@ export const useSubSpeciality = () => {
         const msg =
           err instanceof Error
             ? err.message
-            : "Erreur lors de la création de la sous-spécialité";
+            : "Error creating sub-speciality";
         setError(msg);
         throw err;
       } finally {
@@ -63,7 +63,7 @@ export const useSubSpeciality = () => {
         const msg =
           err instanceof Error
             ? err.message
-            : "Erreur lors de la mise à jour de la sous-spécialité";
+            : "Error updating sub-speciality";
         setError(msg);
         throw err;
       } finally {
@@ -83,7 +83,7 @@ export const useSubSpeciality = () => {
       const msg =
         err instanceof Error
           ? err.message
-          : "Erreur lors de la suppression de la sous-spécialité";
+          : "Error deleting sub-speciality";
       setError(msg);
       throw err;
     } finally {
