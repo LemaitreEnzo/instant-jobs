@@ -4,27 +4,6 @@ import { Media } from "src/models";
 
 const excludedData: (keyof Attributes<Media>)[] = ["createdAt", "updatedAt"];
 
-export const getAllMedias = async (req: Request, res: Response) => {
-  try {
-    const { userId } = req.params;
-
-    const medias = await Media.findAll({
-      where: { userId },
-      attributes: {
-        exclude: excludedData,
-      },
-    });
-
-    if (!medias) {
-      return res.status(404).json({ message: "Medias not found" });
-    }
-
-    res.status(200).json(medias);
-  } catch (error) {
-    res.status(500).json(error);
-  }
-};
-
 export const getOneMedia = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -71,7 +50,7 @@ export const updateMedia = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "Media not found." });
     }
 
-    media.update(data);
+    await media.update(data);
     res.status(206).json({ message: "Media updated" });
   } catch (error) {
     res.status(500).json(error);
@@ -88,7 +67,7 @@ export const deleteMedia = async (req: Request, res: Response) => {
     }
 
     await media.destroy();
-    res.status(204).json({ message: "Media deleted" });
+    res.status(204).end();
   } catch (error) {
     res.status(500).json(error);
   }

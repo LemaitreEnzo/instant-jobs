@@ -1,7 +1,6 @@
 import {
   createMedia,
   deleteMedia,
-  getAllMedias,
   getOneMedia,
   updateMedia,
 } from "controllers/medias.controller";
@@ -10,7 +9,6 @@ import express from "express";
 const mediasRoutes = express.Router({ mergeParams: true });
 
 // GET
-mediasRoutes.get("/", getAllMedias);
 mediasRoutes.get("/:id", getOneMedia);
 
 // CREATE

@@ -5,7 +5,7 @@ import Button from "../components/ui/Button/Button";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { loginUser } from "../hooks/useUser";
+import useUser from "../hooks/useUser";
 import { useFormValidation, validators } from "../hooks/useFormValidation";
 
 import type { Student, User } from "../interfaces/user.interface";
@@ -18,6 +18,7 @@ import "../assets/css/pages/login.css";
 
 const Login = () => {
   const navigate = useNavigate();
+  const userFn = useUser();
 
   const { validate, hasError, getError } = useFormValidation({
     email: [validators.required("L'email est obligatoire"), validators.email()],
@@ -41,7 +42,7 @@ const Login = () => {
     if (!validate(formData)) return;
 
     try {
-      const user: User | Student | undefined = await loginUser(formData);
+      const user: User | Student | undefined = await userFn.login(formData);
 
       if (!user) return;
 

@@ -1,7 +1,8 @@
 import type { Role } from "../types/global.type";
+import type { Student, User } from "./user.interface";
 
 export interface AuthContextType {
-  isLoggedIn: boolean;
+  user: User | Student;
   role: Role;
   loading: boolean;
 }

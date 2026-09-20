@@ -7,32 +7,14 @@ const excludedData: (keyof Attributes<Application>)[] = [
   "updatedAt",
 ];
 
-export const getAllApplications = async (req: Request, res: Response) => {
-  try {
-    const { userId } = req.params;
-
-    const applications = await Application.findAll({
-      where: { userId },
-      attributes: {
-        exclude: excludedData,
-      },
-    });
-
-    if (!applications) {
-      return res.status(404).json({ message: "Applications not found" });
-    }
-
-    res.status(200).json(applications);
-  } catch (error) {
-    res.status(500).json(error);
-  }
-};
-
 export const getOneApplication = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const application = await Application.findOne({
       where: { id },
+      attributes: {
+        exclude: excludedData,
+      },
     });
 
     if (!application) {
@@ -69,7 +51,7 @@ export const updateApplication = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Application not found" });
     }
 
-    application.update(data);
+    await application.update(data);
     res.status(206).json({ message: "Application updated" });
   } catch (error) {
     res.status(500).json(error);
@@ -91,7 +73,7 @@ export const deleteApplication = async (req: Request, res: Response) => {
     }
 
     await application.destroy();
-    res.status(204).json({ message: "Application deleted" });
+    res.status(204).end();
   } catch (error) {
     res.status(500).json(error);
   }

@@ -1,32 +1,16 @@
 import type { Request, Response } from "express";
 import { Attributes } from "sequelize";
-import { Speciality } from "src/models";
+import { Speciality, SubSpeciality } from "src/models";
 
 const excludedData: (keyof Attributes<Speciality>)[] = [
   "createdAt",
   "updatedAt",
 ];
 
-export const getAllSpecialities = async (req: Request, res: Response) => {
-  try {
-    const { promotionId } = req.params;
-
-    const specialities = await Speciality.findAll({
-      where: { promotionId },
-      attributes: {
-        exclude: excludedData,
-      },
-    });
-
-    if (!specialities) {
-      return res.status(404).json({ message: "Specialities not found" });
-    }
-
-    res.status(200).json(specialities);
-  } catch (error) {
-    res.status(500).json(error);
-  }
-};
+const excludedSubSpecialityData: (keyof Attributes<SubSpeciality>)[] = [
+  "createdAt",
+  "updatedAt",
+];
 
 export const getOneSpeciality = async (req: Request, res: Response) => {
   try {
@@ -73,8 +57,7 @@ export const updateSpeciality = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Speciality not found" });
     }
 
-    speciality.update(data);
-
+    await speciality.update(data);
     res.status(206).json({ message: "Speciality updated" });
   } catch (error) {
     res.status(500).json(error);
@@ -96,7 +79,31 @@ export const deleteSpeciality = async (req: Request, res: Response) => {
     }
 
     await speciality.destroy();
-    res.status(204).json({ message: "Speciality deleted" });
+    res.status(204).end();
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+export const getSubSpecialities = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    const { specialityId } = req.params;
+    const subSpecialities = await SubSpeciality.findAll({
+      where: { specialityId },
+      attributes: {
+        exclude: excludedSubSpecialityData,
+      },
+    });
+
+    if (!subSpecialities) {
+      res.status(404).json({ message: "Sub-specialities not found" });
+      return;
+    }
+
+    res.status(200).json(subSpecialities);
   } catch (error) {
     res.status(500).json(error);
   }

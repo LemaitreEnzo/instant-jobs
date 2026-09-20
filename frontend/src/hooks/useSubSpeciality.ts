@@ -1,24 +1,24 @@
 import { useCallback, useState } from "react";
-import type { Application } from "../interfaces/models.interface";
+import type { SubSpeciality } from "../interfaces/models.interface";
 import { api } from "../lib/api";
 
-export const useApplication = () => {
-  const [application, setApplication] = useState<Application | null>(null);
+export const useSubSpeciality = () => {
+  const [subSpeciality, setSubSpeciality] = useState<SubSpeciality | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchOne = useCallback(async (id: number): Promise<Application> => {
+  const fetchOne = useCallback(async (id: number): Promise<SubSpeciality> => {
     setLoading(true);
     setError(null);
     try {
-      const data = await api.application.fetchOne(id);
-      setApplication(data);
+      const data = await api.subSpeciality.fetchOne(id);
+      setSubSpeciality(data);
       return data;
     } catch (err: unknown) {
       const msg =
         err instanceof Error
           ? err.message
-          : "Erreur lors de la récupération de la candidature";
+          : "Erreur lors de la récupération de la sous-spécialité";
       setError(msg);
       throw err;
     } finally {
@@ -27,18 +27,18 @@ export const useApplication = () => {
   }, []);
 
   const create = useCallback(
-    async (data: Partial<Application>): Promise<Application> => {
+    async (data: Partial<SubSpeciality>): Promise<SubSpeciality> => {
       setLoading(true);
       setError(null);
       try {
-        const created = await api.application.create(data);
-        setApplication(created);
+        const created = await api.subSpeciality.create(data);
+        setSubSpeciality(created);
         return created;
       } catch (err: unknown) {
         const msg =
           err instanceof Error
             ? err.message
-            : "Erreur lors de la création de la candidature";
+            : "Erreur lors de la création de la sous-spécialité";
         setError(msg);
         throw err;
       } finally {
@@ -49,18 +49,21 @@ export const useApplication = () => {
   );
 
   const update = useCallback(
-    async (id: number, data: Partial<Application>): Promise<Application> => {
+    async (
+      id: number,
+      data: Partial<SubSpeciality>,
+    ): Promise<SubSpeciality> => {
       setLoading(true);
       setError(null);
       try {
-        const updated = await api.application.update(id, data);
-        setApplication((prev) => (prev && prev.id === id ? updated : prev));
+        const updated = await api.subSpeciality.update(id, data);
+        setSubSpeciality((prev) => (prev && prev.id === id ? updated : prev));
         return updated;
       } catch (err: unknown) {
         const msg =
           err instanceof Error
             ? err.message
-            : "Erreur lors de la mise à jour de la candidature";
+            : "Erreur lors de la mise à jour de la sous-spécialité";
         setError(msg);
         throw err;
       } finally {
@@ -74,13 +77,13 @@ export const useApplication = () => {
     setLoading(true);
     setError(null);
     try {
-      await api.application.delete(id);
-      setApplication((prev) => (prev && prev.id === id ? null : prev));
+      await api.subSpeciality.delete(id);
+      setSubSpeciality((prev) => (prev && prev.id === id ? null : prev));
     } catch (err: unknown) {
       const msg =
         err instanceof Error
           ? err.message
-          : "Erreur lors de la suppression de la candidature";
+          : "Erreur lors de la suppression de la sous-spécialité";
       setError(msg);
       throw err;
     } finally {
@@ -89,7 +92,7 @@ export const useApplication = () => {
   }, []);
 
   return {
-    application,
+    subSpeciality,
     loading,
     error,
     fetchOne,
@@ -99,4 +102,4 @@ export const useApplication = () => {
   };
 };
 
-export default useApplication;
+export default useSubSpeciality;
