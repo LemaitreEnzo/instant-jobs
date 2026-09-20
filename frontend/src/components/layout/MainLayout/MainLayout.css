@@ -1,6 +1,10 @@
 .main-layout {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
     .main_layout_body {
         display: flex;
+        flex: 1;
         flex-wrap: wrap;
         background-color: var(--body-color);
 
