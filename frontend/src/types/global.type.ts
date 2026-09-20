@@ -25,3 +25,10 @@ export type Route = {
   path: string;
   element: React.ReactNode;
 };
+
+export type PersonalInformation = {
+  firstname: string,
+  lastname: string,
+  email: string,
+  phone: string
+}

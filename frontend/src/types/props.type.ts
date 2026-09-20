@@ -1,7 +1,7 @@
 import type { SetStateAction } from "react";
 import type { Application } from "../interfaces/models.interface";
 import type { Student } from "../interfaces/user.interface";
-import type { PropsBase } from "../types/global.type";
+import type { PersonalInformation, PropsBase } from "../types/global.type";
 
 export interface PropsButton extends PropsBase {
   className?: "btn-primary" | "btn-secondary" | "btn-terciary";
@@ -78,3 +78,7 @@ export type PropsApplications = {
   resend: string;
   resendDate: Date | string;
 };
+
+export type PropsPersonalInformation = {
+  data: PersonalInformation;
+}
