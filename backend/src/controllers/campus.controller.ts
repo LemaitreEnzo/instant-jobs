@@ -1,30 +1,12 @@
 import type { Request, Response } from "express";
 import { Attributes } from "sequelize";
-import { Campus } from "src/models";
+import { Campus, Promotion } from "src/models";
 
 const excludedData: (keyof Attributes<Campus>)[] = ["createdAt", "updatedAt"];
-
-export const getAllCampus = async (req: Request, res: Response) => {
-  try {
-    const { organizationId } = req.params;
-
-    const campus = await Campus.findAll({
-      where: { organizationId },
-      attributes: {
-        exclude: excludedData,
-      },
-    });
-
-    if (!campus) {
-      return res.status(404).json({ message: "Campus not found" });
-    }
-
-    res.status(200).json(campus);
-  } catch (error) {
-    console.error("GET ALL CAMPUS ERROR:", error);
-    res.status(500).json(error);
-  }
-};
+const excludedPromotionData: (keyof Attributes<Promotion>)[] = [
+  "createdAt",
+  "updatedAt",
+];
 
 export const getOneCampus = async (req: Request, res: Response) => {
   try {
@@ -74,7 +56,7 @@ export const updateCampus = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Campus not found" });
     }
 
-    campus.update(data);
+    await campus.update(data);
     res.status(206).json({ message: "Campus updated" });
   } catch (error) {
     console.error("UPDATE CAMPUS ERROR:", error);
@@ -97,9 +79,30 @@ export const deleteCampus = async (req: Request, res: Response) => {
     }
 
     await campus.destroy();
-    res.status(204).json({ message: "Campus deleted" });
+    res.status(204).end();
   } catch (error) {
     console.error("DELETE CAMPUS ERROR:", error);
+    res.status(500).json(error);
+  }
+};
+
+export const getPromotions = async (req: Request, res: Response) => {
+  try {
+    const { campusId } = req.params;
+
+    const promotions = await Promotion.findAll({
+      where: { campusId },
+      attributes: {
+        exclude: excludedPromotionData,
+      },
+    });
+
+    if (!promotions) {
+      return res.status(404).json({ message: "Promotions not found" });
+    }
+
+    res.status(200).json(promotions);
+  } catch (error) {
     res.status(500).json(error);
   }
 };

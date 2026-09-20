@@ -7,13 +7,11 @@ import {
   deleteOrganization,
   getAllOrganizations,
   getOneOrganization,
+  getCampuses,
+  getUsers,
   updateOrganization,
 } from "controllers/organizations.controller";
-import {
-  getAllCampus,
-} from "controllers/campus.controller";
 import express from "express";
-import { getAllUsers } from "src/controllers/users.controller";
 
 const organizationsRoutes = express.Router({ mergeParams: true });
 
@@ -28,8 +26,8 @@ organizationsRoutes.put("/:id", updateOrganization);
 
 organizationsRoutes.delete("/:id", deleteOrganization);
 
-organizationsRoutes.get("/:organizationId/campus", getAllCampus);
+organizationsRoutes.get("/:organizationId/campus", getCampuses);
 
-organizationsRoutes.use("/:organizationId/users", getAllUsers);
+organizationsRoutes.get("/:organizationId/users", getUsers);
 
 export default organizationsRoutes;
