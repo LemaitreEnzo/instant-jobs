@@ -15,12 +15,12 @@ export const getOneMedia = async (req: Request, res: Response) => {
     });
 
     if (!media) {
-      return res.status(404).json({ error: "Media non trouvé." });
+      return res.status(404).json({ message: "Media not found" });
     }
 
     res.status(200).json(media);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -31,7 +31,7 @@ export const createMedia = async (req: Request, res: Response) => {
 
     res.status(201).json(media);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -47,13 +47,13 @@ export const updateMedia = async (req: Request, res: Response) => {
     });
 
     if (!media) {
-      return res.status(404).json({ error: "Media not found." });
+      return res.status(404).json({ message: "Media not found" });
     }
 
     await media.update(data);
-    res.status(206).json({ message: "Media updated" });
+    res.status(206).json(media);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -63,12 +63,12 @@ export const deleteMedia = async (req: Request, res: Response) => {
     const media = await Media.findOne({ where: { id } });
 
     if (!media) {
-      return res.status(404).json({ error: "Media not found." });
+      return res.status(404).json({ message: "Media not found" });
     }
 
     await media.destroy();
     res.status(204).end();
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };

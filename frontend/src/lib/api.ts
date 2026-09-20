@@ -84,7 +84,7 @@ class ApiClient {
         ...restOptions,
         headers,
         body: finalBody,
-        credentials: "include", // Envoi systématique des cookies HTTP-Only
+        credentials: "include", // Always send HTTP-Only cookies
         signal: controller.signal,
       });
 
@@ -106,7 +106,7 @@ class ApiClient {
           }
         }
 
-        let errorMessage = "Une erreur est survenue";
+        let errorMessage = "An unexpected error occurred";
         if (typeof errorData === "string" && errorData.trim().length > 0) {
           errorMessage = errorData;
         } else if (
@@ -126,34 +126,34 @@ class ApiClient {
         } else {
           switch (response.status) {
             case 400:
-              errorMessage = "Requête invalide.";
+              errorMessage = "Bad request.";
               break;
             case 401:
-              errorMessage = "Session expirée ou non autorisée. Veuillez vous reconnecter.";
+              errorMessage = "Session expired or unauthorized. Please log in again.";
               break;
             case 403:
-              errorMessage = "Accès refusé.";
+              errorMessage = "Access denied.";
               break;
             case 404:
-              errorMessage = "Ressource non trouvée.";
+              errorMessage = "Resource not found.";
               break;
             case 408:
-              errorMessage = "Délai d'attente de la requête dépassé (Timeout).";
+              errorMessage = "Request timeout.";
               break;
             case 409:
-              errorMessage = "Conflit avec l'état actuel de la ressource.";
+              errorMessage = "Conflict with the current state of the resource.";
               break;
             case 422:
-              errorMessage = "Données fournies non traitables.";
+              errorMessage = "Unprocessable entity.";
               break;
             case 500:
             case 502:
             case 503:
             case 504:
-              errorMessage = "Erreur interne du serveur.";
+              errorMessage = "Internal server error.";
               break;
             default:
-              errorMessage = `Erreur HTTP ${response.status}`;
+              errorMessage = `HTTP error ${response.status}`;
               break;
           }
         }
@@ -176,11 +176,11 @@ class ApiClient {
         "name" in error &&
         error.name === "AbortError"
       ) {
-        throw new ApiError(408, "La requête a expiré (Timeout)");
+        throw new ApiError(408, "Request timed out");
       }
 
       const message =
-        error instanceof Error ? error.message : "Erreur de connexion au serveur";
+        error instanceof Error ? error.message : "Server connection error";
       throw new ApiError(0, message, error);
     }
   }
@@ -374,8 +374,8 @@ class ApiClient {
       return this.request<void>("user/logout", { method: "POST" });
     },
 
-    getMe: (): Promise<User | Student> => {
-      return this.request<User | Student>("user/me", { method: "GET" });
+    getMe: (): Promise<User | Student | null> => {
+      return this.request<User | Student | null>("user/me", { method: "GET" });
     },
 
     fetchApplications: (userId: number): Promise<Application[]> => {

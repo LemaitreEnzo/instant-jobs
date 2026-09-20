@@ -19,7 +19,7 @@ export const usePromotion = () => {
       const msg =
         err instanceof Error
           ? err.message
-          : "Erreur lors de la récupération de la promotion";
+          : "Error fetching promotion";
       setError(msg);
       throw err;
     } finally {
@@ -39,7 +39,7 @@ export const usePromotion = () => {
         const msg =
           err instanceof Error
             ? err.message
-            : "Erreur lors de la création de la promotion";
+            : "Error creating promotion";
         setError(msg);
         throw err;
       } finally {
@@ -61,7 +61,7 @@ export const usePromotion = () => {
         const msg =
           err instanceof Error
             ? err.message
-            : "Erreur lors de la mise à jour de la promotion";
+            : "Error updating promotion";
         setError(msg);
         throw err;
       } finally {
@@ -81,7 +81,7 @@ export const usePromotion = () => {
       const msg =
         err instanceof Error
           ? err.message
-          : "Erreur lors de la suppression de la promotion";
+          : "Error deleting promotion";
       setError(msg);
       throw err;
     } finally {
@@ -101,7 +101,7 @@ export const usePromotion = () => {
         const msg =
           err instanceof Error
             ? err.message
-            : "Erreur lors de la récupération des spécialités de la promotion";
+            : "Error fetching promotion specialities";
         setError(msg);
         throw err;
       } finally {

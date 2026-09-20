@@ -3,9 +3,9 @@ import Logo from "../assets/img/Logo.webp";
 import Button from "../components/ui/Button/Button";
 
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
-import useUser from "../hooks/useUser";
+import { useAuth } from "../context/AuthContext";
 import { useFormValidation, validators } from "../hooks/useFormValidation";
 
 import type { Student, User } from "../interfaces/user.interface";
@@ -18,7 +18,8 @@ import "../assets/css/pages/login.css";
 
 const Login = () => {
   const navigate = useNavigate();
-  const userFn = useUser();
+  const location = useLocation();
+  const { login } = useAuth();
 
   const { validate, hasError, getError } = useFormValidation({
     email: [validators.required("L'email est obligatoire"), validators.email()],
@@ -42,11 +43,14 @@ const Login = () => {
     if (!validate(formData)) return;
 
     try {
-      const user: User | Student | undefined = await userFn.login(formData);
+      const user: User | Student | undefined = await login(formData);
 
       if (!user) return;
 
-      navigate("/dashboard");
+      const from =
+        (location.state as { from?: { pathname: string } })?.from?.pathname ||
+        "/dashboard";
+      navigate(from, { replace: true });
     } catch (error) {
       console.error(error);
     }

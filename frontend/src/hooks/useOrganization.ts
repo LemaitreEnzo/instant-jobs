@@ -22,7 +22,7 @@ export const useOrganization = () => {
       const msg =
         err instanceof Error
           ? err.message
-          : "Erreur lors de la récupération des organisations";
+          : "Error fetching organizations";
       setError(msg);
       throw err;
     } finally {
@@ -42,7 +42,7 @@ export const useOrganization = () => {
         const msg =
           err instanceof Error
             ? err.message
-            : "Erreur lors de la récupération de l'organisation";
+            : "Error fetching organization";
         setError(msg);
         throw err;
       } finally {
@@ -64,7 +64,7 @@ export const useOrganization = () => {
         const msg =
           err instanceof Error
             ? err.message
-            : "Erreur lors de la création de l'organisation";
+            : "Error creating organization";
         setError(msg);
         throw err;
       } finally {
@@ -87,7 +87,7 @@ export const useOrganization = () => {
         const msg =
           err instanceof Error
             ? err.message
-            : "Erreur lors de la mise à jour de l'organisation";
+            : "Error updating organization";
         setError(msg);
         throw err;
       } finally {
@@ -109,7 +109,7 @@ export const useOrganization = () => {
       const msg =
         err instanceof Error
           ? err.message
-          : "Erreur lors de la suppression de l'organisation";
+          : "Error deleting organization";
       setError(msg);
       throw err;
     } finally {
@@ -129,7 +129,7 @@ export const useOrganization = () => {
         const msg =
           err instanceof Error
             ? err.message
-            : "Erreur lors de la récupération des campus de l'organisation";
+            : "Error fetching organization campuses";
         setError(msg);
         throw err;
       } finally {
@@ -151,7 +151,7 @@ export const useOrganization = () => {
         const msg =
           err instanceof Error
             ? err.message
-            : "Erreur lors de la récupération des utilisateurs de l'organisation";
+            : "Error fetching organization users";
         setError(msg);
         throw err;
       } finally {

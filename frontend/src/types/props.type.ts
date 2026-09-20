@@ -14,7 +14,7 @@ export interface PropsButton extends PropsBase {
 export interface PropsFormField extends PropsBase {
   label: string;
   name: string;
-  error: string;
+  error: string | null;
   required?: boolean;
   customClassName?: string;
 }

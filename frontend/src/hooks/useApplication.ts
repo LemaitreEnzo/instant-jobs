@@ -18,7 +18,7 @@ export const useApplication = () => {
       const msg =
         err instanceof Error
           ? err.message
-          : "Erreur lors de la récupération de la candidature";
+          : "Error fetching application";
       setError(msg);
       throw err;
     } finally {
@@ -38,7 +38,7 @@ export const useApplication = () => {
         const msg =
           err instanceof Error
             ? err.message
-            : "Erreur lors de la création de la candidature";
+            : "Error creating application";
         setError(msg);
         throw err;
       } finally {
@@ -60,7 +60,7 @@ export const useApplication = () => {
         const msg =
           err instanceof Error
             ? err.message
-            : "Erreur lors de la mise à jour de la candidature";
+            : "Error updating application";
         setError(msg);
         throw err;
       } finally {
@@ -80,7 +80,7 @@ export const useApplication = () => {
       const msg =
         err instanceof Error
           ? err.message
-          : "Erreur lors de la suppression de la candidature";
+          : "Error deleting application";
       setError(msg);
       throw err;
     } finally {

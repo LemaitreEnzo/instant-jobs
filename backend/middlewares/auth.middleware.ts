@@ -1,46 +1,81 @@
-import { NextFunction, Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-// import { User } from "../src/models/users.model";
-// import cookieParser from 'cookie-parser';
 import getEnv from "../utils/envHelper";
-// import bcrypt from "bcryptjs";
+
+export const VALID_ROLES = ["student", "admin", "staff"] as const;
+export type ValidRole = (typeof VALID_ROLES)[number];
 
 declare global {
   namespace Express {
     interface Request {
-      user?: { uuid: string; role: string };
+      user?:
+        | {
+            id?: number;
+            uuid: string;
+            role: string;
+            organizationId?: number;
+          }
+        | undefined;
     }
   }
 }
 
-const authenticateUser = async (
+/**
+ * Authentication middleware for protected routes.
+ * Returns 401 if token is missing, expired, or invalid.
+ * Returns 403 if user role is not recognized in VALID_ROLES.
+ */
+export const authenticateUser = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
-  const tokenName = getEnv("TOKEN");
-  const secret = getEnv("SECRET");
   try {
-    if (req.cookies[tokenName]) {
-      // const { organizationid } = req.params;
-      const token = req.cookies[tokenName];
+    const tokenName = getEnv("TOKEN");
+    const secret = getEnv("SECRET");
+
+    const token = req.cookies?.[tokenName];
+    if (!token) {
+      return res
+        .status(401)
+        .json({ message: "Unauthorized: Missing authentication token" });
+    }
+
+    try {
       const decoded = jwt.verify(token, secret) as {
+        id?: number;
         uuid: string;
         role: string;
+        organizationId?: number;
       };
-      req.user = decoded;
 
-      // if (
-      //   await User.findOne({ where: { organizationid, uuid: req.user.uuid } })
-      // ) {
-      //   res.status(200).json({ message: "Access granted" });
-      // }
-      next();
-    } else {
-      next();
+      if (!VALID_ROLES.includes(decoded.role as ValidRole)) {
+        return res
+          .status(403)
+          .json({ message: "Forbidden: Unrecognized or unauthorized role" });
+      }
+
+      req.user = decoded;
+      return next();
+    } catch (jwtError: unknown) {
+      if (
+        jwtError instanceof jwt.TokenExpiredError ||
+        (jwtError &&
+          typeof jwtError === "object" &&
+          "name" in jwtError &&
+          jwtError.name === "TokenExpiredError")
+      ) {
+        return res
+          .status(401)
+          .json({ message: "Unauthorized: Session expired, please log in again" });
+      }
+
+      return res
+        .status(401)
+        .json({ message: "Unauthorized: Invalid or malformed token" });
     }
   } catch (error) {
-    return res.status(500).json(error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 

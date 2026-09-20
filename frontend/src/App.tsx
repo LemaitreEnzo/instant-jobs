@@ -26,6 +26,14 @@ function App() {
           ))}
         </Route>
         <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/unauthorized"
           element={
             <ProtectedRoute>

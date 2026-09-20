@@ -21,7 +21,7 @@ export const useUser = () => {
       const msg =
         err instanceof Error
           ? err.message
-          : "Erreur lors de la récupération de l'utilisateur";
+          : "Error fetching user";
       setError(msg);
       throw err;
     } finally {
@@ -40,7 +40,7 @@ export const useUser = () => {
       const msg =
         err instanceof Error
           ? err.message
-          : "Erreur lors de la création de l'utilisateur";
+          : "Error creating user";
       setError(msg);
       throw err;
     } finally {
@@ -60,7 +60,7 @@ export const useUser = () => {
         const msg =
           err instanceof Error
             ? err.message
-            : "Erreur lors de la mise à jour de l'utilisateur";
+            : "Error updating user";
         setError(msg);
         throw err;
       } finally {
@@ -80,7 +80,7 @@ export const useUser = () => {
       const msg =
         err instanceof Error
           ? err.message
-          : "Erreur lors de la suppression de l'utilisateur";
+          : "Error deleting user";
       setError(msg);
       throw err;
     } finally {
@@ -100,7 +100,7 @@ export const useUser = () => {
         return loggedUser;
       } catch (err: unknown) {
         const msg =
-          err instanceof Error ? err.message : "Erreur lors de la connexion";
+          err instanceof Error ? err.message : "Error during login";
         setError(msg);
         throw err;
       } finally {
@@ -120,7 +120,7 @@ export const useUser = () => {
       setMedias([]);
     } catch (err: unknown) {
       const msg =
-        err instanceof Error ? err.message : "Erreur lors de la déconnexion";
+        err instanceof Error ? err.message : "Error during logout";
       setError(msg);
       throw err;
     } finally {
@@ -139,7 +139,7 @@ export const useUser = () => {
       const msg =
         err instanceof Error
           ? err.message
-          : "Erreur lors de la récupération du profil";
+          : "Error fetching user profile";
       setError(msg);
       throw err;
     } finally {
@@ -159,7 +159,7 @@ export const useUser = () => {
         const msg =
           err instanceof Error
             ? err.message
-            : "Erreur lors de la récupération des candidatures de l'utilisateur";
+            : "Error fetching user applications";
         setError(msg);
         throw err;
       } finally {
@@ -181,7 +181,7 @@ export const useUser = () => {
         const msg =
           err instanceof Error
             ? err.message
-            : "Erreur lors de la récupération des médias de l'utilisateur";
+            : "Error fetching user media";
         setError(msg);
         throw err;
       } finally {

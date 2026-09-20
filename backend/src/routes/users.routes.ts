@@ -1,7 +1,7 @@
 import {
   createUser,
   deleteUser,
-  getAuthToken,
+  getAuth,
   getOneUser,
   getApplications,
   getMedias,
@@ -18,7 +18,7 @@ usersRoutes.post("/login", login);
 
 usersRoutes.post("/logout", logout);
 
-usersRoutes.get("/me", getAuthToken);
+usersRoutes.get("/me", getAuth);
 
 usersRoutes.get("/:id", authenticateUser, getOneUser);
 

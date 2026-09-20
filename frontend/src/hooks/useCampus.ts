@@ -19,7 +19,7 @@ export const useCampus = () => {
       const msg =
         err instanceof Error
           ? err.message
-          : "Erreur lors de la récupération du campus";
+          : "Error fetching campus";
       setError(msg);
       throw err;
     } finally {
@@ -38,7 +38,7 @@ export const useCampus = () => {
       const msg =
         err instanceof Error
           ? err.message
-          : "Erreur lors de la création du campus";
+          : "Error creating campus";
       setError(msg);
       throw err;
     } finally {
@@ -58,7 +58,7 @@ export const useCampus = () => {
         const msg =
           err instanceof Error
             ? err.message
-            : "Erreur lors de la mise à jour du campus";
+            : "Error updating campus";
         setError(msg);
         throw err;
       } finally {
@@ -78,7 +78,7 @@ export const useCampus = () => {
       const msg =
         err instanceof Error
           ? err.message
-          : "Erreur lors de la suppression du campus";
+          : "Error deleting campus";
       setError(msg);
       throw err;
     } finally {
@@ -98,7 +98,7 @@ export const useCampus = () => {
         const msg =
           err instanceof Error
             ? err.message
-            : "Erreur lors de la récupération des promotions du campus";
+            : "Error fetching campus promotions";
         setError(msg);
         throw err;
       } finally {

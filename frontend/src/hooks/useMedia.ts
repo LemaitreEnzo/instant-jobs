@@ -18,7 +18,7 @@ export const useMedia = () => {
       const msg =
         err instanceof Error
           ? err.message
-          : "Erreur lors de la récupération du média";
+          : "Error fetching media";
       setError(msg);
       throw err;
     } finally {
@@ -38,7 +38,7 @@ export const useMedia = () => {
         const msg =
           err instanceof Error
             ? err.message
-            : "Erreur lors de la création du média";
+            : "Error creating media";
         setError(msg);
         throw err;
       } finally {
@@ -60,7 +60,7 @@ export const useMedia = () => {
         const msg =
           err instanceof Error
             ? err.message
-            : "Erreur lors de la mise à jour du média";
+            : "Error updating media";
         setError(msg);
         throw err;
       } finally {
@@ -80,7 +80,7 @@ export const useMedia = () => {
       const msg =
         err instanceof Error
           ? err.message
-          : "Erreur lors de la suppression du média";
+          : "Error deleting media";
       setError(msg);
       throw err;
     } finally {
