@@ -1,4 +1,4 @@
-.PI{
+.pi{
     display: flex;
     flex-direction: column;
     row-gap: 15px;
@@ -9,7 +9,7 @@
     width: 50%;
 }
 
-.PI-header{
+.pi-header{
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -21,7 +21,7 @@
     }
 }
 
-.PI-edit{
+.pi-edit{
     display: flex;
     column-gap: 10px;
     padding: 5px 8px 5px 13px;
@@ -30,7 +30,7 @@
     border-radius: 50px;
 }
 
-.PI-edit-SVG{
+.pi-edit-SVG{
     display: flex;
     gap: 10px;
     padding: 5px;
@@ -42,22 +42,22 @@
     }
 }
 
-.PI-container{
+.pi-container{
     display: flex;
     flex-direction: column;
     row-gap: 15px;
 }
 
-.PI-content{
+.pi-content{
     display: flex;
     flex-direction: column;
     row-gap: 10px;
 }
 
-.PI-content-default{
+.pi-content-default{
     color: color-mix(in srgb, var(--font-color), transparent 65%);
 }
 
-.PI-content-text{
+.pi-content-text{
     font-weight: bold;
 }
