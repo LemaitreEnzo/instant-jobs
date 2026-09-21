@@ -13,7 +13,7 @@
             padding-top: 10px;
         }
 
-        input {
+        input, select {
             outline: none;
             border: 1px solid var(--error-color);
         }

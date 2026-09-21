@@ -9,6 +9,8 @@ export interface PropsButton extends PropsBase {
   shape?: "rectangle" | "oval" | "icon";
   type?: "button" | "submit" | "reset";
   href?: string;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => void;
+  onMouseDown?: (event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => void;
 }
 
 export interface PropsFormField extends PropsBase {
@@ -82,3 +84,32 @@ export type PropsApplications = {
 export type PropsPersonalInformation = {
   data: User | Student;
 }
+
+export interface SelectOption {
+  label: string;
+  value: string | number;
+}
+
+export interface PropsSelect extends React.SelectHTMLAttributes<HTMLSelectElement> {
+  error: boolean | string | null;
+  customClassName?: string;
+  options: SelectOption[];
+}
+
+export interface PropsFileInput {
+  name: string;
+  id: string;
+  accept?: string;
+  title?: string;
+  helperText?: string;
+  buttonText?: string;
+  maxSizeMB?: number;
+  customClassName?: string;
+  error: string | null;
+  onFileSelect: (file: File | null) => void;
+}
+
+export type PropsApplicationFormModal = {
+  open: boolean;
+  onOpenChange: React.Dispatch<React.SetStateAction<boolean>>;
+};
