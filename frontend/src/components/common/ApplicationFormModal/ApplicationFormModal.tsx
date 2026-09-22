@@ -18,11 +18,14 @@ import "./ApplicationFormModal.css";
 const ApplicationFormModal = (props: PropsApplicationFormModal) => {
   const { open, onOpenChange } = props;
   const modalContainerRef = useRef<HTMLDivElement>(null);
+  const [preview, setPreview] = useState<string>();
+  const [fileError, setFileError] = useState<string | null>(null);
 
   const { user } = useAuth();
   const { create, loading } = useApplication();
 
   const { validate, hasError, getError, clearErrors } = useFormValidation({
+    logo: [validators.required("Le logo de l'entreprise est obligatoire")],
     title: [validators.required("L'intitulé du poste est obligatoire")],
     company: [validators.required("Le nom de l'entreprise est obligatoire")],
     city: [validators.required("Le lieu est obligatoire")],
@@ -32,6 +35,11 @@ const ApplicationFormModal = (props: PropsApplicationFormModal) => {
     date: [validators.required("La date est obligatoire")],
     resend: [validators.required("Le statut de relance est obligatoire")],
   });
+
+  const handleFileError = (error: string | null) => {
+    setFileError(error);
+  };
+
 
   const initData: dataApplication = {
     title: "",
@@ -53,11 +61,24 @@ const ApplicationFormModal = (props: PropsApplicationFormModal) => {
   };
 
   const handleFileSelect = (file: File | null) => {
+    setPreview(URL.createObjectURL(file as File));
     setFormData((prev) => ({
       ...prev,
       logo: file ? file.name : "",
-    }));
+    }))
   };
+
+  const handleTrash = () => {
+    if (preview) {
+      URL.revokeObjectURL(preview);
+    }
+    setPreview(undefined);
+    setFormData((prev) => ({
+      ...prev,
+      logo: "",
+    }));
+    setFileError(null);
+  }
 
   const checkClickOutside = (e) => {
     if (open && modalContainerRef.current && !modalContainerRef.current.contains(e.target)) {
@@ -65,7 +86,7 @@ const ApplicationFormModal = (props: PropsApplicationFormModal) => {
     }
   }
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!validate(formData)) return;
@@ -87,6 +108,11 @@ const ApplicationFormModal = (props: PropsApplicationFormModal) => {
   useEffect(() => {
     document.addEventListener("mousedown", checkClickOutside);
 
+    if (preview) {
+      URL.revokeObjectURL(preview);
+    }
+    setPreview(undefined);
+
     return () => document.removeEventListener("mousedown", checkClickOutside);
   }, [open])
 
@@ -96,7 +122,7 @@ const ApplicationFormModal = (props: PropsApplicationFormModal) => {
         <div className="modal-container" ref={modalContainerRef}>
           <div className="modal-header">
             <h3>Ajouter une candidature</h3>
-            <p>Description du formulaire</p>
+            <p>Remplissez les informations ci-dessous pour enregistrer et suivre une nouvelle candidature.</p>
           </div>
           <h4>Informations de l'entreprise</h4>
           <form method="post" onSubmit={handleSubmit} noValidate>
@@ -104,20 +130,44 @@ const ApplicationFormModal = (props: PropsApplicationFormModal) => {
               label="Logo de l'entreprise"
               name="logo"
               required
-              error={getError("logo")}
+              error={fileError || getError("logo")}
             >
-              <FileInput
-                name="logo"
-                id="logo"
-                title="Choisir un fichier ou le déposer ici"
-                helperText="JPEG, PNG, SVG and WebP format uniquement, 50Mo maximum"
-                buttonText="Parcourir"
-                accept="image/jpeg,image/png,image/svg+xml,image/webp"
-                maxSizeMB={50}
-                error={getError("logo")}
-                onFileSelect={handleFileSelect}
-              />
+              {preview ?
+                <div className="preview-container" onClick={handleTrash}>
+                  <div className="preview-image-wrapper">
+                    <img className="preview-image" src={preview} alt="Aperçu du logo" />
+                    <div className="preview-overlay">
+                      <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M19 4H15.5L14.5 3H9.5L8.5 4H5V6H19M6 19C6 19.5304 6.21071 20.0391 6.58579 20.4142C6.96086 20.7893 7.46957 21 8 21H16C16.5304 21 17.0391 20.7893 17.4142 20.4142C17.7893 20.0391 18 19.5304 18 19V7H6V19Z"
+                          fill="white"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                :
+                <FileInput
+                  name="logo"
+                  id="logo"
+                  title="Choisir un fichier ou le déposer ici"
+                  helperText="JPEG, PNG, SVG et WebP format uniquement, 50Mo maximum"
+                  buttonText="Parcourir"
+                  accept="image/jpeg,image/png,image/svg+xml,image/webp"
+                  maxSizeMB={50}
+                  error={fileError || getError("logo")}
+                  onFileSelect={handleFileSelect}
+                  onError={handleFileError}
+                />
+              }
             </FormField>
+
             <div>
               <FormField
                 label="Nom de l'entreprise"
@@ -155,20 +205,20 @@ const ApplicationFormModal = (props: PropsApplicationFormModal) => {
             <h4>Personalisation de la candidature</h4>
 
             <FormField
-                label="Nom de la candidature"
+              label="Nom de la candidature"
+              name="title"
+              required
+              error={getError("title")}
+            >
+              <Input
+                type="text"
                 name="title"
-                required
-                error={getError("title")}
-              >
-                <Input
-                  type="text"
-                  name="title"
-                  id="title"
-                  value={formData.title}
-                  onChange={handleChange}
-                  error={hasError("title")}
-                />
-              </FormField>
+                id="title"
+                value={formData.title}
+                onChange={handleChange}
+                error={hasError("title")}
+              />
+            </FormField>
 
             <div>
               <FormField
@@ -184,10 +234,10 @@ const ApplicationFormModal = (props: PropsApplicationFormModal) => {
                   value={formData.status}
                   onChange={handleChange}
                   options={[
-                    { label: ApplicationStatus.pending, value: "pending" },
-                    { label: ApplicationStatus.interview, value: "interview" },
-                    { label: ApplicationStatus.accepted, value: "accepted" },
-                    { label: ApplicationStatus.refused, value: "rejected" },
+                    { label: "En attente", value: ApplicationStatus.pending },
+                    { label: "Entretien", value: ApplicationStatus.interview },
+                    { label: "Acceptée", value: ApplicationStatus.accepted },
+                    { label: "Refusée", value: ApplicationStatus.refused },
                   ]}
                 />
               </FormField>
