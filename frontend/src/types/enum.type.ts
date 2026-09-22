@@ -6,5 +6,6 @@ export enum StudentStatus {
 export enum ApplicationStatus {
   pending = "En attente",
   interview = "Entretien",
-  refused = "Refusés",
+  accepted = "Acceptée",
+  refused = "Refusée",
 }

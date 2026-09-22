@@ -1,6 +1,20 @@
+import { ApplicationStatus } from "./enum.type";
+
 export type dataLogin = {
   email: string;
   password: string;
+};
+
+export type dataApplication = {
+  title: string;
+  logo: string;
+  company: string;
+  city: string;
+  status: ApplicationStatus;
+  type: string;
+  description: string;
+  date: string;
+  resend: string;
 };
 
 export type FieldValue =
