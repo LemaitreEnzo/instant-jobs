@@ -15,21 +15,39 @@ const FileInput = ({
   customClassName,
   error,
   onFileSelect,
+  onError,
   ...props
 }: PropsFileInput) => {
   const [file, setFile] = useState<File | null>(null);
   const [isDragOver, setIsDragOver] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const isFileTypeValid = (file: File, acceptString: string) => {
+    if (!acceptString) return true;
+
+    const acceptedTypes = acceptString.split(",").map((t) => t.trim().toLowerCase());
+    const fileType = file.type.toLowerCase();
+    return acceptedTypes.some((type) => {
+        return fileType === type;
+    });
+  }
+
   const handleFile = (selectedFile: File | undefined) => {
     if (!selectedFile) {
       return;
     }
 
-    if (selectedFile.size > maxSizeMB * 1024 * 1024) {
+    if (accept && !isFileTypeValid(selectedFile, accept)) {
+      onError?.("Format de fichier non autorisé. Formats acceptés : JPEG, PNG, SVG, WebP.");
       return;
     }
 
+    if (selectedFile.size > maxSizeMB * 1024 * 1024) {
+      onError?.(`Le fichier est trop volumineux. La taille maximale est de ${maxSizeMB} Mo.`);
+      return;
+    }
+
+    onError?.(null);
     setFile(selectedFile);
     if (onFileSelect) {
       onFileSelect(selectedFile);
@@ -57,7 +75,7 @@ const FileInput = ({
     handleFile(droppedFile);
   };
 
-  const finalClassName = [`file-input ${isDragOver ? "drag-over" : ""}`, customClassName].join(" ").trim();
+  const finalClassName = [`file-input ${isDragOver ? "drag-over" : ""} ${error ? "error" : ""}`, customClassName].join(" ").trim();
 
   return (
     <div

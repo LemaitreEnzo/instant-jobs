@@ -60,6 +60,6 @@
   color: var(--font-color);
 }
 
-.file-input-dropzone.error {
+.file-input.error {
   border-color: var(--error-color);
 }

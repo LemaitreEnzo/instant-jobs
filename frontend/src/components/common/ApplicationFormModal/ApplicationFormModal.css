@@ -45,6 +45,58 @@
     margin-top: 1.5rem;
 }
 
+.preview-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 24px 20px;
+    background-color: #f8fafd;
+    border: 1.5px dashed #94a3b8;
+    border-radius: 8px;
+    width: 100%;
+    margin-bottom: 1.5rem;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+.preview-image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.preview-image {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    display: block;
+}
+
+.preview-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #00000050;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: 0.2s ease-in-out;
+    pointer-events: none;
+}
+
+.preview-image-wrapper:hover .preview-overlay {
+    opacity: 1;
+}
 
 @media (max-width: 640px) {
     .modal-container form div:has(.form-field) {

@@ -4,8 +4,8 @@ export enum StudentStatus {
 }
 
 export enum ApplicationStatus {
-  pending = "En attente",
-  interview = "Entretien",
-  accepted = "Acceptée",
-  refused = "Refusée",
+  pending = "pending",
+  interview = "interview",
+  accepted = "accepted",
+  refused = "refused",
 }

@@ -103,10 +103,11 @@ export interface PropsFileInput {
   title?: string;
   helperText?: string;
   buttonText?: string;
-  maxSizeMB?: number;
+  maxSizeMB: number;
   customClassName?: string;
   error: string | null;
   onFileSelect: (file: File | null) => void;
+  onError?: (errorMessage: string | null) => void;
 }
 
 export type PropsApplicationFormModal = {
