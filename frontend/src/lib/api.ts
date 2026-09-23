@@ -378,8 +378,8 @@ class ApiClient {
       return this.request<User | Student | null>("user/me", { method: "GET" });
     },
 
-    fetchApplications: (userId: number): Promise<Application[]> => {
-      return this.request<Application[]>(`user/${userId}/applications`, {
+    fetchApplications: (userId: number, limit: number): Promise<Application[]> => {
+      return this.request<Application[]>(`user/${userId}/applications?limit=${limit}`, {
         method: "GET",
       });
     },

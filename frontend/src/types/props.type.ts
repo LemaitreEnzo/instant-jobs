@@ -23,12 +23,12 @@ export interface PropsFormField extends PropsBase {
 
 export interface PropsTag extends PropsBase {
   className?:
-    | "tag-success"
-    | "tag-warn"
-    | "tag-error"
-    | "tag-none"
-    | "tag-primary"
-    | "tag-terciary";
+  | "tag-success"
+  | "tag-warn"
+  | "tag-error"
+  | "tag-none"
+  | "tag-primary"
+  | "tag-terciary";
   customClassName?: string;
   round?: boolean;
 }
@@ -71,15 +71,20 @@ export type PropsEventCard = {
 
 export type PropsApplications = {
   logo: string;
-  name: string;
   company: string;
-  sendDate: Date;
+  title: string;
+  description: string;
+  date: string;
   city: string;
   type: string;
   status: string;
   resend: string;
-  resendDate: Date | string;
 };
+
+export type PropsRecentApplications = {
+  header: boolean;
+  limit: number;
+}
 
 export type PropsPersonalInformation = {
   data: User | Student;

@@ -334,9 +334,12 @@ export const deleteUser = async (req: Request, res: Response) => {
 export const getApplications = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
+    const limit: number = parseInt(req.query.limit as string);
 
     const applications = await Application.findAll({
       where: { userId },
+      limit: limit,
+      order: [["createdAt", "DESC"]],
       attributes: {
         exclude: excludedApplicationData,
       },

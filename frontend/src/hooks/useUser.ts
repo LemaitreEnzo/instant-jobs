@@ -148,11 +148,11 @@ export const useUser = () => {
   }, []);
 
   const fetchApplications = useCallback(
-    async (userId: number): Promise<Application[]> => {
+    async (userId: number, limit: number): Promise<Application[]> => {
       setLoading(true);
       setError(null);
       try {
-        const data = await api.user.fetchApplications(userId);
+        const data = await api.user.fetchApplications(userId, limit);
         setApplications(data);
         return data;
       } catch (err: unknown) {
