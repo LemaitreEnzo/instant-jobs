@@ -8,6 +8,11 @@ import type {
 import { DataTypes } from "sequelize";
 
 import { sequelize } from "../../config/db";
+import {
+  ApplicationResend,
+  ApplicationStatus,
+  ApplicationType,
+} from "./enums/application.enum";
 import { User } from "./users.model";
 
 export interface Application extends Model<
@@ -16,13 +21,13 @@ export interface Application extends Model<
 > {
   id: CreationOptional<number>;
   title: string;
-  type: string;
+  type: ApplicationType;
   logo: string;
   company: string;
   city: string;
   date: string;
-  status: string;
-  resend: string;
+  status: ApplicationStatus;
+  resend: ApplicationResend;
   description: string;
   createdAt: CreationOptional<Date>;
   updatedAt: CreationOptional<Date>;
@@ -41,7 +46,8 @@ export const Application = sequelize.define<Application>(
       type: DataTypes.STRING,
     },
     type: {
-      type: DataTypes.STRING,
+      allowNull: false,
+      type: DataTypes.ENUM(...Object.values(ApplicationType)),
     },
     logo: {
       type: DataTypes.STRING,
@@ -56,10 +62,12 @@ export const Application = sequelize.define<Application>(
       type: DataTypes.DATEONLY,
     },
     status: {
-      type: DataTypes.STRING,
+      allowNull: false,
+      type: DataTypes.ENUM(...Object.values(ApplicationStatus)),
     },
     resend: {
-      type: DataTypes.STRING,
+      allowNull: false,
+      type: DataTypes.ENUM(...Object.values(ApplicationResend)),
     },
     description: {
       type: DataTypes.TEXT,
