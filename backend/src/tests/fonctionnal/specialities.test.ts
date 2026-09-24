@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
-import { Promotion } from "src/models/promotions.model";
-import { Speciality } from "src/models/specialities.model";
+import { Promotion } from "src/models/promotion.model";
+import { Speciality } from "src/models/speciality.model";
 import request from "supertest";
 import app from "../../../app";
 import getEnv from "../../../utils/envHelper";

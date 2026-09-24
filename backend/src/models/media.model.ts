@@ -8,49 +8,46 @@ import type {
 import { DataTypes } from "sequelize";
 
 import { sequelize } from "../../config/db";
-import { Application } from "./applications.model";
+import { User } from "./user.model";
 
-export interface Appointement extends Model<
-  InferAttributes<Appointement>,
-  InferCreationAttributes<Appointement>
+export interface Media extends Model<
+  InferAttributes<Media>,
+  InferCreationAttributes<Media>
 > {
   id: CreationOptional<number>;
-  date: Date;
-  reason: string;
+  name: string;
+  path: string;
   createdAt: CreationOptional<Date>;
   updatedAt: CreationOptional<Date>;
-  applicationId: ForeignKey<Application["id"]>;
+  userId: ForeignKey<User["id"]>;
 }
 
-export const Appointement = sequelize.define<Appointement>(
-  "Appointement",
+export const Media = sequelize.define<Media>(
+  "Media",
   {
     id: {
       primaryKey: true,
       autoIncrement: true,
       type: DataTypes.INTEGER,
     },
-    date: {
-      type: DataTypes.DATE,
-      allowNull: false,
-    },
-    reason: {
+    name: {
       type: DataTypes.STRING,
-      allowNull: false,
+    },
+    path: {
+      type: DataTypes.STRING,
     },
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,
-    applicationId: {
-      allowNull: true,
+    userId: {
       type: DataTypes.INTEGER,
       references: {
-        model: Application,
+        model: User,
         key: "id",
       },
     },
   },
   {
-    tableName: "Appointement",
+    tableName: "Media",
     freezeTableName: true,
   },
 );

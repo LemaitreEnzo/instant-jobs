@@ -46,7 +46,7 @@ const ApplicationFormModal = (props: PropsApplicationFormModal) => {
     logo: "",
     company: "",
     city: "",
-    status: ApplicationStatus.pending,
+    status: ApplicationStatus.PENDING,
     type: "Alternance",
     description: "",
     date: new Date().toISOString().split("T")[0],
@@ -234,10 +234,9 @@ const ApplicationFormModal = (props: PropsApplicationFormModal) => {
                   value={formData.status}
                   onChange={handleChange}
                   options={[
-                    { label: "En attente", value: ApplicationStatus.pending },
-                    { label: "Entretien", value: ApplicationStatus.interview },
-                    { label: "Acceptée", value: ApplicationStatus.accepted },
-                    { label: "Refusée", value: ApplicationStatus.refused },
+                    { label: "En attente", value: ApplicationStatus.PENDING },
+                    { label: "Acceptée", value: ApplicationStatus.ACCEPTED },
+                    { label: "Refusée", value: ApplicationStatus.REFUSED },
                   ]}
                 />
               </FormField>

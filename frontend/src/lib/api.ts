@@ -1,6 +1,7 @@
 import { BASE_URL } from "../constants/global.constant";
 import type {
   Application,
+  Appointment,
   Campus,
   Media,
   Organization,
@@ -410,6 +411,36 @@ class ApiClient {
 
     delete: (id: number): Promise<void> => {
       return this.request<void>(`application/${id}`, { method: "DELETE" });
+    },
+
+    fetchAppointments: (applicationId: number): Promise<Appointment[]> => {
+      return this.request<Appointment[]>(`application/${applicationId}/appointments`, {
+        method: "GET",
+      });
+    },
+  };
+
+  readonly appointment = {
+    fetchOne: (id: number): Promise<Appointment> => {
+      return this.request<Appointment>(`appointment/${id}`, { method: "GET" });
+    },
+
+    create: (data: Partial<Appointment>): Promise<Appointment> => {
+      return this.request<Appointment>("appointment", {
+        method: "POST",
+        body: data,
+      });
+    },
+
+    update: (id: number, data: Partial<Appointment>): Promise<Appointment> => {
+      return this.request<Appointment>(`appointment/${id}`, {
+        method: "PATCH",
+        body: data,
+      });
+    },
+
+    delete: (id: number): Promise<void> => {
+      return this.request<void>(`appointment/${id}`, { method: "DELETE" });
     },
   };
 

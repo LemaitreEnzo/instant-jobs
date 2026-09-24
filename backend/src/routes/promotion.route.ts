@@ -8,7 +8,7 @@ import {
   getOnePromotion,
   getSpecialities,
   updatePromotion,
-} from "controllers/promotions.controller";
+} from "src/controllers/promotion.controller";
 import express from "express";
 
 const promotionsRoutes = express.Router({ mergeParams: true });

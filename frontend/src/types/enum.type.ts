@@ -1,11 +1,29 @@
-export enum StudentStatus {
-  search = "Recherche une alternance",
-  found = "Alternance trouvée",
+export enum ApplicationType {
+  INTERNSHIP = "internship",
+  APPRENTICESHIP = "apprenticeship",
 }
 
 export enum ApplicationStatus {
-  pending = "pending",
-  interview = "interview",
-  accepted = "accepted",
-  refused = "refused",
+  PENDING = "pending",
+  REFUSED = "refused",
+  ACCEPTED = "accepted",
+}
+
+export enum ApplicationResend {
+  FOLLOW_UP = "follow up",
+  INTERVIEW_COMPLETED = "interview completed",
+  NO = "no follow up",
+  NOT_NECESSARY = "not necessary",
+}
+
+export enum UserRole {
+  STUDENT = "student",
+  ADMIN = "admin",
+  STAFF = "staff",
+}
+
+export enum StudentStatus {
+  SEARCH = "search",
+  PENDING = "pending",
+  FOUND = "found",
 }

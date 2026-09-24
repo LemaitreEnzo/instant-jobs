@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
-import { Media } from "src/models/medias.model";
-import { Organization } from "src/models/organizations.model";
-import { User } from "src/models/users.model";
+import { Media } from "src/models/media.model";
+import { Organization } from "src/models/organization.model";
+import { User } from "src/models/user.model";
 import request from "supertest";
 import app from "../../../app";
 import getEnv from "../../../utils/envHelper";

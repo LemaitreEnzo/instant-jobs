@@ -8,22 +8,21 @@ import type {
 import { DataTypes } from "sequelize";
 
 import { sequelize } from "../../config/db";
-import { User } from "./users.model";
+import { Promotion } from "./promotion.model";
 
-export interface Media extends Model<
-  InferAttributes<Media>,
-  InferCreationAttributes<Media>
+export interface Speciality extends Model<
+  InferAttributes<Speciality>,
+  InferCreationAttributes<Speciality>
 > {
   id: CreationOptional<number>;
   name: string;
-  path: string;
   createdAt: CreationOptional<Date>;
   updatedAt: CreationOptional<Date>;
-  userId: ForeignKey<User["id"]>;
+  promotionId: ForeignKey<Promotion["id"]>;
 }
 
-export const Media = sequelize.define<Media>(
-  "Media",
+export const Speciality = sequelize.define<Speciality>(
+  "Speciality",
   {
     id: {
       primaryKey: true,
@@ -33,21 +32,18 @@ export const Media = sequelize.define<Media>(
     name: {
       type: DataTypes.STRING,
     },
-    path: {
-      type: DataTypes.STRING,
-    },
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,
-    userId: {
+    promotionId: {
       type: DataTypes.INTEGER,
       references: {
-        model: User,
+        model: Promotion,
         key: "id",
       },
     },
   },
   {
-    tableName: "Media",
+    tableName: "Speciality",
     freezeTableName: true,
   },
 );

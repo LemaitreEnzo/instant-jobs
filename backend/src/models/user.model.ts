@@ -10,10 +10,10 @@ import { DataTypes } from "sequelize";
 import { sequelize } from "../../config/db";
 import { Campus } from "./campus.model";
 import { StudentStatus, UserRole } from "./enums/user.enum";
-import { Organization } from "./organizations.model";
-import { Promotion } from "./promotions.model";
-import { Speciality } from "./specialities.model";
-import { SubSpeciality } from "./subSpecialities.model";
+import { Organization } from "./organization.model";
+import { Promotion } from "./promotion.model";
+import { Speciality } from "./speciality.model";
+import { SubSpeciality } from "./subSpeciality.model";
 
 export interface User extends Model<
   InferAttributes<User>,
