@@ -1,0 +1,94 @@
+.sp{
+    flex: 1;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid var(--stroke-color);
+    background-color: var(--background-color);
+    display: flex;
+    column-gap: 20px;
+}
+
+.sp-left{
+    display: flex;
+    column-gap: 10px;
+    align-items: center;
+}
+
+.sp-first-letter{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    background-color: var(--primary-color);
+    padding: 25px 19px;
+
+    p{
+        color: var(--background-color);
+        font-size: 3rem;
+    }
+}
+
+.sp-fullname{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    p{
+        font-size: 20px;
+    }
+}
+
+.sp-right{
+    display: flex;
+    align-items: center;
+    column-gap: 18px;
+    flex: 2;
+}
+
+.sp-right-content{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+
+    p{
+        font-size: 13px;
+    }
+}
+
+.sp-right-default{
+    color: color-mix(in srgb, var(--font-color), transparent 65%);
+}
+
+.sp-right-data{
+    font-weight: bold;
+}
+
+.sp-right-status{
+    display: flex;
+    align-items: center;
+    padding: 5px 10px;
+    border-radius: 40px;
+    column-gap: 10px;
+    justify-content: space-between;
+    background-color: var(--warning-color);
+
+    p{
+        color: var(--background-color);
+    }
+}
+
+.sp-right-ellipse{
+    width: 10px;
+    height: 10px;
+    border-radius: 40px;
+    background-color: var(--background-color);
+}
+
+.sp-right-found{
+    background-color: var(--success-color);
+}
+
+.sp-right-search{
+    background-color: var(--warning-color);
+}

@@ -82,3 +82,7 @@ export type PropsApplications = {
 export type PropsPersonalInformation = {
   data: User | Student;
 }
+
+export type PropsSmallProfile = {
+  data: Student;
+}
