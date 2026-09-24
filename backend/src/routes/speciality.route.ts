@@ -8,7 +8,7 @@ import {
   getOneSpeciality,
   getSubSpecialities,
   updateSpeciality,
-} from "controllers/specialities.controller";
+} from "src/controllers/speciality.controller";
 import express from "express";
 
 const specialitiesRoutes = express.Router({ mergeParams: true });

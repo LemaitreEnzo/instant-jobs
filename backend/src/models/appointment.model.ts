@@ -8,39 +8,49 @@ import type {
 import { DataTypes } from "sequelize";
 
 import { sequelize } from "../../config/db";
-import { Organization } from "./organization.model";
+import { Application } from "./application.model";
 
-export interface Campus extends Model<
-  InferAttributes<Campus>,
-  InferCreationAttributes<Campus>
+export interface Appointment extends Model<
+  InferAttributes<Appointment>,
+  InferCreationAttributes<Appointment>
 > {
   id: CreationOptional<number>;
-  name: string;
+  date: Date;
+  reason: string;
   createdAt: CreationOptional<Date>;
   updatedAt: CreationOptional<Date>;
-  organizationId: ForeignKey<Organization["id"]>;
+  applicationId: ForeignKey<Application["id"]>;
 }
 
-export const Campus = sequelize.define<Campus>(
-  "Campus",
+export const Appointment = sequelize.define<Appointment>(
+  "Appointment",
   {
     id: {
       primaryKey: true,
       autoIncrement: true,
       type: DataTypes.INTEGER,
     },
-    name: {
+    date: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    reason: {
       type: DataTypes.STRING,
+      allowNull: false,
     },
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,
-    organizationId: {
+    applicationId: {
+      allowNull: false,
       type: DataTypes.INTEGER,
       references: {
-        model: Organization,
+        model: Application,
         key: "id",
       },
     },
   },
-  { tableName: "Campus", freezeTableName: true },
+  {
+    tableName: "Appointment",
+    freezeTableName: true,
+  },
 );

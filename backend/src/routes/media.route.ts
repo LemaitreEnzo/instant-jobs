@@ -3,7 +3,7 @@ import {
   deleteMedia,
   getOneMedia,
   updateMedia,
-} from "controllers/medias.controller";
+} from "src/controllers/media.controller";
 import express from "express";
 
 const mediasRoutes = express.Router({ mergeParams: true });

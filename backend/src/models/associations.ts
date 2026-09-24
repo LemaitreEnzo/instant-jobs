@@ -1,12 +1,12 @@
-import { Application } from "./applications.model";
-import { Appointement } from "./appointements.model";
+import { Application } from "./application.model";
+import { Appointment } from "./appointment.model";
 import { Campus } from "./campus.model";
-import { Media } from "./medias.model";
-import { Organization } from "./organizations.model";
-import { Promotion } from "./promotions.model";
-import { Speciality } from "./specialities.model";
-import { SubSpeciality } from "./subSpecialities.model";
-import { User } from "./users.model";
+import { Media } from "./media.model";
+import { Organization } from "./organization.model";
+import { Promotion } from "./promotion.model";
+import { Speciality } from "./speciality.model";
+import { SubSpeciality } from "./subSpeciality.model";
+import { User } from "./user.model";
 
 // Organization <-> Campus
 Organization.hasMany(Campus, {
@@ -87,12 +87,14 @@ SubSpeciality.belongsTo(Speciality, {
   targetKey: "id",
 });
 
-// Application <-> Appointement
-Application.hasMany(Appointement, {
+// Application <-> Appointment
+Application.hasMany(Appointment, {
   foreignKey: "applicationId",
   sourceKey: "id",
+  as: "appointments"
 });
-Appointement.belongsTo(Application, {
+Appointment.belongsTo(Application, {
   foreignKey: "applicationId",
   targetKey: "id",
+  as: "application"
 });

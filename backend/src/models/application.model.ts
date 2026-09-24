@@ -13,7 +13,7 @@ import {
   ApplicationStatus,
   ApplicationType,
 } from "./enums/application.enum";
-import { User } from "./users.model";
+import { User } from "./user.model";
 
 export interface Application extends Model<
   InferAttributes<Application>,
