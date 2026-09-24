@@ -128,7 +128,7 @@ export const useUser = () => {
     }
   }, []);
 
-  const getMe = useCallback(async (): Promise<User | Student> => {
+  const getMe = useCallback(async (): Promise<User | Student | null> => {
     setLoading(true);
     setError(null);
     try {

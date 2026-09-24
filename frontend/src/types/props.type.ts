@@ -85,6 +85,10 @@ export type PropsPersonalInformation = {
   data: User | Student;
 }
 
+export type PropsSmallProfile = {
+  data: Student;
+}
+
 export interface SelectOption {
   label: string;
   value: string | number;
