@@ -1,4 +1,5 @@
 import { Application } from "./applications.model";
+import { Appointement } from "./appointements.model";
 import { Campus } from "./campus.model";
 import { Media } from "./medias.model";
 import { Organization } from "./organizations.model";
@@ -30,6 +31,21 @@ User.belongsTo(Organization, {
 // Campus <-> User
 Campus.hasMany(User, { foreignKey: "campusId", sourceKey: "id" });
 User.belongsTo(Campus, { foreignKey: "campusId", targetKey: "id" });
+
+// Promotion <-> User
+Promotion.hasMany(User, { foreignKey: "promotionId", sourceKey: "id" });
+User.belongsTo(Promotion, { foreignKey: "promotionId", targetKey: "id" });
+
+// Speciality <-> User
+Speciality.hasMany(User, { foreignKey: "specialityId", sourceKey: "id" });
+User.belongsTo(Speciality, { foreignKey: "specialityId", targetKey: "id" });
+
+// SubSpeciality <-> User
+SubSpeciality.hasMany(User, { foreignKey: "subSpecialityId", sourceKey: "id" });
+User.belongsTo(SubSpeciality, {
+  foreignKey: "subSpecialityId",
+  targetKey: "id",
+});
 
 // User <-> Application
 User.hasMany(Application, {
@@ -68,5 +84,15 @@ Speciality.hasMany(SubSpeciality, {
 });
 SubSpeciality.belongsTo(Speciality, {
   foreignKey: "specialityId",
+  targetKey: "id",
+});
+
+// Application <-> Appointement
+Application.hasMany(Appointement, {
+  foreignKey: "applicationId",
+  sourceKey: "id",
+});
+Appointement.belongsTo(Application, {
+  foreignKey: "applicationId",
   targetKey: "id",
 });
