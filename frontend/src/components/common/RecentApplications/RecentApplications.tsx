@@ -9,6 +9,7 @@ import { useAuth } from "../../../context/AuthContext";
 import { useUser } from "../../../hooks/useUser";
 
 import "./RecentApplications.css";
+import ApplicationFormModal from "../ApplicationFormModal/ApplicationFormModal";
 
 const RecentApplications = ({ ...props }: PropsRecentApplications) => {
 
@@ -16,6 +17,10 @@ const RecentApplications = ({ ...props }: PropsRecentApplications) => {
   const [applications, setApplications] = useState<Application[]>([]);
   const { user } = useAuth();
   const { loading, fetchApplications } = useUser();
+
+  const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
 
   const getApplications = async () => {
     if (!user?.id) {
@@ -34,9 +39,14 @@ const RecentApplications = ({ ...props }: PropsRecentApplications) => {
     getApplications();
   }, [user?.id, props.limit]);
 
+  const handleEdit = (app: Application) => {
+    setSelectedApplication(app);
+    setIsModalOpen(true);
+  };
+
   return (
     <div className="recent-applications">
-      {props.header ? <ApplicationsHeader /> : null}
+      {props.header ? <ApplicationsHeader open={isFilterOpen} onOpenChange={setIsFilterOpen} /> : null}
 
       {loading ? (
         <div className="recent-applications-loading">Chargement des candidatures...</div>
@@ -52,13 +62,15 @@ const RecentApplications = ({ ...props }: PropsRecentApplications) => {
 
           <tbody>
             {applications.map((app) => (
-              <ApplicationsRow key={app.title} {...app} />
+              <ApplicationsRow key={app.title} {...app} onEdit={() => handleEdit(app)} />
             ))}
           </tbody>
         </table>
       ) : (
         <p className="recent-applications-empty">Aucune candidature pour le moment.</p>
       )}
+
+      <ApplicationFormModal open={isModalOpen} onOpenChange={setIsModalOpen} application={selectedApplication} onSuccess={getApplications} />
     </div>
   );
 }

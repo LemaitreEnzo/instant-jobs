@@ -153,7 +153,7 @@ export default {
         type: DataTypes.STRING,
       },
       logo: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       company: {
         type: DataTypes.STRING,

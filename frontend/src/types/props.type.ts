@@ -4,7 +4,7 @@ import type { Student, User } from "../interfaces/user.interface";
 import type { PropsBase } from "../types/global.type";
 
 export interface PropsButton extends PropsBase {
-  className?: "btn-primary" | "btn-secondary" | "btn-terciary";
+  className?: "btn-primary" | "btn-secondary" | "btn-terciary" | "btn-error";
   customClassName?: string;
   shape?: "rectangle" | "oval" | "icon";
   type?: "button" | "submit" | "reset";
@@ -70,6 +70,7 @@ export type PropsEventCard = {
 };
 
 export type PropsApplications = {
+  id: number;
   logo: string;
   company: string;
   title: string;
@@ -79,6 +80,7 @@ export type PropsApplications = {
   type: string;
   status: string;
   resend: string;
+  onEdit?: () => void;
 };
 
 export type PropsRecentApplications = {
@@ -118,4 +120,11 @@ export interface PropsFileInput {
 export type PropsApplicationFormModal = {
   open: boolean;
   onOpenChange: React.Dispatch<React.SetStateAction<boolean>>;
+  application?: Application | null;
+  onSuccess?: () => void;
 };
+
+export type PropsApplicationHeader = {
+  open: boolean;
+  onOpenChange: React.Dispatch<React.SetStateAction<boolean>>;
+}

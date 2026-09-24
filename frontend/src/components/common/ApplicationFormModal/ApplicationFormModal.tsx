@@ -22,7 +22,7 @@ const ApplicationFormModal = (props: PropsApplicationFormModal) => {
   const [fileError, setFileError] = useState<string | null>(null);
 
   const { user } = useAuth();
-  const { create, loading } = useApplication();
+  const { create, remove, update, loading } = useApplication();
 
   const { validate, hasError, getError, clearErrors } = useFormValidation({
     logo: [validators.required("Le logo de l'entreprise est obligatoire")],
@@ -61,18 +61,31 @@ const ApplicationFormModal = (props: PropsApplicationFormModal) => {
   };
 
   const handleFileSelect = (file: File | null) => {
-    setPreview(URL.createObjectURL(file as File));
-    setFormData((prev) => ({
-      ...prev,
-      logo: file ? file.name : "",
-    }))
+    if (!file) {
+      setPreview(undefined);
+      setFormData((prev) => ({
+        ...prev,
+        logo: "",
+      }));
+      return;
+    }
+
+    const reader = new FileReader();
+
+    reader.addEventListener("load", () => {
+      const base = reader.result as string;
+      setPreview(base);
+      setFormData((prev) => ({
+        ...prev,
+        logo: file ? base : "",
+      }))
+    });
+
+    reader.readAsDataURL(file)
   };
 
   const handleTrash = () => {
-    if (preview) {
-      URL.revokeObjectURL(preview);
-    }
-    setPreview(undefined);
+    setPreview(undefined)
     setFormData((prev) => ({
       ...prev,
       logo: "",
@@ -92,11 +105,15 @@ const ApplicationFormModal = (props: PropsApplicationFormModal) => {
     if (!validate(formData)) return;
 
     try {
-      await create({
-        ...formData,
-        userId: user?.id ?? null,
-      });
-
+      if (props.application?.id) {
+        await update(props.application.id, formData);
+      } else {
+        await create({
+          ...formData,
+          userId: user?.id ?? null,
+        });
+      }
+      props.onSuccess?.();
       setFormData(initData);
       clearErrors();
       onOpenChange(false);
@@ -104,6 +121,24 @@ const ApplicationFormModal = (props: PropsApplicationFormModal) => {
       console.error(err);
     }
   };
+
+  const handleDelete = async () => {
+    if (!props.application?.id) {
+      return;
+    };
+
+    if (!window.confirm("Êtes-vous sûr de vouloir supprimer cette candidature ?")) {
+      return;
+    };
+
+    try {
+      await remove(props.application.id);
+      props.onSuccess?.();
+      onOpenChange(false);
+    } catch (err) {
+      console.error(err);
+    }
+  }
 
   useEffect(() => {
     document.addEventListener("mousedown", checkClickOutside);
@@ -114,14 +149,34 @@ const ApplicationFormModal = (props: PropsApplicationFormModal) => {
     setPreview(undefined);
 
     return () => document.removeEventListener("mousedown", checkClickOutside);
-  }, [open])
+  }, [open]);
+
+  useEffect(() => {
+    if (props.application) {
+      setFormData({
+        title: props.application.title,
+        logo: props.application.logo,
+        company: props.application.company,
+        city: props.application.city,
+        status: props.application.status,
+        type: props.application.type,
+        description: props.application.description,
+        date: props.application.date,
+        resend: props.application.resend,
+      });
+      setPreview(props.application.logo);
+    } else {
+      setFormData(initData);
+      setPreview(undefined);
+    }
+  }, [props.application, open])
 
   return (
     open && (
       <div className="application-form-modal">
         <div className="modal-container" ref={modalContainerRef}>
           <div className="modal-header">
-            <h3>Ajouter une candidature</h3>
+            { props.application ? <h3>Modifier une candidature</h3> : <h3>Ajouter une candidature</h3> }
             <p>Remplissez les informations ci-dessous pour enregistrer et suivre une nouvelle candidature.</p>
           </div>
           <h4>Informations de l'entreprise</h4>
@@ -313,10 +368,17 @@ const ApplicationFormModal = (props: PropsApplicationFormModal) => {
                 ]}
               />
             </FormField>
+            <div className="modal-container-footer">
+              <Button type="submit" className="btn-primary">
+                <span>{loading ? "Enregistrement..." : props.application ? "Modifier" : "Enregistrer"}</span>
+              </Button>
 
-            <Button type="submit" className="btn-primary">
-              <span>{loading ? "Enregistrement..." : "Enregistrer"}</span>
-            </Button>
+              {props.application && (
+                <Button type="button" className="btn-error" onClick={handleDelete}>
+                  <span>Supprimer</span>
+                </Button>
+              )}
+            </div>
           </form>
         </div>
       </div>

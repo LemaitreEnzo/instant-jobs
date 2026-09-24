@@ -8,7 +8,7 @@ function Dashboard() {
     <MainLayout>
       <div className="dashboard">
         <ApplicationAddButton />
-        <RecentApplications header={true} limit={7} />
+        <RecentApplications header={true} limit={5} />
       </div>
     </MainLayout>
   );

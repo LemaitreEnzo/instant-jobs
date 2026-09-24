@@ -44,7 +44,7 @@ export const Application = sequelize.define<Application>(
       type: DataTypes.STRING,
     },
     logo: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
     },
     company: {
       type: DataTypes.STRING,

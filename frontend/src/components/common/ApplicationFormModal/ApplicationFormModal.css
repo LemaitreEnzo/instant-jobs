@@ -30,6 +30,18 @@
     border-bottom: 1px solid var(--stroke-color);
 }
 
+.modal-container-footer {
+    margin-top: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.modal-container button {
+    width: 100%;
+}
+
 .label {
     font-weight: 400;
 }
@@ -38,11 +50,6 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
-}
-
-.modal-container form button[type="submit"] {
-    width: 100%;
-    margin-top: 1.5rem;
 }
 
 .preview-container {
