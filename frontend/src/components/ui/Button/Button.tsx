@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import type { PropsButton } from "../../../types/props.type";
 import "./Button.css";
 
@@ -19,11 +20,28 @@ const Button = ({
   ...props
 }: PropsButton) => {
   const finalClassName = [`btn-${shape}`, className, props.customClassName].join(" ").trim();
+  const navigate = useNavigate();
+
+  const handleBack = () => {
+  if (window.history.length > 1) {
+    navigate(-1);
+  } else {
+    navigate("/");
+  }
+};
+
+  if (props.navigateBack) {
+    return (
+      <button {...props} className={finalClassName} onClick={handleBack}>
+        {props.children} 
+      </button>
+    );
+  }
 
   if (props.href) {
     return (
       <a {...props} href={props.href} className={finalClassName}>
-        {props.children}
+        {props.children} 
       </a>
     );
   }
