@@ -118,3 +118,7 @@ export type PropsApplicationFormModal = {
   open: boolean;
   onOpenChange: React.Dispatch<React.SetStateAction<boolean>>;
 };
+
+export type PropsPageTilte = {
+  title: string;
+}
