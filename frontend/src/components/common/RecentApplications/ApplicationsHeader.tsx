@@ -3,8 +3,27 @@ import Button from "../../ui/Button/Button"
 
 import "./ApplicationsHeader.css"
 import type { PropsApplicationHeader } from "../../../types/props.type";
+import { ApplicationStatus } from "../../../types/enum.type";
 
-function ApplicationsHeader({open, onOpenChange}: PropsApplicationHeader) {
+const statusOptions: { id: ApplicationStatus; label: string }[] = [
+    { id: ApplicationStatus.accepted, label: "Acceptée" },
+    { id: ApplicationStatus.pending, label: "En attente" },
+    { id: ApplicationStatus.interview, label: "Entretien" },
+    { id: ApplicationStatus.refused, label: "Refusée" },
+];
+
+const typeOptions = [
+    { id: "Alternance", label: "Alternance" },
+    { id: "Stage", label: "Stage" },
+    { id: "CDI", label: "CDI" },
+];
+
+const resendOptions = [
+    { id: "yes", label: "Relancée" },
+    { id: "no", label: "Pas de relance" },
+]
+
+function ApplicationsHeader({ open, onOpenChange, filters, onFilterChange }: PropsApplicationHeader) {
     const filterRef = useRef<HTMLDivElement>(null);
 
     const handleClick = () => {
@@ -12,16 +31,37 @@ function ApplicationsHeader({open, onOpenChange}: PropsApplicationHeader) {
     };
 
     const checkClickOutside = (e) => {
-    if (open && filterRef.current && !filterRef.current.contains(e.target)) {
-      onOpenChange(false);
+        if (open && filterRef.current && !filterRef.current.contains(e.target)) {
+            onOpenChange(false);
+        }
     }
-  }
 
-  useEffect(() => {
-    document.addEventListener("mousedown", checkClickOutside);
+    useEffect(() => {
+        document.addEventListener("mousedown", checkClickOutside);
 
-    return () => document.removeEventListener("mousedown", checkClickOutside);
-  }, [open])
+        return () => document.removeEventListener("mousedown", checkClickOutside);
+    }, [open]);
+
+    const handleStatusToggle = (value: ApplicationStatus) => {
+        const updated = filters.statuses.includes(value)
+            ? filters.statuses.filter((item) => item !== value)
+            : [...filters.statuses, value];
+        onFilterChange({ ...filters, statuses: updated })
+    };
+
+    const handleTypeToggle = (value: string) => {
+        const updated = filters.types.includes(value)
+            ? filters.types.filter((item) => item !== value)
+            : [...filters.types, value];
+        onFilterChange({ ...filters, types: updated })
+    };
+
+    const handleResendToggle = (value: string) => {
+        const updated = filters.resends.includes(value)
+            ? filters.resends.filter((item) => item !== value)
+            : [...filters.resends, value];
+        onFilterChange({ ...filters, resends: updated })
+    };
 
     return (
         <div className="applications-header">
@@ -34,27 +74,64 @@ function ApplicationsHeader({open, onOpenChange}: PropsApplicationHeader) {
                         </svg>
                         <span>Filtres</span>
                     </Button>
-                    {
-                        open ?
-                            <div className="filter-list" ref={filterRef}>
-                                <div>
-                                    <input type="checkbox" id="accepted" name="accepted" />
-                                    <label htmlFor="accepted">Acceptée</label>
-                                </div>
-                                <div>
-                                    <input type="checkbox" id="intership" name="intership" />
-                                    <label htmlFor="intership">Alternance</label>
-                                </div>
-                                <div>
-                                    <input type="checkbox" id="resend" name="resend" />
-                                    <label htmlFor="resend">Relancée</label>
-                                </div>
+                    {open && (
+                        <div className="filter-list" ref={filterRef}>
 
-
+                            <div className="filter-group">
+                                <span className="filter-group-title">Statut</span>
+                                {statusOptions.map((option) => (
+                                    <label key={option.id} className="filter-item">
+                                        <input
+                                            type="checkbox"
+                                            checked={filters.statuses.includes(option.id)}
+                                            onChange={() => handleStatusToggle(option.id)}
+                                        />
+                                        <span>{option.label}</span>
+                                    </label>
+                                ))}
                             </div>
-                            :
-                            null
-                    }
+
+                            <div className="filter-group">
+                                <span className="filter-group-title">Type de contrat</span>
+                                {typeOptions.map((option) => (
+                                    <label key={option.id} className="filter-item">
+                                        <input
+                                            type="checkbox"
+                                            checked={filters.types.includes(option.id)}
+                                            onChange={() => handleTypeToggle(option.id)}
+                                        />
+                                        <span>{option.label}</span>
+                                    </label>
+                                ))}
+                            </div>
+
+                            <div className="filter-group">
+                                <span className="filter-group-title">Relance</span>
+                                {resendOptions.map((option) => (
+                                    <label key={option.id} className="filter-item">
+                                        <input
+                                            type="checkbox"
+                                            checked={filters.resends.includes(option.id)}
+                                            onChange={() => handleResendToggle(option.id)}
+                                        />
+                                        <span>{option.label}</span>
+                                    </label>
+                                ))}
+                            </div>
+
+                            {(filters.statuses.length > 0 || filters.types.length > 0 || filters.resends.length > 0) && (
+                                <div className="filter-footer">
+                                    <button
+                                        type="button"
+                                        className="filter-reset-btn"
+                                        onClick={() => onFilterChange({ statuses: [], types: [], resends: [] })}
+                                    >
+                                        Tout effacer
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    )}
 
                 </div>
 

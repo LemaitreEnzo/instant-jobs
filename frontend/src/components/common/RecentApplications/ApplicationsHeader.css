@@ -15,17 +15,94 @@
 }
 
 .filter {
-    position: relative;
+  position: relative;
+}
+.filter-list {
+  position: absolute;
+  right: 0;
+  min-width: 240px;
+  background-color: var(--background-color);
+  border: 1px solid var(--stroke-color);
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 50;
 }
 
-.filter-list {
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    background-color: #ffffff;
-    border: 1px #afafaf solid;
-    min-width: 150px;
-    padding: 12px 16px;
-    border-radius: 8px;
+.filter-list > div,
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.filter-list > div:not(:last-child),
+.filter-group:not(:last-child) {
+  border-bottom: 1px solid var(--fourth-color);
+  padding-bottom: 10px;
+}
+
+.filter-group-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #8E95A5;
+  margin-bottom: 4px;
+  padding: 0 8px;
+}
+
+.filter-list label,
+.filter-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--font-input-color);
+  user-select: none;
+  transition: 0.2s ease;
+}
+
+.filter-list label:hover,
+.filter-item:hover {
+  background-color: var(--body-color);
+  color: var(--font-color);
+}
+
+.filter-list input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--primary-color);
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 0;
+}
+
+.filter-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 6px;
+  border-top: 1px solid var(--fourth-color, #F1F3F5);
+}
+
+.filter-reset-btn {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--primary-color, #580bff);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: 0.2s ease;
+}
+
+.filter-reset-btn:hover {
+  background-color: #580bff20;
 }

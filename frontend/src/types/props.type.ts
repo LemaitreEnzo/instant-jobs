@@ -2,6 +2,7 @@ import type { SetStateAction } from "react";
 import type { Application } from "../interfaces/models.interface";
 import type { Student, User } from "../interfaces/user.interface";
 import type { PropsBase } from "../types/global.type";
+import type { ApplicationStatus } from "./enum.type";
 
 export interface PropsButton extends PropsBase {
   className?: "btn-primary" | "btn-secondary" | "btn-terciary" | "btn-error";
@@ -85,7 +86,7 @@ export type PropsApplications = {
 
 export type PropsRecentApplications = {
   header: boolean;
-  limit: number;
+  limit?: number;
 }
 
 export type PropsPersonalInformation = {
@@ -124,7 +125,15 @@ export type PropsApplicationFormModal = {
   onSuccess?: () => void;
 };
 
+export interface ApplicationFilters {
+  statuses: ApplicationStatus[];
+  types: string[];
+  resends: string[];
+}
+
 export type PropsApplicationHeader = {
   open: boolean;
   onOpenChange: React.Dispatch<React.SetStateAction<boolean>>;
-}
+  filters: ApplicationFilters;
+  onFilterChange : (filters: ApplicationFilters) => void;
+};

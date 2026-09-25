@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import type { Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { Attributes, Sequelize } from "sequelize";
+import { Attributes, Sequelize, Op, FindOptions } from "sequelize";
 import { Application, Media, User } from "src/models";
 import { VALID_ROLES } from "../../middlewares/auth.middleware";
 import getEnv from "../../utils/envHelper";
@@ -334,16 +334,36 @@ export const deleteUser = async (req: Request, res: Response) => {
 export const getApplications = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    const limit: number = parseInt(req.query.limit as string);
+    const whereOptions: Record<string, any> = { userId };
 
-    const applications = await Application.findAll({
-      where: { userId },
-      limit: limit,
+    if (req.query.status) {
+      const statuses = (req.query.status as string).split(",").map(s => s.trim());
+      whereOptions.status = { [Op.in] : statuses };
+    }
+
+    if (req.query.type) {
+      const types = (req.query.type as string).split(",").map(t => t.trim());
+      whereOptions.type = { [Op.in] : types };
+    }
+
+    if (req.query.resend) {
+      const resends = (req.query.resend as string).split(",").map(r => r.trim());
+      whereOptions.resend = { [Op.in] : resends };
+    }
+
+    const queryOptions: FindOptions = {
+      where: whereOptions,
       order: [["createdAt", "DESC"]],
       attributes: {
         exclude: excludedApplicationData,
       },
-    });
+    };
+
+    if (req.query.limit !== undefined && !isNaN(Number(req.query.limit))) {
+      queryOptions.limit = parseInt(req.query.limit as string);
+    }
+
+    const applications = await Application.findAll(queryOptions);
 
     if (!applications) {
       return res.status(404).json({ message: "Applications not found" });

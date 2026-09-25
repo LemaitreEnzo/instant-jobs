@@ -7,8 +7,7 @@ function Dashboard() {
   return (
     <MainLayout>
       <div className="dashboard">
-        <ApplicationAddButton />
-        <RecentApplications header={true} limit={5} />
+        <RecentApplications header={true}/>
       </div>
     </MainLayout>
   );

@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import type { Application, Media } from "../interfaces/models.interface";
 import type { Student, User } from "../interfaces/user.interface";
 import { api } from "../lib/api";
+import type { ApplicationFilters } from "../types/props.type";
 
 export const useUser = () => {
   const [user, setUser] = useState<User | Student | null>(null);
@@ -148,11 +149,11 @@ export const useUser = () => {
   }, []);
 
   const fetchApplications = useCallback(
-    async (userId: number, limit: number): Promise<Application[]> => {
+    async (userId: number, limit?: number, filters?: ApplicationFilters): Promise<Application[]> => {
       setLoading(true);
       setError(null);
       try {
-        const data = await api.user.fetchApplications(userId, limit);
+        const data = await api.user.fetchApplications(userId, limit, filters);
         setApplications(data);
         return data;
       } catch (err: unknown) {

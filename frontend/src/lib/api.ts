@@ -9,6 +9,7 @@ import type {
   SubSpeciality,
 } from "../interfaces/models.interface";
 import type { Student, User } from "../interfaces/user.interface";
+import type { ApplicationFilters } from "../types/props.type";
 
 export interface RequestOptions extends Omit<RequestInit, "body"> {
   body?: unknown;
@@ -378,8 +379,27 @@ class ApiClient {
       return this.request<User | Student | null>("user/me", { method: "GET" });
     },
 
-    fetchApplications: (userId: number, limit: number): Promise<Application[]> => {
-      return this.request<Application[]>(`user/${userId}/applications?limit=${limit}`, {
+    fetchApplications: (userId: number, limit?: number, filters?: ApplicationFilters): Promise<Application[]> => {
+      const params = new URLSearchParams();
+
+      if (limit) {
+        params.append("limit", limit.toString());
+      };
+
+      if (filters?.statuses && filters?.statuses.length > 0) {
+        params.append("status", filters.statuses.join(","));
+      };
+
+      if (filters?.types && filters?.types.length > 0) {
+        params.append("type", filters.types.join(","));
+      };
+
+      if (filters?.resends && filters?.resends.length > 0) {
+        params.append("resend", filters.resends.join(","));
+      };
+
+      const query = params.toString() ? `?${params.toString()}` : "";
+      return this.request<Application[]>(`user/${userId}/applications${query}`, {
         method: "GET",
       });
     },
