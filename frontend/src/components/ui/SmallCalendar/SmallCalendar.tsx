@@ -3,30 +3,35 @@ import type { PropsSmallCalendar } from '../../../types/props.type';
 import EventCard from '../EventCard/EventCard';
 import './SmallCalendar.css';
 
-const SmallCalendar = (props: PropsSmallCalendar) => {
+const SmallCalendar = (props: PropsSmallCalendar) => { 
     
+    const appointmentsData = props.data;
     const todayDate: Date = new Date();
     const daysName: string[] = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
     const months: string[] = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
-    const week: Array<DayInformations> = []
+    const week: DayInformations[] = []
     const todayDateDay: number = todayDate.getDay();
 
+    /**Get the informations of the week */
     for (let index = 1; index < 8; index++) {
-        if (index < todayDateDay) {
-            const diff: number = todayDateDay - index;
+
+        const currentDay: number = todayDateDay === 0 ? 7 : todayDateDay;
+
+        if (index < currentDay) {
+            const diff: number = currentDay - index;
             const day: Date = new Date(todayDate.getTime() - (1000 * 60 * 60 * 24 * diff) );
             const information: DayInformations = {date: day.getDate(), day: day.getDay()};
             week.push(information);
             continue;
         }
-        if (index > todayDateDay) {
-            const diff: number = index - todayDateDay;
+        if (index > currentDay) {
+            const diff: number = index - currentDay;
             const day: Date = new Date(todayDate.getTime() + (1000 * 60 * 60 * 24 * diff) );
             const information: DayInformations = {date: day.getDate(), day: day.getDay()};
             week.push(information);
             continue;
         }
-        if (index == todayDateDay) {
+        if (index == currentDay) {
             const information = {date: todayDate.getDate(), day: todayDate.getDay()};
             week.push(information);
         }
@@ -56,7 +61,7 @@ const SmallCalendar = (props: PropsSmallCalendar) => {
                 </div>
             </div>
             <div className='calendar-informations'>
-                <EventCard data={props.data} />
+                <EventCard data={appointmentsData} />
             </div>
             <div className='small-calendar-btn'>
                 <a href='#'>

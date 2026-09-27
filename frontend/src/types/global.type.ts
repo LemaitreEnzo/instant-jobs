@@ -1,4 +1,5 @@
 import type React from "react";
+import type { ApplicationType } from "./enum.type";
 
 export type Role = "student" | "admin" | "staff";
 export interface PropsBase {
@@ -25,3 +26,11 @@ export type Route = {
   path: string;
   element: React.ReactNode;
 };
+
+export type AppointmentCalendar = {
+  id: number | null;
+  date: Date;
+  reason: string;
+  type: ApplicationType;
+  companyName: string
+}

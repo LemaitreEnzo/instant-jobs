@@ -50,3 +50,15 @@
         text-align: center;
     }
 }
+
+.informations-null{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    p{
+        font-size: 2rem;
+        font-weight: bold;
+        line-height: normal;
+    }
+}

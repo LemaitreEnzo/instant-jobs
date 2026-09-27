@@ -1,12 +1,14 @@
-import type { Application } from '../../../interfaces/models.interface';
+import { ApplicationType } from '../../../types/enum.type';
+import type { AppointmentCalendar } from '../../../types/global.type';
 import type { PropsEventCard } from '../../../types/props.type';
 import './EventCard.css';
 
 const EventCard = (props: PropsEventCard) => {
     const daysName: string[] = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
     const months: string[] = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
-    const data: Application[] = props.data;
+    const data: AppointmentCalendar[] = props.data;
     const dates: string[] = [];
+    const statusTranslate = {[ApplicationType.APPRENTICESHIP]: 'Alternance', [ApplicationType.INTERNSHIP]: 'Stage'}
 
     /**
      * Formats date into text
@@ -20,11 +22,28 @@ const EventCard = (props: PropsEventCard) => {
     }
 
     /**
+     * Remove data to old
+     */
+    data.filter((a) => {
+        return new Date(a.date).getTime() -  Date.now() >= 0;
+    })
+
+    /**
      * Sort data by date
      */
     data.sort((a, b) => {
         return new Date(a.date).getTime() - new Date(b.date).getTime();
     })
+
+    if (data.length == 0) {
+        return(
+            <div className='informations-null'>
+                <p>
+                    Rien de prévu
+                </p>
+            </div>
+        )
+    }
 
     return(
         data.slice(0,3).map((item, index) =>{
@@ -35,20 +54,20 @@ const EventCard = (props: PropsEventCard) => {
                             {dates[index]}
                         </p>
                         <p className='schedules-hour'>
-                            {/*item.hour*/} 
+                            {`${item.date.getHours}h${item.date.getMinutes}`} 
                         </p>
                     </div>
                     <div className='informations-content'>
                         <p className='content-title'>
-                            {item.company}
+                            {item.companyName}
                         </p>
                         <p className='content-description'>
-                            {item.description.slice(0,25) + '...'}
+                            {item.reason.slice(0,25) + '...'}
                         </p>
                     </div>
                     <div className='informations-status'>
                         <p>
-                            {item.status.toLocaleUpperCase()}
+                            {statusTranslate[item.type].toUpperCase()}
                         </p>
                     </div>
                 </div>

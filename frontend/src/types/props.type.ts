@@ -1,7 +1,7 @@
 import type { SetStateAction } from "react";
 import type { Application, Appointment, Campus, Organization, Promotion, Speciality, SubSpeciality } from "../interfaces/models.interface";
 import type { Student, User } from "../interfaces/user.interface";
-import type { PropsBase } from "../types/global.type";
+import type { PropsBase, AppointmentCalendar } from "../types/global.type";
 
 export interface PropsButton extends PropsBase {
   className?: "btn-primary" | "btn-secondary" | "btn-terciary";
@@ -68,11 +68,11 @@ export type PropsCardDocument = {
 };
 
 export type PropsSmallCalendar = {
-  data: Application[];
+  data: AppointmentCalendar[];
 };
 
 export type PropsEventCard = {
-  data: Application[];
+  data: AppointmentCalendar[];
 };
 
 export type PropsApplications = {
