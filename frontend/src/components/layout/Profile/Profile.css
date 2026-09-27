@@ -85,7 +85,6 @@
     border-radius: 40px;
     column-gap: 10px;
     justify-content: space-between;
-    background-color: var(--warning-color);
 
     p{
         color: var(--background-color);
@@ -98,4 +97,16 @@
     height: 10px;
     border-radius: 40px;
     background-color: var(--background-color);
+}
+
+.search{
+    background-color: var(--error-color);
+}
+
+.pending{
+    background-color: var(--warning-color);
+}
+
+.found{
+    background-color: var(--success-color);
 }

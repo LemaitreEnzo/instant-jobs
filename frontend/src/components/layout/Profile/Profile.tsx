@@ -12,6 +12,7 @@ const Profile = (props: PropsProfile) => {
   const subSpecialityData = props.subSpeciality;
   const organizationData = props.organization;
   const roleTranslate = {[UserRole.STUDENT]: 'Élève', [UserRole.ADMIN]: 'Administrateur', [UserRole.STAFF]: 'Employé'};
+  const statusTranslate = {[StudentStatus.FOUND]: 'Accepté', [StudentStatus.PENDING]: 'En attente', [StudentStatus.SEARCH]: 'Recherche'};
 
   /**Function with content for users who are not students */
   const notStudent = () => {
@@ -50,7 +51,7 @@ const Profile = (props: PropsProfile) => {
   }
 
 /**Function with content for students only */
-  const isStudent = (promotion: string, speciality: string, subSpeciality: string, status: StudentStatus) => {
+  const isStudent = (promotion: string, speciality: string, subSpeciality: string, status: string) => {
     return(
       <div className="bottom-student">
         <p className="bottom-content">
@@ -66,8 +67,8 @@ const Profile = (props: PropsProfile) => {
           <p className="bottom-content">
             Status :
           </p>
-          <div className="bottom-status-container">
-            <div className="bottom-status-ellipse"></div>
+          <div className={`bottom-status-container ${status}`}>
+            <div className="bottom-status-ellipse"></div> 
             <p>
               {status}
             </p>
@@ -101,7 +102,7 @@ const Profile = (props: PropsProfile) => {
         <p className="bottom-content">
           Campus : <span>{campusData.name}</span>
         </p>
-        {"status" in userData && userData.role === UserRole.STUDENT ? isStudent(promotionData.name, specialityData.name, subSpecialityData.name, userData.status) : ''}
+        {"status" in userData && userData.role === UserRole.STUDENT ? isStudent(promotionData.name, specialityData.name, subSpecialityData.name, statusTranslate[userData.status]) : ''}
       </div>
     </div>
   );
