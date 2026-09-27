@@ -21,10 +21,8 @@ export interface User {
 }
 
 export interface Student extends User {
-  campus: Campus | null;
-  promotion: Promotion | null;
-  speciality: Speciality | null;
-  subSpeciality: SubSpeciality | null;
-  applications: Application[];
+  promotionId: number | null;
+  specialityId: number | null;
+  subSpecialityId: number | null;
   status: StudentStatus;
 }

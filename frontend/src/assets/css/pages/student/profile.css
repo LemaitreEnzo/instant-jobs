@@ -1,0 +1,8 @@
+.pageProfile {
+    min-height: 100vh;
+    background-color: var(--body-color);
+    display: flex;
+    align-items: flex-start;
+    display: flex;
+    column-gap: 25px;
+}
