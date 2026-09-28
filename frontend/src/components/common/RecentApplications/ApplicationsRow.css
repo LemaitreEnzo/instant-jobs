@@ -19,3 +19,12 @@
     border-radius: 6px;
     object-fit: cover;
 }
+
+.application-actions {
+    border-radius: 8px;
+    transition: 0.2s ease;
+}
+
+.application-actions:hover {
+    transform: scale(1.4);
+}

@@ -2,9 +2,10 @@ import type { SetStateAction } from "react";
 import type { Application } from "../interfaces/models.interface";
 import type { Student, User } from "../interfaces/user.interface";
 import type { PropsBase } from "../types/global.type";
+import type { ApplicationStatus } from "./enum.type";
 
 export interface PropsButton extends PropsBase {
-  className?: "btn-primary" | "btn-secondary" | "btn-terciary";
+  className?: "btn-primary" | "btn-secondary" | "btn-terciary" | "btn-error";
   customClassName?: string;
   shape?: "rectangle" | "oval" | "icon";
   type?: "button" | "submit" | "reset";
@@ -24,12 +25,12 @@ export interface PropsFormField extends PropsBase {
 
 export interface PropsTag extends PropsBase {
   className?:
-    | "tag-success"
-    | "tag-warn"
-    | "tag-error"
-    | "tag-none"
-    | "tag-primary"
-    | "tag-terciary";
+  | "tag-success"
+  | "tag-warn"
+  | "tag-error"
+  | "tag-none"
+  | "tag-primary"
+  | "tag-terciary";
   customClassName?: string;
   round?: boolean;
 }
@@ -71,16 +72,23 @@ export type PropsEventCard = {
 };
 
 export type PropsApplications = {
+  id: number;
   logo: string;
-  name: string;
   company: string;
-  sendDate: Date;
+  title: string;
+  description: string;
+  date: string;
   city: string;
   type: string;
   status: string;
   resend: string;
-  resendDate: Date | string;
+  onEdit?: () => void;
 };
+
+export type PropsRecentApplications = {
+  header: boolean;
+  limit?: number;
+}
 
 export type PropsPersonalInformation = {
   data: User | Student;
@@ -118,6 +126,21 @@ export interface PropsFileInput {
 export type PropsApplicationFormModal = {
   open: boolean;
   onOpenChange: React.Dispatch<React.SetStateAction<boolean>>;
+  application?: Application | null;
+  onSuccess?: () => void;
+};
+
+export interface ApplicationFilters {
+  statuses: ApplicationStatus[];
+  types: string[];
+  resends: string[];
+}
+
+export type PropsApplicationHeader = {
+  open: boolean;
+  onOpenChange: React.Dispatch<React.SetStateAction<boolean>>;
+  filters: ApplicationFilters;
+  onFilterChange : (filters: ApplicationFilters) => void;
 };
 
 export type PropsPageTilte = {
