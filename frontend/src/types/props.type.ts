@@ -1,5 +1,5 @@
 import type { SetStateAction } from "react";
-import type { Application } from "../interfaces/models.interface";
+import type { Application, Appointment, Campus, Organization, Promotion, Speciality, SubSpeciality } from "../interfaces/models.interface";
 import type { Student, User } from "../interfaces/user.interface";
 import type { PropsBase } from "../types/global.type";
 import type { ApplicationStatus } from "./enum.type";
@@ -37,12 +37,18 @@ export interface PropsTag extends PropsBase {
 
 export type PropsProfile = {
   className?: string;
-  data: Student;
+  user: User | Student;
+  organization: Organization;
+  campus: Campus ;
+  promotion: Promotion;
+  speciality: Speciality;
+  subSpeciality: SubSpeciality;
 };
 
 export type PropsStatsCards = {
   className?: string;
-  data: Student["applications"];
+  applications: Application[];
+  appointments: Appointment[];
 };
 
 export type PropsCardStudent = {

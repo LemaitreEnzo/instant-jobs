@@ -1,6 +1,7 @@
 import ProtectedRoute from "../components/ProtectedRoute";
 import Dashboard from "../pages/Dashboard";
 import MySchool from "../pages/student/MySchool";
+import Profile from "../pages/student/Profile";
 import type { Route } from "../types/global.type";
 
 export const routes: Array<Route> = [
@@ -40,7 +41,7 @@ export const routes: Array<Route> = [
     path: "profile",
     element: (
       <ProtectedRoute>
-        <Dashboard />
+        <Profile />
       </ProtectedRoute>
     ),
   },

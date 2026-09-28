@@ -1,23 +1,14 @@
-import { useMemo } from "react";
 import { ApplicationStatus } from "../../../types/enum.type";
 import type { PropsStatsCards } from "../../../types/props.type";
 import "./StatsCards.css";
 
 const StatsCards = (props: PropsStatsCards) => {
   const classes: string = `stats-cards ${props.className}`;
-  const { pendingCount, interviewCount, refusedCount } = useMemo(() => {
-    return {
-      pendingCount: props.data.filter(
-        (d) => d.status === ApplicationStatus.PENDING,
-      ).length,
-      interviewCount: props.data.filter(
-        (d) => d.status != ApplicationStatus.PENDING,
-      ).length,
-      refusedCount: props.data.filter(
-        (d) => d.status === ApplicationStatus.ACCEPTED,
-      ).length,
-    };
-  }, [props.data]);
+  const applicationsData = props.applications;
+  const appointmentsData = props.appointments;
+  const pendingApplications = applicationsData.filter( (application) => {return application.status === ApplicationStatus.PENDING} );
+  const refusedApplications = applicationsData.filter( (application) => {return application.status === ApplicationStatus.REFUSED} );
+  const appointments = appointmentsData.filter((appointment) => {return appointment.date.getTime() > Date.now()})
 
   return (
     <div className={classes}>
@@ -59,7 +50,7 @@ const StatsCards = (props: PropsStatsCards) => {
           </svg>
         </div>
         <h2>CANDIDATURES</h2>
-        <p>{props.data.length}</p>
+        <p>{applicationsData.length}</p>
         <div className="tag">
           <span>Total envoyés</span>
         </div>
@@ -75,7 +66,7 @@ const StatsCards = (props: PropsStatsCards) => {
           </svg>
         </div>
         <h2>EN ATTENTES</h2>
-        <p>{pendingCount}</p>
+        <p>{pendingApplications.length}</p>
         <div className="tag">
           <span>Sans réponse</span>
         </div>
@@ -91,7 +82,7 @@ const StatsCards = (props: PropsStatsCards) => {
           </svg>
         </div>
         <h2>ENTRETIENS</h2>
-        <p>{interviewCount}</p>
+        <p>{appointments.length}</p>
         <div className="tag">
           <span>À venir</span>
         </div>
@@ -110,7 +101,7 @@ const StatsCards = (props: PropsStatsCards) => {
           </svg>
         </div>
         <h2>REFUSÉS</h2>
-        <p>{refusedCount}</p>
+        <p>{refusedApplications.length}</p>
         <div className="tag">
           <span>Candidatures</span>
         </div>
