@@ -1,9 +1,10 @@
 import { useCallback, useState } from "react";
-import type { Application } from "../interfaces/models.interface";
+import type { Application, Appointment } from "../interfaces/models.interface";
 import { api } from "../lib/api";
 
 export const useApplication = () => {
   const [application, setApplication] = useState<Application | null>(null);
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -88,14 +89,38 @@ export const useApplication = () => {
     }
   }, []);
 
+  const fetchAppointments = useCallback(
+    async (applicationId: number): Promise<Appointment[]> => {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await api.application.fetchAppointments(applicationId);
+        setAppointments(data);
+        return data;
+      } catch (err: unknown) {
+        const msg =
+          err instanceof Error
+            ? err.message
+            : "Error fetching user appointments";
+        setError(msg);
+        throw err;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [],
+  );
+
   return {
     application,
+    appointments,
     loading,
     error,
     fetchOne,
     create,
     update,
     remove,
+    fetchAppointments
   };
 };
 

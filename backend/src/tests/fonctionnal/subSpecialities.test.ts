@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
-import { SubSpeciality } from "src/models/subSpecialities.model";
+import { SubSpeciality } from "src/models/subSpeciality.model";
 import request from "supertest";
 import app from "../../../app";
 import getEnv from "../../../utils/envHelper";

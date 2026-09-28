@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
-import { User } from "models/users.model";
-import { Organization } from "src/models/organizations.model";
+import { User } from "src/models/user.model";
+import { Organization } from "src/models/organization.model";
 import request from "supertest";
 import app from "../../../app";
 import getEnv from "../../../utils/envHelper";

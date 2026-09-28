@@ -5,6 +5,7 @@
 import {
   createApplication,
   deleteApplication,
+  getAppointments,
   getOneApplication,
   updateApplication,
 } from "controllers/application.controller";
@@ -20,5 +21,7 @@ applicationsRoutes.post("/", createApplication);
 applicationsRoutes.patch("/:id", updateApplication);
 
 applicationsRoutes.delete("/:id", deleteApplication);
+
+applicationsRoutes.get("/:applicationId/appointments", getAppointments);
 
 export default applicationsRoutes;

@@ -15,15 +15,3 @@ export enum ApplicationResend {
   NO = "no follow up",
   NOT_NECESSARY = "not necessary",
 }
-
-export enum UserRole {
-  STUDENT = "student",
-  ADMIN = "admin",
-  STAFF = "staff",
-}
-
-export enum StudentStatus {
-  SEARCH = "search",
-  PENDING = "pending",
-  FOUND = "found",
-}

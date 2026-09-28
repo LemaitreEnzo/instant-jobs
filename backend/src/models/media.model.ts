@@ -1,50 +1,53 @@
-import { sequelize } from "config/db";
-import {
+import type {
   CreationOptional,
-  DataTypes,
   ForeignKey,
   InferAttributes,
   InferCreationAttributes,
   Model,
 } from "sequelize";
-import { Speciality } from "./specialities.model";
+import { DataTypes } from "sequelize";
 
-export interface SubSpeciality extends Model<
-  InferAttributes<SubSpeciality>,
-  InferCreationAttributes<SubSpeciality>
+import { sequelize } from "../../config/db";
+import { User } from "./user.model";
+
+export interface Media extends Model<
+  InferAttributes<Media>,
+  InferCreationAttributes<Media>
 > {
   id: CreationOptional<number>;
   name: string;
+  path: string;
   createdAt: CreationOptional<Date>;
   updatedAt: CreationOptional<Date>;
-  specialityId: ForeignKey<Speciality["id"]>;
+  userId: ForeignKey<User["id"]>;
 }
 
-export const SubSpeciality = sequelize.define<SubSpeciality>(
-  "SubSpeciality",
+export const Media = sequelize.define<Media>(
+  "Media",
   {
     id: {
       primaryKey: true,
       autoIncrement: true,
-      allowNull: false,
       type: DataTypes.INTEGER,
     },
     name: {
-      allowNull: false,
+      type: DataTypes.STRING,
+    },
+    path: {
       type: DataTypes.STRING,
     },
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,
-    specialityId: {
+    userId: {
       type: DataTypes.INTEGER,
       references: {
-        model: Speciality,
+        model: User,
         key: "id",
       },
     },
   },
   {
-    tableName: "SubSpeciality",
+    tableName: "Media",
     freezeTableName: true,
   },
 );

@@ -1,4 +1,4 @@
-import type { ApplicationStatus } from "../types/enum.type";
+import type { ApplicationResend, ApplicationStatus, ApplicationType } from "../types/enum.type";
 
 export interface Organization {
   id: number;
@@ -17,18 +17,26 @@ export interface Campus {
   name: string;
   organizationId: string;
 }
+
 export interface Application {
   id: number;
   title: string;
-  type: string;
+  type: ApplicationType;
   logo: string;
   company: string;
   city: string;
   date: string;
   status: ApplicationStatus;
-  resend: string;
+  resend: ApplicationResend;
   description: string;
   userId: number | null;
+}
+
+export interface Appointment {
+  id: number;
+  date: Date;
+  reason: string;
+  applicationId: number | null;
 }
 
 export interface Media {

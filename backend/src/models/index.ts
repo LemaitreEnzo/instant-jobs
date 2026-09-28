@@ -1,10 +1,11 @@
-export { Application } from "./applications.model";
+export { Application } from "./application.model";
+export { Appointment } from "./appointment.model";
 export { Campus } from "./campus.model";
-export { Media } from "./medias.model";
-export { Organization } from "./organizations.model";
-export { Promotion } from "./promotions.model";
-export { Speciality } from "./specialities.model";
-export { SubSpeciality } from "./subSpecialities.model";
-export { User } from "./users.model";
+export { Media } from "./media.model";
+export { Organization } from "./organization.model";
+export { Promotion } from "./promotion.model";
+export { Speciality } from "./speciality.model";
+export { SubSpeciality } from "./subSpeciality.model";
+export { User } from "./user.model";
 
 import "./associations";

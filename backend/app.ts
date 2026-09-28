@@ -5,14 +5,15 @@ import helmet from "helmet";
 
 import getEnv from "./utils/envHelper";
 
-import campusRoutes from "routes/campus.routes";
-import organizationsRoutes from "routes/organizations.routes";
-import promotionsRoutes from "routes/promotions.routes";
-import specialitiesRoutes from "routes/specialities.routes";
-import subSpecialitiesRoutes from "routes/subSpecialities.routes";
-import applicationsRoutes from "src/routes/applications.routes";
-import mediasRoutes from "src/routes/medias.routes";
-import usersRoutes from "src/routes/users.routes";
+import campusRoutes from "src/routes/campus.route";
+import organizationsRoutes from "src/routes/organization.route";
+import promotionsRoutes from "src/routes/promotion.route";
+import specialitiesRoutes from "src/routes/speciality.route";
+import subSpecialitiesRoutes from "src/routes/subSpeciality.route";
+import applicationsRoutes from "src/routes/application.route";
+import appointmentsRoutes from "src/routes/appointment.route";
+import mediasRoutes from "src/routes/media.route";
+import usersRoutes from "src/routes/user.route";
 
 const app = express();
 
@@ -49,5 +50,7 @@ app.use(`/${VERSION}/sub-speciality`, subSpecialitiesRoutes);
 app.use(`/${VERSION}/media`, mediasRoutes);
 
 app.use(`/${VERSION}/application`, applicationsRoutes);
+
+app.use(`/${VERSION}/appointment`, appointmentsRoutes);
 
 export default app;

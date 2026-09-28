@@ -8,13 +8,13 @@ const StatsCards = (props: PropsStatsCards) => {
   const { pendingCount, interviewCount, refusedCount } = useMemo(() => {
     return {
       pendingCount: props.data.filter(
-        (d) => d.status === ApplicationStatus.pending,
+        (d) => d.status === ApplicationStatus.PENDING,
       ).length,
       interviewCount: props.data.filter(
-        (d) => d.status === ApplicationStatus.interview,
+        (d) => d.status != ApplicationStatus.PENDING,
       ).length,
       refusedCount: props.data.filter(
-        (d) => d.status === ApplicationStatus.refused,
+        (d) => d.status === ApplicationStatus.ACCEPTED,
       ).length,
     };
   }, [props.data]);
@@ -66,7 +66,7 @@ const StatsCards = (props: PropsStatsCards) => {
       </div>
       <div className="pending stats-cards-childs">
         <div className="icon">
-          <svg 
+          <svg
             width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
           >
             <path
@@ -82,10 +82,10 @@ const StatsCards = (props: PropsStatsCards) => {
       </div>
       <div className="interview stats-cards-childs">
         <div className="icon">
-          <svg 
+          <svg
             width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
           >
-            <path 
+            <path
               d="M9.54998 18L3.84998 12.3L5.27498 10.875L9.54998 15.15L18.725 5.97501L20.15 7.40001L9.54998 18Z" fill="currentColor"
             />
           </svg>
@@ -98,13 +98,13 @@ const StatsCards = (props: PropsStatsCards) => {
       </div>
       <div className="refused stats-cards-childs">
         <div className="icon">
-          <svg 
+          <svg
             width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
           >
-            <path 
+            <path
               fill-rule="evenodd" clip-rule="evenodd" d="M5.46995 5.47001C5.61058 5.32956 5.8012 5.25067 5.99995 5.25067C6.1987 5.25067 6.38933 5.32956 6.52995 5.47001L18.53 17.47C18.6036 17.5387 18.6627 17.6215 18.7037 17.7135C18.7447 17.8055 18.7668 17.9048 18.7685 18.0055C18.7703 18.1062 18.7518 18.2062 18.7141 18.2996C18.6764 18.393 18.6202 18.4778 18.549 18.549C18.4778 18.6203 18.3929 18.6764 18.2995 18.7141C18.2062 18.7519 18.1061 18.7704 18.0054 18.7686C17.9047 18.7668 17.8054 18.7448 17.7134 18.7038C17.6214 18.6628 17.5386 18.6037 17.4699 18.53L5.46995 6.53001C5.3295 6.38939 5.25061 6.19876 5.25061 6.00001C5.25061 5.80126 5.3295 5.61064 5.46995 5.47001Z" fill="currentColor"
             />
-            <path 
+            <path
             fill-rule="evenodd" clip-rule="evenodd" d="M18.53 5.47001C18.6704 5.61064 18.7493 5.80126 18.7493 6.00001C18.7493 6.19876 18.6704 6.38939 18.53 6.53001L6.52997 18.53C6.38779 18.6625 6.19975 18.7346 6.00545 18.7312C5.81114 18.7278 5.62576 18.649 5.48835 18.5116C5.35093 18.3742 5.27222 18.1888 5.26879 17.9945C5.26537 17.8002 5.33749 17.6122 5.46997 17.47L17.47 5.47001C17.6106 5.32956 17.8012 5.25067 18 5.25067C18.1987 5.25067 18.3893 5.32956 18.53 5.47001Z" fill="currentColor"
           />
           </svg>

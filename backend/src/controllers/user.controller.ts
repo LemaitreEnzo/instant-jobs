@@ -14,12 +14,12 @@ const excludedData: (keyof Attributes<User>)[] = [
 const excludedMediaData: (keyof Attributes<Media>)[] = [
   "createdAt",
   "updatedAt",
-  "userId",
+  "userId"
 ];
 const excludedApplicationData: (keyof Attributes<Application>)[] = [
   "createdAt",
   "updatedAt",
-  "userId",
+  "userId"
 ];
 
 export const login = async (req: Request, res: Response) => {

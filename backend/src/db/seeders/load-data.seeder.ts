@@ -1,5 +1,11 @@
 import { QueryInterface, QueryTypes } from "sequelize";
 import { hashPassword } from "../../../utils/passwordHash";
+import {
+  ApplicationResend,
+  ApplicationStatus,
+  ApplicationType,
+} from "../../models/enums/application.enum";
+import { StudentStatus, UserRole } from "../../models/enums/user.enum";
 
 /** @type {import("sequelize-cli").Migration} */
 export default {
@@ -391,6 +397,11 @@ export default {
 
     await queryInterface.bulkInsert("SubSpeciality", rawSubSpecialities);
 
+    const insertedSubSpecialities = (await queryInterface.sequelize.query(
+      `SELECT id, name, "specialityId" FROM "SubSpeciality" ORDER BY id ASC;`,
+      { type: QueryTypes.SELECT },
+    )) as unknown as Array<{ id: number; name: string; specialityId: number }>;
+
     // ==========================================
     // 6. USERS (10 users par organisation = 100 users au total)
     // ==========================================
@@ -602,12 +613,22 @@ export default {
 
     const defaultPasswordHash = await hashPassword("Azerty1234*&");
 
+    const studentStatusList = [
+      StudentStatus.SEARCH,
+      StudentStatus.PENDING,
+      StudentStatus.FOUND,
+    ];
+
     const rawUsers: Array<{
       firstname: string;
       lastname: string;
       email: string;
       phone: string;
-      role: string;
+      role: UserRole;
+      status: StudentStatus | null;
+      promotionId: number | null;
+      specialityId: number | null;
+      subSpecialityId: number | null;
       password_hash: string;
       organizationId: number;
       campusId: number | null;
@@ -629,11 +650,11 @@ export default {
 
         // Répartition des rôles :
         // 1 admin, 2 staff, 7 standard ("student")
-        let role = "student";
+        let role = UserRole.STUDENT;
         if (uIdx === 0) {
-          role = "admin";
+          role = UserRole.ADMIN;
         } else if (uIdx === 1 || uIdx === 2) {
-          role = "staff";
+          role = UserRole.STAFF;
         }
 
         // Attribution du campus :
@@ -644,6 +665,48 @@ export default {
           const targetCampus = orgCampuses[(uIdx - 1) % orgCampuses.length];
           if (targetCampus) {
             userCampusId = targetCampus.id;
+          }
+        }
+
+        let userStatus: StudentStatus | null = null;
+        let userPromotionId: number | null = null;
+        let userSpecialityId: number | null = null;
+        let userSubSpecialityId: number | null = null;
+
+        if (role === UserRole.STUDENT && userCampusId) {
+          userStatus =
+            studentStatusList[(uIdx - 3) % studentStatusList.length] ??
+            StudentStatus.SEARCH;
+          const campusPromotions = insertedPromotions.filter(
+            (p) => p.campusId === userCampusId,
+          );
+          if (campusPromotions.length > 0) {
+            const promo =
+              campusPromotions[(uIdx - 3) % campusPromotions.length] ??
+              campusPromotions[0];
+            if (promo) {
+              userPromotionId = promo.id;
+              const promoSpecs = insertedSpecialities.filter(
+                (s) => s.promotionId === promo.id,
+              );
+              if (promoSpecs.length > 0) {
+                const spec =
+                  promoSpecs[(uIdx - 3) % promoSpecs.length] ?? promoSpecs[0];
+                if (spec) {
+                  userSpecialityId = spec.id;
+                  const specSubs = insertedSubSpecialities.filter(
+                    (sub) => sub.specialityId === spec.id,
+                  );
+                  if (specSubs.length > 0) {
+                    const subSpec =
+                      specSubs[(uIdx - 3) % specSubs.length] ?? specSubs[0];
+                    if (subSpec) {
+                      userSubSpecialityId = subSpec.id;
+                    }
+                  }
+                }
+              }
+            }
           }
         }
 
@@ -663,6 +726,10 @@ export default {
           email,
           phone,
           role,
+          status: userStatus,
+          promotionId: userPromotionId,
+          specialityId: userSpecialityId,
+          subSpecialityId: userSubSpecialityId,
           password_hash: defaultPasswordHash,
           organizationId: org.id,
           campusId: userCampusId,
@@ -687,7 +754,7 @@ export default {
     }>;
 
     // ==========================================
-    // 7. APPLICATIONS & MEDIAS
+    // 7. APPLICATIONS, APPOINTMENTS & MEDIAS
     // ==========================================
     const studentUsers = insertedUsers.filter((u) => u.role === "student");
     const fallbackUserId = insertedUsers[0]?.id ?? 1;
@@ -695,13 +762,13 @@ export default {
     const rawApplications = [
       {
         title: "Développeur Full-Stack React / Node.js",
-        type: "CDI",
+        type: ApplicationType.APPRENTICESHIP,
         logo: "logo-technova.png",
         company: "TechNova Solutions",
         city: "Paris",
         date: "2026-09-01",
-        status: "pending",
-        resend: "no",
+        status: ApplicationStatus.PENDING,
+        resend: ApplicationResend.NO,
         description:
           "Poste de développeur full-stack au sein de l'équipe produit SaaS.",
         userId: studentUsers[0]?.id ?? fallbackUserId,
@@ -710,13 +777,13 @@ export default {
       },
       {
         title: "Stage Développeur Frontend Next.js",
-        type: "Stage",
+        type: ApplicationType.INTERNSHIP,
         logo: "logo-innowave.png",
         company: "InnoWave Digital",
         city: "Lyon",
-        date: "2026-10-15",
-        status: "accepted",
-        resend: "no",
+        date: "2026-08-15",
+        status: ApplicationStatus.ACCEPTED,
+        resend: ApplicationResend.INTERVIEW_COMPLETED,
         description:
           "Stage de fin d'études en intégration web et optimisation de performance.",
         userId: studentUsers[1]?.id ?? fallbackUserId,
@@ -725,41 +792,41 @@ export default {
       },
       {
         title: "Alternance Data Engineer",
-        type: "Alternance",
+        type: ApplicationType.APPRENTICESHIP,
         logo: "logo-nexora.png",
         company: "Nexora Conseil",
         city: "Lille",
-        date: "2026-09-15",
-        status: "pending",
-        resend: "no",
+        date: "2026-09-10",
+        status: ApplicationStatus.PENDING,
+        resend: ApplicationResend.FOLLOW_UP,
         description: "Création et maintenance de pipelines ETL temps-réel.",
         userId: studentUsers[2]?.id ?? fallbackUserId,
         createdAt: now,
         updatedAt: now,
       },
       {
-        title: "Consultant Cybersécurité Junior",
-        type: "CDI",
+        title: "Stage Consultant Cybersécurité Junior",
+        type: ApplicationType.INTERNSHIP,
         logo: "logo-technova.png",
         company: "TechNova Solutions",
         city: "Paris",
-        date: "2026-11-01",
-        status: "rejected",
-        resend: "yes",
+        date: "2026-08-01",
+        status: ApplicationStatus.REFUSED,
+        resend: ApplicationResend.NOT_NECESSARY,
         description: "Audit de sécurité applicative et tests d'intrusion.",
         userId: studentUsers[3]?.id ?? fallbackUserId,
         createdAt: now,
         updatedAt: now,
       },
       {
-        title: "Développeur Backend TypeScript / PostgreSQL",
-        type: "CDI",
+        title: "Alternance Développeur Backend TypeScript / PostgreSQL",
+        type: ApplicationType.APPRENTICESHIP,
         logo: "logo-innowave.png",
         company: "InnoWave Digital",
         city: "Lyon",
-        date: "2026-12-01",
-        status: "pending",
-        resend: "no",
+        date: "2026-09-15",
+        status: ApplicationStatus.PENDING,
+        resend: ApplicationResend.NO,
         description: "Conception et implémentation d'APIs résilientes.",
         userId: studentUsers[4]?.id ?? fallbackUserId,
         createdAt: now,
@@ -768,6 +835,90 @@ export default {
     ];
 
     await queryInterface.bulkInsert("Application", rawApplications);
+
+    const insertedApplications = (await queryInterface.sequelize.query(
+      `SELECT id, status, date FROM "Application" ORDER BY id ASC;`,
+      { type: QueryTypes.SELECT },
+    )) as unknown as Array<{ id: number; status: string; date: string }>;
+
+    const rawAppointments: Array<{
+      date: Date;
+      reason: string;
+      applicationId: number;
+      createdAt: Date;
+      updatedAt: Date;
+    }> = [];
+
+    for (const app of insertedApplications) {
+      const baseDate = new Date(app.date);
+
+      if (app.status === ApplicationStatus.ACCEPTED) {
+        // 3 RDV passés : RH -> Technique -> Final
+        const date1 = new Date(baseDate);
+        date1.setDate(date1.getDate() + 5);
+        date1.setHours(10, 0, 0, 0);
+
+        const date2 = new Date(baseDate);
+        date2.setDate(date2.getDate() + 12);
+        date2.setHours(14, 30, 0, 0);
+
+        const date3 = new Date(baseDate);
+        date3.setDate(date3.getDate() + 18);
+        date3.setHours(16, 0, 0, 0);
+
+        rawAppointments.push(
+          {
+            date: date1,
+            reason: "Premier entretien téléphonique RH",
+            applicationId: app.id,
+            createdAt: now,
+            updatedAt: now,
+          },
+          {
+            date: date2,
+            reason: "Entretien technique et présentation des projets",
+            applicationId: app.id,
+            createdAt: now,
+            updatedAt: now,
+          },
+          {
+            date: date3,
+            reason: "Entretien final avec le tuteur d'entreprise & signature",
+            applicationId: app.id,
+            createdAt: now,
+            updatedAt: now,
+          },
+        );
+      } else if (app.status === ApplicationStatus.REFUSED) {
+        // 1 RDV passé avant refus
+        const date1 = new Date(baseDate);
+        date1.setDate(date1.getDate() + 7);
+        date1.setHours(11, 0, 0, 0);
+
+        rawAppointments.push({
+          date: date1,
+          reason: "Entretien RH préliminaire",
+          applicationId: app.id,
+          createdAt: now,
+          updatedAt: now,
+        });
+      } else {
+        // PENDING : 1 RDV planifié à venir
+        const date1 = new Date(baseDate);
+        date1.setDate(date1.getDate() + 7);
+        date1.setHours(15, 0, 0, 0);
+
+        rawAppointments.push({
+          date: date1,
+          reason: "Entretien de motivation et échange sur les compétences",
+          applicationId: app.id,
+          createdAt: now,
+          updatedAt: now,
+        });
+      }
+    }
+
+    await queryInterface.bulkInsert("Appointment", rawAppointments);
 
     const rawMedias = [
       {
@@ -804,6 +955,7 @@ export default {
   },
 
   down: async (queryInterface: QueryInterface): Promise<void> => {
+    await queryInterface.bulkDelete("Appointment", {});
     await queryInterface.bulkDelete("SubSpeciality", {});
     await queryInterface.bulkDelete("Speciality", {});
     await queryInterface.bulkDelete("Promotion", {});
@@ -814,6 +966,7 @@ export default {
     await queryInterface.bulkDelete("Organization", {});
 
     const tables = [
+      "Appointment",
       "SubSpeciality",
       "Speciality",
       "Promotion",
@@ -831,3 +984,4 @@ export default {
     }
   },
 };
+

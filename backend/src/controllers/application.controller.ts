@@ -1,10 +1,16 @@
 import { type Request, type Response } from "express";
 import { Attributes } from "sequelize";
-import { Application } from "src/models";
+import { Application, Appointment } from "src/models";
 
 const excludedData: (keyof Attributes<Application>)[] = [
   "createdAt",
   "updatedAt",
+];
+
+const excludedAppointmentData: (keyof Attributes<Appointment>)[] = [
+  "createdAt",
+  "updatedAt",
+  "applicationId"
 ];
 
 export const getOneApplication = async (req: Request, res: Response) => {
@@ -74,6 +80,27 @@ export const deleteApplication = async (req: Request, res: Response) => {
 
     await application.destroy();
     res.status(204).end();
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const getAppointments = async (req: Request, res: Response) => {
+  try {
+    const { applicationId } = req.params;
+
+    const appointments = await Appointment.findAll({
+      where: { applicationId },
+      attributes: {
+        exclude: excludedAppointmentData,
+      },
+    });
+
+    if (!appointments) {
+      return res.status(404).json({ message: "Appointments not found" });
+    }
+
+    res.status(200).json(appointments);
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
   }

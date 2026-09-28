@@ -10,7 +10,7 @@ import {
   getCampuses,
   getUsers,
   updateOrganization,
-} from "controllers/organizations.controller";
+} from "src/controllers/organization.controller";
 import express from "express";
 
 const organizationsRoutes = express.Router({ mergeParams: true });

@@ -8,7 +8,7 @@ import {
   login,
   logout,
   updateUser,
-} from "controllers/users.controller";
+} from "src/controllers/user.controller";
 import express from "express";
 import authenticateUser from "../../middlewares/auth.middleware";
 
