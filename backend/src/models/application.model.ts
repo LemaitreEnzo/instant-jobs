@@ -50,7 +50,7 @@ export const Application = sequelize.define<Application>(
       type: DataTypes.ENUM(...Object.values(ApplicationType)),
     },
     logo: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
     },
     company: {
       type: DataTypes.STRING,

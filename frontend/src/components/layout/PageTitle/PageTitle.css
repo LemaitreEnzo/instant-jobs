@@ -1,0 +1,9 @@
+.page-title{
+    display: flex;
+    align-items: center;
+    column-gap: 15px;
+}
+
+.page-title-content{
+    font-size: 1.5rem;
+}
