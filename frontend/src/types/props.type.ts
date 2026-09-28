@@ -10,6 +10,7 @@ export interface PropsButton extends PropsBase {
   shape?: "rectangle" | "oval" | "icon";
   type?: "button" | "submit" | "reset";
   href?: string;
+  navigateBack?: boolean;
   onClick?: (event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => void;
   onMouseDown?: (event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => void;
 }
@@ -141,3 +142,7 @@ export type PropsApplicationHeader = {
   filters: ApplicationFilters;
   onFilterChange : (filters: ApplicationFilters) => void;
 };
+
+export type PropsPageTilte = {
+  title: string;
+}
