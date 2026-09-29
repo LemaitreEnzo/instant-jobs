@@ -5,6 +5,8 @@ import helmet from "helmet";
 
 import getEnv from "./utils/envHelper";
 
+import authenticateUser from "./middlewares/auth.middleware";
+
 import campusRoutes from "src/routes/campus.route";
 import organizationsRoutes from "src/routes/organization.route";
 import promotionsRoutes from "src/routes/promotion.route";
@@ -14,7 +16,6 @@ import applicationsRoutes from "src/routes/application.route";
 import appointmentsRoutes from "src/routes/appointment.route";
 import mediasRoutes from "src/routes/media.route";
 import usersRoutes from "src/routes/user.route";
-
 const app = express();
 
 const VERSION = getEnv("VERSION");
@@ -35,22 +36,22 @@ app.get(`/${VERSION}`, (req: Request, res: Response) => {
   res.status(200).send("Hello world!");
 });
 
-app.use(`/${VERSION}/organization`, organizationsRoutes);
+app.use(`/${VERSION}/organization`, authenticateUser, organizationsRoutes);
 
 app.use(`/${VERSION}/user`, usersRoutes);
 
-app.use(`/${VERSION}/campus`, campusRoutes);
+app.use(`/${VERSION}/campus`, authenticateUser, campusRoutes);
 
-app.use(`/${VERSION}/promotion`, promotionsRoutes);
+app.use(`/${VERSION}/promotion`, authenticateUser, promotionsRoutes);
 
-app.use(`/${VERSION}/speciality`, specialitiesRoutes);
+app.use(`/${VERSION}/speciality`, authenticateUser, specialitiesRoutes);
 
-app.use(`/${VERSION}/sub-speciality`, subSpecialitiesRoutes);
+app.use(`/${VERSION}/sub-speciality`, authenticateUser, subSpecialitiesRoutes);
 
-app.use(`/${VERSION}/media`, mediasRoutes);
+app.use(`/${VERSION}/media`, authenticateUser, mediasRoutes);
 
-app.use(`/${VERSION}/application`, applicationsRoutes);
+app.use(`/${VERSION}/application`, authenticateUser, applicationsRoutes);
 
-app.use(`/${VERSION}/appointment`, appointmentsRoutes);
+app.use(`/${VERSION}/appointment`, authenticateUser, appointmentsRoutes);
 
 export default app;

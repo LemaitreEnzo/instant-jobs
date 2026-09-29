@@ -1,3 +1,4 @@
+import crypto from "crypto";
 import { QueryInterface, QueryTypes } from "sequelize";
 import { hashPassword } from "../../../utils/passwordHash";
 import {
@@ -21,10 +22,12 @@ export default {
         name: "TechNova Solutions",
         email: "contact@technova.fr",
         phone: "0140000001",
+        description:
+          "Entreprise spécialisée dans le développement de solutions logicielles SaaS et le conseil en transformation digitale pour les grands comptes et scale-ups.",
         role: "recruiter",
         postcode: 75008,
         city: "Paris",
-        adress: "25 rue de Ponthieu",
+        address: "25 rue de Ponthieu",
         country: "France",
         createdAt: now,
         updatedAt: now,
@@ -33,10 +36,12 @@ export default {
         name: "InnoWave Digital",
         email: "contact@innowave.io",
         phone: "0140000002",
+        description:
+          "Agence d'ingénierie web, mobile et intelligence artificielle concevant des plateformes applicatives scalables et innovantes.",
         role: "recruiter",
         postcode: 69002,
         city: "Lyon",
-        adress: "14 quai du Commerce",
+        address: "14 quai du Commerce",
         country: "France",
         createdAt: now,
         updatedAt: now,
@@ -45,10 +50,12 @@ export default {
         name: "Nexora Conseil",
         email: "contact@nexora.fr",
         phone: "0140000003",
+        description:
+          "Cabinet de conseil en technologies numériques, stratégie IT, cybersécurité et architectures cloud d'entreprise.",
         role: "recruiter",
         postcode: 59000,
         city: "Lille",
-        adress: "8 boulevard Carnot",
+        address: "8 boulevard Carnot",
         country: "France",
         createdAt: now,
         updatedAt: now,
@@ -58,10 +65,12 @@ export default {
         name: "La Manu",
         email: "contact@lamanu.fr",
         phone: "0344000001",
+        description:
+          "École supérieure des métiers du numérique formant les futurs experts en développement web, data, cybersécurité et design digital.",
         role: "school",
         postcode: 60200,
         city: "Compiègne",
-        adress: "70 rue des Jacobins",
+        address: "70 rue des Jacobins",
         country: "France",
         createdAt: now,
         updatedAt: now,
@@ -70,10 +79,12 @@ export default {
         name: "École Supérieure du Numérique (ESN)",
         email: "admission@esn-tech.fr",
         phone: "0140000004",
+        description:
+          "Grande école technologique privée formant des experts en développement full-stack, DevOps et gouvernance numérique.",
         role: "school",
         postcode: 75011,
         city: "Paris",
-        adress: "42 rue de la Roquette",
+        address: "42 rue de la Roquette",
         country: "France",
         createdAt: now,
         updatedAt: now,
@@ -82,10 +93,12 @@ export default {
         name: "Institut Digital de France (IDF)",
         email: "contact@idf-digital.fr",
         phone: "0140000005",
+        description:
+          "Institut d'enseignement supérieur d'excellence spécialisé dans les architectures logicielles modernes, l'IA et le big data.",
         role: "school",
         postcode: 78000,
         city: "Versailles",
-        adress: "15 avenue de Paris",
+        address: "15 avenue de Paris",
         country: "France",
         createdAt: now,
         updatedAt: now,
@@ -94,10 +107,12 @@ export default {
         name: "Polytech Web & Data",
         email: "info@polytech-webdata.fr",
         phone: "0472000001",
+        description:
+          "Centre de formation supérieur dédié à l'ingénierie des données, à la cybersécurité et aux technologies web distribuées.",
         role: "school",
         postcode: 69007,
         city: "Lyon",
-        adress: "20 boulevard des Belges",
+        address: "20 boulevard des Belges",
         country: "France",
         createdAt: now,
         updatedAt: now,
@@ -106,10 +121,12 @@ export default {
         name: "Aquitaine Tech Academy",
         email: "contact@aquitaine-tech.fr",
         phone: "0556000001",
+        description:
+          "Campus régional d'apprentissage des technologies informatiques préparant aux métiers de développeur d'applications et lead tech.",
         role: "school",
         postcode: 33000,
         city: "Bordeaux",
-        adress: "5 cours Pasteur",
+        address: "5 cours Pasteur",
         country: "France",
         createdAt: now,
         updatedAt: now,
@@ -118,10 +135,12 @@ export default {
         name: "Grand Ouest Coding School",
         email: "hello@grand-ouest-code.fr",
         phone: "0240000001",
+        description:
+          "École immersive d'informatique et de programmation web orientée vers l'innovation logicielle et les méthodologies agiles.",
         role: "school",
         postcode: 44000,
         city: "Nantes",
-        adress: "12 rue de la Paix",
+        address: "12 rue de la Paix",
         country: "France",
         createdAt: now,
         updatedAt: now,
@@ -130,10 +149,12 @@ export default {
         name: "Méditerranée Tech Campus",
         email: "contact@med-tech-campus.fr",
         phone: "0491000001",
+        description:
+          "Pôle d'enseignement supérieur axé sur le développement logiciel, les solutions cloud natives et l'Internet des objets (IoT).",
         role: "school",
         postcode: 13001,
         city: "Marseille",
-        adress: "30 rue de la République",
+        address: "30 rue de la République",
         country: "France",
         createdAt: now,
         updatedAt: now,
@@ -620,6 +641,7 @@ export default {
     ];
 
     const rawUsers: Array<{
+      uuid: string;
       firstname: string;
       lastname: string;
       email: string;
@@ -648,60 +670,74 @@ export default {
       for (let uIdx = 0; uIdx < 10; uIdx++) {
         globalUserCounter++;
 
-        // Répartition des rôles :
-        // 1 admin, 2 staff, 7 standard ("student")
-        let role = UserRole.STUDENT;
-        if (uIdx === 0) {
-          role = UserRole.ADMIN;
-        } else if (uIdx === 1 || uIdx === 2) {
-          role = UserRole.STAFF;
-        }
-
-        // Attribution du campus :
-        // Les entreprises n'ont pas de campus (null)
-        // Pour les écoles : l'admin n'a pas de campus rattaché (null = global), les autres sont répartis sur les campus de l'école
+        let role: UserRole;
         let userCampusId: number | null = null;
-        if (isSchool && orgCampuses.length > 0 && uIdx > 0) {
-          const targetCampus = orgCampuses[(uIdx - 1) % orgCampuses.length];
-          if (targetCampus) {
-            userCampusId = targetCampus.id;
-          }
-        }
-
         let userStatus: StudentStatus | null = null;
         let userPromotionId: number | null = null;
         let userSpecialityId: number | null = null;
         let userSubSpecialityId: number | null = null;
 
-        if (role === UserRole.STUDENT && userCampusId) {
-          userStatus =
-            studentStatusList[(uIdx - 3) % studentStatusList.length] ??
-            StudentStatus.SEARCH;
-          const campusPromotions = insertedPromotions.filter(
-            (p) => p.campusId === userCampusId,
-          );
-          if (campusPromotions.length > 0) {
-            const promo =
-              campusPromotions[(uIdx - 3) % campusPromotions.length] ??
-              campusPromotions[0];
-            if (promo) {
-              userPromotionId = promo.id;
-              const promoSpecs = insertedSpecialities.filter(
-                (s) => s.promotionId === promo.id,
+        if (!isSchool) {
+          // Pour une entreprise : 1 Admin et 9 Staff (collaborateurs / recruteurs)
+          role = uIdx === 0 ? UserRole.ADMIN : UserRole.STAFF;
+          // userStatus, userCampusId, promotionId restent null conformément au modèle User
+        } else {
+          // Pour une école :
+          // uIdx === 0 : Admin de l'école (campus null = vue globale)
+          // uIdx === 1, 2 : Staff de l'école rattaché à un campus
+          // uIdx >= 3 : Étudiants scolarisés
+          if (uIdx === 0) {
+            role = UserRole.ADMIN;
+          } else if (uIdx === 1 || uIdx === 2) {
+            role = UserRole.STAFF;
+            if (orgCampuses.length > 0) {
+              const targetCampus = orgCampuses[(uIdx - 1) % orgCampuses.length];
+              if (targetCampus) {
+                userCampusId = targetCampus.id;
+              }
+            }
+          } else {
+            role = UserRole.STUDENT;
+            if (orgCampuses.length > 0) {
+              const targetCampus = orgCampuses[(uIdx - 3) % orgCampuses.length];
+              if (targetCampus) {
+                userCampusId = targetCampus.id;
+              }
+            }
+
+            userStatus =
+              studentStatusList[(uIdx - 3) % studentStatusList.length] ??
+              StudentStatus.SEARCH;
+
+            if (userCampusId) {
+              const campusPromotions = insertedPromotions.filter(
+                (p) => p.campusId === userCampusId,
               );
-              if (promoSpecs.length > 0) {
-                const spec =
-                  promoSpecs[(uIdx - 3) % promoSpecs.length] ?? promoSpecs[0];
-                if (spec) {
-                  userSpecialityId = spec.id;
-                  const specSubs = insertedSubSpecialities.filter(
-                    (sub) => sub.specialityId === spec.id,
+              if (campusPromotions.length > 0) {
+                const promo =
+                  campusPromotions[(uIdx - 3) % campusPromotions.length] ??
+                  campusPromotions[0];
+                if (promo) {
+                  userPromotionId = promo.id;
+                  const promoSpecs = insertedSpecialities.filter(
+                    (s) => s.promotionId === promo.id,
                   );
-                  if (specSubs.length > 0) {
-                    const subSpec =
-                      specSubs[(uIdx - 3) % specSubs.length] ?? specSubs[0];
-                    if (subSpec) {
-                      userSubSpecialityId = subSpec.id;
+                  if (promoSpecs.length > 0) {
+                    const spec =
+                      promoSpecs[(uIdx - 3) % promoSpecs.length] ??
+                      promoSpecs[0];
+                    if (spec) {
+                      userSpecialityId = spec.id;
+                      const specSubs = insertedSubSpecialities.filter(
+                        (sub) => sub.specialityId === spec.id,
+                      );
+                      if (specSubs.length > 0) {
+                        const subSpec =
+                          specSubs[(uIdx - 3) % specSubs.length] ?? specSubs[0];
+                        if (subSpec) {
+                          userSubSpecialityId = subSpec.id;
+                        }
+                      }
                     }
                   }
                 }
@@ -721,6 +757,7 @@ export default {
         const phone = `06${String(10000000 + globalUserCounter).padStart(8, "0")}`;
 
         rawUsers.push({
+          uuid: crypto.randomUUID(),
           firstname,
           lastname,
           email,
@@ -984,4 +1021,3 @@ export default {
     }
   },
 };
-

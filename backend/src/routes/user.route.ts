@@ -22,7 +22,7 @@ usersRoutes.get("/me", getAuth);
 
 usersRoutes.get("/:id", authenticateUser, getOneUser);
 
-usersRoutes.post("/", createUser);
+usersRoutes.post("/", authenticateUser, createUser);
 
 usersRoutes.patch("/:id", authenticateUser, updateUser);
 

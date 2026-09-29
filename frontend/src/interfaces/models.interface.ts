@@ -5,10 +5,11 @@ export interface Organization {
   name: string;
   email: string;
   phone: string;
+  description: string;
   role: string;
   postcode: number;
   city: string;
-  adress: string;
+  address: string;
   country: string;
 }
 

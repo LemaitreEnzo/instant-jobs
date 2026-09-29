@@ -24,6 +24,9 @@ export default {
         unique: true,
         type: DataTypes.STRING,
       },
+      description: {
+        type: DataTypes.TEXT,
+      },
       role: {
         type: DataTypes.STRING,
       },
@@ -33,7 +36,7 @@ export default {
       city: {
         type: DataTypes.STRING,
       },
-      adress: {
+      address: {
         type: DataTypes.STRING,
       },
       country: {
