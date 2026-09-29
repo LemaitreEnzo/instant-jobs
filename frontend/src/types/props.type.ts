@@ -152,3 +152,11 @@ export type PropsApplicationHeader = {
 export type PropsPageTilte = {
   title: string;
 }
+
+export interface PropsPagination {
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+  disabled?: boolean;
+  customClassName?: string;
+}

@@ -380,12 +380,11 @@ class ApiClient {
       return this.request<User | Student | null>("user/me", { method: "GET" });
     },
 
-    fetchApplications: (userId: number, limit?: number, filters?: ApplicationFilters): Promise<Application[]> => {
+    fetchApplications: (userId: number, page: number = 1, limit: number = 10, filters?: ApplicationFilters): Promise<{data: Application[]; pagination: { currentPage: number; totalPages: number; totalItems: number }}> => {
       const params = new URLSearchParams();
 
-      if (limit) {
-        params.append("limit", limit.toString());
-      };
+      params.append("page", page.toString());
+      params.append("limit", limit.toString());
 
       if (filters?.statuses && filters?.statuses.length > 0) {
         params.append("status", filters.statuses.join(","));
@@ -400,7 +399,7 @@ class ApiClient {
       };
 
       const query = params.toString() ? `?${params.toString()}` : "";
-      return this.request<Application[]>(`user/${userId}/applications${query}`, {
+      return this.request(`user/${userId}/applications${query}`, {
         method: "GET",
       });
     },

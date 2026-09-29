@@ -351,25 +351,39 @@ export const getApplications = async (req: Request, res: Response) => {
       whereOptions.resend = { [Op.in] : resends };
     }
 
+    const page = Math.max(1, parseInt((req.query.page as string) || "1", 10));
+    const limit = (req.query.limit !== undefined && !isNaN(Number(req.query.limit)))
+      ? parseInt(req.query.limit as string, 10)
+      : 10;
+    const offset = (page - 1) * limit;
+
     const queryOptions: FindOptions = {
       where: whereOptions,
       order: [["createdAt", "DESC"]],
       attributes: {
         exclude: excludedApplicationData,
       },
+      limit,
+      offset
     };
 
-    if (req.query.limit !== undefined && !isNaN(Number(req.query.limit))) {
-      queryOptions.limit = parseInt(req.query.limit as string);
-    }
+    const {rows: applications, count: totalItems} = await Application.findAndCountAll(queryOptions);
 
-    const applications = await Application.findAll(queryOptions);
+    const totalPages = Math.ceil(totalItems / limit) || 1;
 
-    if (!applications) {
+    if (totalItems === 0 || page > totalPages) {
       return res.status(404).json({ message: "Applications not found" });
     }
 
-    res.status(200).json(applications);
+    res.status(200).json({
+      data: applications,
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalItems,
+        limit,
+      },
+    });
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
   }
