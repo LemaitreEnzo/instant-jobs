@@ -12,39 +12,72 @@ import { User } from "./user.model";
 Organization.hasMany(Campus, {
   foreignKey: "organizationId",
   sourceKey: "id",
+  as: "campus",
 });
 Campus.belongsTo(Organization, {
   foreignKey: "organizationId",
   targetKey: "id",
+  as: "organizations",
 });
 
 // Organization <-> User
 Organization.hasMany(User, {
   foreignKey: "organizationId",
   sourceKey: "id",
+  as: "users",
 });
 User.belongsTo(Organization, {
   foreignKey: "organizationId",
   targetKey: "id",
+  as: "organizations",
 });
 
 // Campus <-> User
-Campus.hasMany(User, { foreignKey: "campusId", sourceKey: "id" });
-User.belongsTo(Campus, { foreignKey: "campusId", targetKey: "id" });
+Campus.hasMany(User, {
+  foreignKey: "campusId",
+  sourceKey: "id",
+  as: "users",
+});
+User.belongsTo(Campus, {
+  foreignKey: "campusId",
+  targetKey: "id",
+  as: "campus",
+});
 
 // Promotion <-> User
-Promotion.hasMany(User, { foreignKey: "promotionId", sourceKey: "id" });
-User.belongsTo(Promotion, { foreignKey: "promotionId", targetKey: "id" });
+Promotion.hasMany(User, {
+  foreignKey: "promotionId",
+  sourceKey: "id",
+  as: "users",
+});
+User.belongsTo(Promotion, {
+  foreignKey: "promotionId",
+  targetKey: "id",
+  as: "promotion",
+});
 
 // Speciality <-> User
-Speciality.hasMany(User, { foreignKey: "specialityId", sourceKey: "id" });
-User.belongsTo(Speciality, { foreignKey: "specialityId", targetKey: "id" });
+Speciality.hasMany(User, {
+  foreignKey: "specialityId",
+  sourceKey: "id",
+  as: "users",
+});
+User.belongsTo(Speciality, {
+  foreignKey: "specialityId",
+  targetKey: "id",
+  as: "speciality",
+});
 
 // SubSpeciality <-> User
-SubSpeciality.hasMany(User, { foreignKey: "subSpecialityId", sourceKey: "id" });
+SubSpeciality.hasMany(User, {
+  foreignKey: "subSpecialityId",
+  sourceKey: "id",
+  as: "users",
+});
 User.belongsTo(SubSpeciality, {
   foreignKey: "subSpecialityId",
   targetKey: "id",
+  as: "subSpeciality",
 });
 
 // User <-> Application
@@ -56,45 +89,53 @@ User.hasMany(Application, {
 Application.belongsTo(User, {
   foreignKey: "userId",
   targetKey: "id",
-  as: "user",
+  as: "users",
 });
 
 // User <-> Media
 User.hasMany(Media, { foreignKey: "userId", sourceKey: "id", as: "medias" });
-Media.belongsTo(User, { foreignKey: "userId", targetKey: "id", as: "user" });
+Media.belongsTo(User, { foreignKey: "userId", targetKey: "id", as: "users" });
 
 // Campus <-> Promotion
 Campus.hasMany(Promotion, { foreignKey: "campusId", sourceKey: "id" });
-Promotion.belongsTo(Campus, { foreignKey: "campusId", targetKey: "id" });
+Promotion.belongsTo(Campus, {
+  foreignKey: "campusId",
+  targetKey: "id",
+  as: "campus",
+});
 
 // Promotion <-> Speciality
 Promotion.hasMany(Speciality, {
   foreignKey: "promotionId",
   sourceKey: "id",
+  as: "speciality",
 });
 Speciality.belongsTo(Promotion, {
   foreignKey: "promotionId",
   targetKey: "id",
+  as: "promotion",
 });
 
 // Speciality <-> SubSpeciality
 Speciality.hasMany(SubSpeciality, {
   foreignKey: "specialityId",
   sourceKey: "id",
+  as: "subSpeciality",
 });
 SubSpeciality.belongsTo(Speciality, {
   foreignKey: "specialityId",
   targetKey: "id",
+  as: "speciality",
 });
 
 // Application <-> Appointment
 Application.hasMany(Appointment, {
   foreignKey: "applicationId",
   sourceKey: "id",
-  as: "appointments"
+  as: "appointments",
 });
 Appointment.belongsTo(Application, {
   foreignKey: "applicationId",
   targetKey: "id",
-  as: "application"
+  as: "applications",
 });

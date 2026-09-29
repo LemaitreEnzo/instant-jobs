@@ -1,6 +1,14 @@
 import type { Request, Response } from "express";
 import { Attributes } from "sequelize";
-import { Campus, Media, Organization, User } from "src/models";
+import {
+  Campus,
+  Media,
+  Organization,
+  Promotion,
+  Speciality,
+  SubSpeciality,
+  User,
+} from "src/models";
 
 const excludedData: (keyof Attributes<Organization>)[] = [
   "createdAt",
@@ -11,6 +19,10 @@ const excludedUserData: (keyof Attributes<User>)[] = [
   "password_hash",
   "createdAt",
   "updatedAt",
+  "campusId",
+  "promotionId",
+  "specialityId",
+  "subSpecialityId",
 ];
 
 const excludedMediaData: (keyof Attributes<Media>)[] = [
@@ -22,6 +34,22 @@ const excludedMediaData: (keyof Attributes<Media>)[] = [
 const excludedCampusData: (keyof Attributes<Campus>)[] = [
   "createdAt",
   "updatedAt",
+];
+
+const excludedPromotionData: (keyof Attributes<Promotion>)[] = [
+  "createdAt",
+  "updatedAt",
+  "campusId",
+];
+const excludedSpecialityData: (keyof Attributes<Speciality>)[] = [
+  "createdAt",
+  "updatedAt",
+  "promotionId",
+];
+const excludedSubSpecialityData: (keyof Attributes<SubSpeciality>)[] = [
+  "createdAt",
+  "updatedAt",
+  "specialityId",
 ];
 
 export const getAllOrganizations = async (req: Request, res: Response) => {
@@ -149,6 +177,30 @@ export const getUsers = async (req: Request, res: Response) => {
           as: "medias",
           required: false,
           attributes: { exclude: excludedMediaData },
+        },
+        {
+          model: Campus,
+          as: "campus",
+          required: false,
+          attributes: { exclude: [...excludedCampusData, "organizationId"] },
+        },
+        {
+          model: Promotion,
+          as: "promotion",
+          required: false,
+          attributes: { exclude: excludedPromotionData },
+        },
+        {
+          model: Speciality,
+          as: "speciality",
+          required: false,
+          attributes: { exclude: excludedSpecialityData },
+        },
+        {
+          model: SubSpeciality,
+          as: "subSpeciality",
+          required: false,
+          attributes: { exclude: excludedSubSpecialityData },
         },
       ],
     });
