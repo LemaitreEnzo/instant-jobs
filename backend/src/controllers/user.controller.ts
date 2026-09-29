@@ -1,8 +1,16 @@
 import bcrypt from "bcryptjs";
 import type { Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { Attributes, Sequelize, Op, FindOptions } from "sequelize";
-import { Application, Media, User } from "src/models";
+import { Attributes, FindOptions, Op } from "sequelize";
+import {
+  Application,
+  Campus,
+  Media,
+  Promotion,
+  Speciality,
+  SubSpeciality,
+  User,
+} from "src/models";
 import { VALID_ROLES } from "../../middlewares/auth.middleware";
 import getEnv from "../../utils/envHelper";
 
@@ -10,16 +18,40 @@ const excludedData: (keyof Attributes<User>)[] = [
   "password_hash",
   "createdAt",
   "updatedAt",
+  "campusId",
+  "promotionId",
+  "specialityId",
+  "subSpecialityId",
 ];
 const excludedMediaData: (keyof Attributes<Media>)[] = [
   "createdAt",
   "updatedAt",
-  "userId"
+  "userId",
 ];
 const excludedApplicationData: (keyof Attributes<Application>)[] = [
   "createdAt",
   "updatedAt",
-  "userId"
+  "userId",
+];
+const excludedCampusData: (keyof Attributes<Campus>)[] = [
+  "createdAt",
+  "updatedAt",
+  "organizationId",
+];
+const excludedPromotionData: (keyof Attributes<Promotion>)[] = [
+  "createdAt",
+  "updatedAt",
+  "campusId",
+];
+const excludedSpecialityData: (keyof Attributes<Speciality>)[] = [
+  "createdAt",
+  "updatedAt",
+  "promotionId",
+];
+const excludedSubSpecialityData: (keyof Attributes<SubSpeciality>)[] = [
+  "createdAt",
+  "updatedAt",
+  "specialityId",
 ];
 
 export const login = async (req: Request, res: Response) => {
@@ -39,8 +71,31 @@ export const login = async (req: Request, res: Response) => {
           model: Application,
           as: "applications",
           required: false,
-          where: Sequelize.literal(`"User"."role" = 'student'`),
           attributes: { exclude: excludedApplicationData },
+        },
+        {
+          model: Campus,
+          as: "campus",
+          required: false,
+          attributes: { exclude: excludedCampusData },
+        },
+        {
+          model: Promotion,
+          as: "promotion",
+          required: false,
+          attributes: { exclude: excludedPromotionData },
+        },
+        {
+          model: Speciality,
+          as: "speciality",
+          required: false,
+          attributes: { exclude: excludedSpecialityData },
+        },
+        {
+          model: SubSpeciality,
+          as: "subSpeciality",
+          required: false,
+          attributes: { exclude: excludedSubSpecialityData },
         },
       ],
     });
@@ -79,6 +134,10 @@ export const login = async (req: Request, res: Response) => {
           password_hash,
           createdAt,
           updatedAt,
+          campusId,
+          promotionId,
+          specialityId,
+          subSpecialityId,
           applications,
           ...userData
         } = rawUserData;
@@ -168,8 +227,31 @@ export const getAuth = async (req: Request, res: Response) => {
             model: Application,
             as: "applications",
             required: false,
-            where: Sequelize.literal(`"User"."role" = 'student'`),
             attributes: { exclude: excludedApplicationData },
+          },
+          {
+            model: Campus,
+            as: "campus",
+            required: false,
+            attributes: { exclude: excludedCampusData },
+          },
+          {
+            model: Promotion,
+            as: "promotion",
+            required: false,
+            attributes: { exclude: excludedPromotionData },
+          },
+          {
+            model: Speciality,
+            as: "speciality",
+            required: false,
+            attributes: { exclude: excludedSpecialityData },
+          },
+          {
+            model: SubSpeciality,
+            as: "subSpeciality",
+            required: false,
+            attributes: { exclude: excludedSubSpecialityData },
           },
         ],
       });
@@ -191,8 +273,31 @@ export const getAuth = async (req: Request, res: Response) => {
             model: Application,
             as: "applications",
             required: false,
-            where: Sequelize.literal(`"User"."role" = 'student'`),
             attributes: { exclude: excludedApplicationData },
+          },
+          {
+            model: Campus,
+            as: "campus",
+            required: false,
+            attributes: { exclude: excludedCampusData },
+          },
+          {
+            model: Promotion,
+            as: "promotion",
+            required: false,
+            attributes: { exclude: excludedPromotionData },
+          },
+          {
+            model: Speciality,
+            as: "speciality",
+            required: false,
+            attributes: { exclude: excludedSpecialityData },
+          },
+          {
+            model: SubSpeciality,
+            as: "subSpeciality",
+            required: false,
+            attributes: { exclude: excludedSubSpecialityData },
           },
         ],
       });
@@ -210,13 +315,26 @@ export const getAuth = async (req: Request, res: Response) => {
     }
 
     const rawUserData: any = user.get({ plain: true });
-    const { password_hash, createdAt, updatedAt, applications, ...userData } =
-      rawUserData;
+    const {
+      password_hash,
+      createdAt,
+      updatedAt,
+      campus,
+      applications,
+      promotion,
+      speciality,
+      subSpeciality,
+      ...userData
+    } = rawUserData;
 
     if (userData.role === "student") {
       return res.status(200).json({
         ...userData,
         applications,
+        campus,
+        promotion,
+        speciality,
+        subSpeciality,
       });
     }
 
@@ -245,8 +363,31 @@ export const getOneUser = async (req: Request, res: Response) => {
           model: Application,
           as: "applications",
           required: false,
-          where: Sequelize.literal(`"User"."role" = 'student'`),
           attributes: { exclude: excludedApplicationData },
+        },
+        {
+          model: Campus,
+          as: "campus",
+          required: false,
+          attributes: { exclude: excludedCampusData },
+        },
+        {
+          model: Promotion,
+          as: "promotion",
+          required: false,
+          attributes: { exclude: excludedPromotionData },
+        },
+        {
+          model: Speciality,
+          as: "speciality",
+          required: false,
+          attributes: { exclude: excludedSpecialityData },
+        },
+        {
+          model: SubSpeciality,
+          as: "subSpeciality",
+          required: false,
+          attributes: { exclude: excludedSubSpecialityData },
         },
       ],
     });
@@ -257,13 +398,26 @@ export const getOneUser = async (req: Request, res: Response) => {
 
     const rawUserData: any = user.get({ plain: true });
 
-    const { password_hash, createdAt, updatedAt, applications, ...userData } =
-      rawUserData;
+    const {
+      password_hash,
+      createdAt,
+      updatedAt,
+      campus,
+      applications,
+      promotion,
+      speciality,
+      subSpeciality,
+      ...userData
+    } = rawUserData;
 
     if (userData.role === "student") {
-      res.status(200).json({
+      return res.status(200).json({
         ...userData,
         applications,
+        campus,
+        promotion,
+        speciality,
+        subSpeciality,
       });
     }
 
@@ -276,13 +430,22 @@ export const getOneUser = async (req: Request, res: Response) => {
 export const createUser = async (req: Request, res: Response) => {
   try {
     const data = req.body;
-    const user = await User.create(data);
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(req.body.password, salt);
+    const userData = {
+      ...data,
+      password_hash: hashedPassword,
+    };
+    const user = await User.create(userData);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res.status(201).json(user);
+    const { password_hash, createdAt, updatedAt, ...returnedUser } = userData;
+
+    res.status(201).json(returnedUser);
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
   }
@@ -337,18 +500,22 @@ export const getApplications = async (req: Request, res: Response) => {
     const whereOptions: Record<string, any> = { userId };
 
     if (req.query.status) {
-      const statuses = (req.query.status as string).split(",").map(s => s.trim());
-      whereOptions.status = { [Op.in] : statuses };
+      const statuses = (req.query.status as string)
+        .split(",")
+        .map((s) => s.trim());
+      whereOptions.status = { [Op.in]: statuses };
     }
 
     if (req.query.type) {
-      const types = (req.query.type as string).split(",").map(t => t.trim());
-      whereOptions.type = { [Op.in] : types };
+      const types = (req.query.type as string).split(",").map((t) => t.trim());
+      whereOptions.type = { [Op.in]: types };
     }
 
     if (req.query.resend) {
-      const resends = (req.query.resend as string).split(",").map(r => r.trim());
-      whereOptions.resend = { [Op.in] : resends };
+      const resends = (req.query.resend as string)
+        .split(",")
+        .map((r) => r.trim());
+      whereOptions.resend = { [Op.in]: resends };
     }
 
     const queryOptions: FindOptions = {
