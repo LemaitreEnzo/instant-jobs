@@ -261,7 +261,7 @@ export const getOneUser = async (req: Request, res: Response) => {
       rawUserData;
 
     if (userData.role === "student") {
-      res.status(200).json({
+      return res.status(200).json({
         ...userData,
         applications,
       });

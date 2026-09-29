@@ -20,7 +20,7 @@ export interface User extends Model<
   InferCreationAttributes<User>
 > {
   id: CreationOptional<number>;
-  uuid: number;
+  uuid: string;
   firstname: string;
   lastname: string;
   email: string;

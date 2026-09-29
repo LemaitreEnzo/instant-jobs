@@ -15,11 +15,12 @@ export interface Organization extends Model<
   id: CreationOptional<number>;
   name: string;
   email: string;
-  phone: number;
+  phone: string;
+  description: string;
   role: string;
   postcode: number;
   city: string;
-  adress: string;
+  address: string;
   country: string;
   createdAt: CreationOptional<Date>;
   updatedAt: CreationOptional<Date>;
@@ -46,24 +47,22 @@ export const Organization = sequelize.define<Organization>(
       unique: true,
       type: DataTypes.STRING,
     },
+    description: {
+      type: DataTypes.TEXT,
+    },
     role: {
-      unique: true,
       type: DataTypes.STRING,
     },
     postcode: {
-      unique: true,
       type: DataTypes.INTEGER,
     },
     city: {
-      unique: true,
       type: DataTypes.STRING,
     },
-    adress: {
-      unique: true,
+    address: {
       type: DataTypes.STRING,
     },
     country: {
-      unique: true,
       type: DataTypes.STRING,
     },
     createdAt: DataTypes.DATE,
