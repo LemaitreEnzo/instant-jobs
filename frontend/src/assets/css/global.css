@@ -230,3 +230,15 @@ svg {
     }
   }
 }
+
+.search{
+  background-color: var(--error-color);
+}
+
+.pending{
+  background-color: var(--warning-color);
+}
+
+.found{
+  background-color: var(--success-color);
+}

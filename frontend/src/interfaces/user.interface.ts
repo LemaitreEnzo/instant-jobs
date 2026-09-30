@@ -1,12 +1,6 @@
-import type { StudentStatus } from "../types/enum.type";
-import type { Role } from "../types/global.type";
+import type { StudentStatus, UserRole } from "../types/enum.type";
 import type {
-  Application,
-  Campus,
   Media,
-  Promotion,
-  Speciality,
-  SubSpeciality,
 } from "./models.interface";
 export interface User {
   id: number;
@@ -14,7 +8,7 @@ export interface User {
   lastname: string;
   email: string;
   phone: string;
-  role: Role;
+  role: UserRole;
   medias: Media[] | null;
   organizationId: string;
   campusId: string | null;
