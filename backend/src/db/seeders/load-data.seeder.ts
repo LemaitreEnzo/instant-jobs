@@ -17,15 +17,15 @@ export default {
     // 1. ORGANIZATIONS (10 au total : 3 entreprises, 7 écoles)
     // ==========================================
     const rawOrganizations = [
-      // --- 3 Entreprises ("recruiter") ---
+      // --- 3 Entreprises ("company") ---
       {
         name: "TechNova Solutions",
         email: "contact@technova.fr",
         phone: "0140000001",
         logo: "/upload/logo/technova.png",
+        role: "company",
         description:
           "Entreprise spécialisée dans le développement de solutions logicielles SaaS et le conseil en transformation digitale pour les grands comptes et scale-ups.",
-        role: "recruiter",
         postcode: 75008,
         city: "Paris",
         address: "25 rue de Ponthieu",
@@ -38,9 +38,9 @@ export default {
         email: "contact@innowave.io",
         phone: "0140000002",
         logo: "/upload/logo/innowave.png",
+        role: "company",
         description:
           "Agence d'ingénierie web, mobile et intelligence artificielle concevant des plateformes applicatives scalables et innovantes.",
-        role: "recruiter",
         postcode: 69002,
         city: "Lyon",
         address: "14 quai du Commerce",
@@ -53,9 +53,9 @@ export default {
         email: "contact@nexora.fr",
         logo: "/upload/logo/nexora.png",
         phone: "0140000003",
+        role: "company",
         description:
           "Cabinet de conseil en technologies numériques, stratégie IT, cybersécurité et architectures cloud d'entreprise.",
-        role: "recruiter",
         postcode: 59000,
         city: "Lille",
         address: "8 boulevard Carnot",
@@ -69,9 +69,9 @@ export default {
         email: "contact@lamanu.fr",
         logo: "/upload/logo/lamanu.png",
         phone: "0344000001",
+        role: "school",
         description:
           "École supérieure des métiers du numérique formant les futurs experts en développement web, data, cybersécurité et design digital.",
-        role: "school",
         postcode: 60200,
         city: "Compiègne",
         address: "70 rue des Jacobins",
@@ -84,9 +84,9 @@ export default {
         email: "admission@esn-tech.fr",
         logo: "/upload/logo/esn-tech.png",
         phone: "0140000004",
+        role: "school",
         description:
           "Grande école technologique privée formant des experts en développement full-stack, DevOps et gouvernance numérique.",
-        role: "school",
         postcode: 75011,
         city: "Paris",
         address: "42 rue de la Roquette",
@@ -99,9 +99,9 @@ export default {
         email: "contact@idf-digital.fr",
         logo: "/upload/logo/idf-digital.png",
         phone: "0140000005",
+        role: "school",
         description:
           "Institut d'enseignement supérieur d'excellence spécialisé dans les architectures logicielles modernes, l'IA et le big data.",
-        role: "school",
         postcode: 78000,
         city: "Versailles",
         address: "15 avenue de Paris",
@@ -114,9 +114,9 @@ export default {
         email: "info@polytech-webdata.fr",
         logo: "/upload/logo/polytech-webdata.png",
         phone: "0472000001",
+        role: "school",
         description:
           "Centre de formation supérieur dédié à l'ingénierie des données, à la cybersécurité et aux technologies web distribuées.",
-        role: "school",
         postcode: 69007,
         city: "Lyon",
         address: "20 boulevard des Belges",
@@ -129,9 +129,9 @@ export default {
         email: "contact@aquitaine-tech.fr",
         logo: "/upload/logo/aquitaine-tech.png",
         phone: "0556000001",
+        role: "school",
         description:
           "Campus régional d'apprentissage des technologies informatiques préparant aux métiers de développeur d'applications et lead tech.",
-        role: "school",
         postcode: 33000,
         city: "Bordeaux",
         address: "5 cours Pasteur",
@@ -144,9 +144,9 @@ export default {
         email: "hello@grand-ouest-code.fr",
         logo: "/upload/logo/grand-ouest-code.png",
         phone: "0240000001",
+        role: "school",
         description:
           "École immersive d'informatique et de programmation web orientée vers l'innovation logicielle et les méthodologies agiles.",
-        role: "school",
         postcode: 44000,
         city: "Nantes",
         address: "12 rue de la Paix",
@@ -159,9 +159,9 @@ export default {
         email: "contact@med-tech-campus.fr",
         logo: "/upload/logo/med-tech-campus.png",
         phone: "0491000001",
+        role: "school",
         description:
           "Pôle d'enseignement supérieur axé sur le développement logiciel, les solutions cloud natives et l'Internet des objets (IoT).",
-        role: "school",
         postcode: 13001,
         city: "Marseille",
         address: "30 rue de la République",

@@ -28,11 +28,12 @@ export default {
         allowNull: false,
         type: DataTypes.TEXT("long"),
       },
+      role: {
+        allowNull: false,
+        type: DataTypes.STRING,
+      },
       description: {
         type: DataTypes.TEXT,
-      },
-      role: {
-        type: DataTypes.STRING,
       },
       postcode: {
         type: DataTypes.INTEGER,

@@ -27,3 +27,8 @@ export enum StudentStatus {
   PENDING = "pending",
   FOUND = "found",
 }
+
+export enum OrganizationRole {
+  COMPANY = "company",
+  SCHOOL = "school",
+}

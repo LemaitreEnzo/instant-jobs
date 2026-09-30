@@ -3,10 +3,9 @@ import { DataTypes, QueryInterface } from "sequelize";
 /** @type {import("sequelize-cli").Migration} */
 export default {
   up: async (queryInterface: QueryInterface): Promise<void> => {
-    // 1. Create PostgreSQL ENUM types if they do not exist
     await queryInterface.sequelize.query(`
       DO $$ BEGIN
-        CREATE TYPE "enum_Application_type" AS ENUM ('internship', 'apprenticeship');
+        CREATE TYPE enum_application_type AS ENUM ('internship', 'apprenticeship');
       EXCEPTION
         WHEN duplicate_object THEN null;
       END $$;
@@ -14,7 +13,7 @@ export default {
 
     await queryInterface.sequelize.query(`
       DO $$ BEGIN
-        CREATE TYPE "enum_Application_status" AS ENUM ('pending', 'refused', 'accepted');
+        CREATE TYPE enum_application_status AS ENUM ('pending', 'refused', 'accepted');
       EXCEPTION
         WHEN duplicate_object THEN null;
       END $$;
@@ -22,7 +21,7 @@ export default {
 
     await queryInterface.sequelize.query(`
       DO $$ BEGIN
-        CREATE TYPE "enum_Application_resend" AS ENUM ('follow up', 'interview completed', 'no follow up', 'not necessary');
+        CREATE TYPE enum_application_resend AS ENUM ('follow up', 'interview completed', 'no follow up', 'not necessary');
       EXCEPTION
         WHEN duplicate_object THEN null;
       END $$;
@@ -30,7 +29,7 @@ export default {
 
     await queryInterface.sequelize.query(`
       DO $$ BEGIN
-        CREATE TYPE "enum_User_role" AS ENUM ('student', 'admin', 'staff');
+        CREATE TYPE enum_user_role AS ENUM ('student', 'admin', 'staff');
       EXCEPTION
         WHEN duplicate_object THEN null;
       END $$;
@@ -38,28 +37,38 @@ export default {
 
     await queryInterface.sequelize.query(`
       DO $$ BEGIN
-        CREATE TYPE "enum_User_status" AS ENUM ('search', 'pending', 'found');
+        CREATE TYPE enum_user_status AS ENUM ('search', 'pending', 'found');
       EXCEPTION
         WHEN duplicate_object THEN null;
       END $$;
     `);
 
-    // 2. Change columns in Application to use ENUMs
+    await queryInterface.sequelize.query(`
+      DO $$ BEGIN
+        CREATE TYPE enum_organization_role AS ENUM ('company', 'school');
+      EXCEPTION
+        WHEN duplicate_object THEN null;
+      END $$;
+    `);
+
     await queryInterface.sequelize.query(`
       ALTER TABLE "Application"
-        ALTER COLUMN "type" TYPE "enum_Application_type" USING "type"::"enum_Application_type",
-        ALTER COLUMN "status" TYPE "enum_Application_status" USING "status"::"enum_Application_status",
-        ALTER COLUMN "resend" TYPE "enum_Application_resend" USING "resend"::"enum_Application_resend";
+        ALTER COLUMN "type" TYPE enum_application_type USING "type"::enum_application_type,
+        ALTER COLUMN "status" TYPE enum_application_status USING "status"::enum_application_status,
+        ALTER COLUMN "resend" TYPE enum_application_resend USING "resend"::enum_application_resend;
     `);
 
-    // 3. Change columns in User to use ENUMs
     await queryInterface.sequelize.query(`
       ALTER TABLE "User"
-        ALTER COLUMN "role" TYPE "enum_User_role" USING "role"::"enum_User_role",
-        ALTER COLUMN "status" TYPE "enum_User_status" USING "status"::"enum_User_status";
+        ALTER COLUMN "role" TYPE enum_user_role USING "role"::enum_user_role,
+        ALTER COLUMN "status" TYPE enum_user_status USING "status"::enum_user_status;
     `);
 
-    // 4. Create Appointment table
+    await queryInterface.sequelize.query(`
+      ALTER TABLE "Organization"
+        ALTER COLUMN "role" TYPE enum_organization_role USING "role"::enum_organization_role;
+    `);
+
     await queryInterface.createTable("Appointment", {
       id: {
         primaryKey: true,
@@ -96,10 +105,8 @@ export default {
   },
 
   down: async (queryInterface: QueryInterface): Promise<void> => {
-    // 1. Drop Appointment table
     await queryInterface.dropTable("Appointment");
 
-    // 2. Revert columns to VARCHAR
     await queryInterface.sequelize.query(`
       ALTER TABLE "Application"
         ALTER COLUMN "type" TYPE VARCHAR(255) USING "type"::text,
@@ -113,13 +120,18 @@ export default {
         ALTER COLUMN "status" TYPE VARCHAR(255) USING "status"::text;
     `);
 
-    // 3. Drop ENUM types
     await queryInterface.sequelize.query(`
-      DROP TYPE IF EXISTS "enum_Application_type" CASCADE;
-      DROP TYPE IF EXISTS "enum_Application_status" CASCADE;
-      DROP TYPE IF EXISTS "enum_Application_resend" CASCADE;
-      DROP TYPE IF EXISTS "enum_User_role" CASCADE;
-      DROP TYPE IF EXISTS "enum_User_status" CASCADE;
+      ALTER TABLE "Organization"
+        ALTER COLUMN "role" TYPE VARCHAR(255) USING "role"::text;
+    `);
+
+    await queryInterface.sequelize.query(`
+      DROP TYPE IF EXISTS "enum_application_type" CASCADE;
+      DROP TYPE IF EXISTS "enum_application_status" CASCADE;
+      DROP TYPE IF EXISTS "enum_application_resend" CASCADE;
+      DROP TYPE IF EXISTS "enum_user_role" CASCADE;
+      DROP TYPE IF EXISTS "enum_user_status" CASCADE;
+      DROP TYPE IF EXISTS "enum_organization_role" CASCADE;
     `);
   },
 };
