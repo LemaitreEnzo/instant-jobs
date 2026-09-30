@@ -24,11 +24,12 @@ export default {
         unique: true,
         type: DataTypes.STRING,
       },
+      role: {
+        allowNull: false,
+        type: DataTypes.STRING,
+      },
       description: {
         type: DataTypes.TEXT,
-      },
-      role: {
-        type: DataTypes.STRING,
       },
       postcode: {
         type: DataTypes.INTEGER,

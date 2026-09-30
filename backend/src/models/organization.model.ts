@@ -8,6 +8,8 @@ import type {
 } from "sequelize";
 import { DataTypes } from "sequelize";
 
+import { OrganizationRole } from "./enums/organization.enum";
+
 export interface Organization extends Model<
   InferAttributes<Organization>,
   InferCreationAttributes<Organization>
@@ -16,8 +18,8 @@ export interface Organization extends Model<
   name: string;
   email: string;
   phone: string;
+  role: OrganizationRole;
   description: string;
-  role: string;
   postcode: number;
   city: string;
   address: string;
@@ -47,11 +49,12 @@ export const Organization = sequelize.define<Organization>(
       unique: true,
       type: DataTypes.STRING,
     },
+    role: {
+      allowNull: false,
+      type: DataTypes.ENUM(...Object.values(OrganizationRole)),
+    },
     description: {
       type: DataTypes.TEXT,
-    },
-    role: {
-      type: DataTypes.STRING,
     },
     postcode: {
       type: DataTypes.INTEGER,
