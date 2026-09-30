@@ -22,6 +22,7 @@ export default {
         name: "TechNova Solutions",
         email: "contact@technova.fr",
         phone: "0140000001",
+        logo: "/upload/logo/technova.png",
         description:
           "Entreprise spécialisée dans le développement de solutions logicielles SaaS et le conseil en transformation digitale pour les grands comptes et scale-ups.",
         role: "recruiter",
@@ -36,6 +37,7 @@ export default {
         name: "InnoWave Digital",
         email: "contact@innowave.io",
         phone: "0140000002",
+        logo: "/upload/logo/innowave.png",
         description:
           "Agence d'ingénierie web, mobile et intelligence artificielle concevant des plateformes applicatives scalables et innovantes.",
         role: "recruiter",
@@ -49,6 +51,7 @@ export default {
       {
         name: "Nexora Conseil",
         email: "contact@nexora.fr",
+        logo: "/upload/logo/nexora.png",
         phone: "0140000003",
         description:
           "Cabinet de conseil en technologies numériques, stratégie IT, cybersécurité et architectures cloud d'entreprise.",
@@ -64,6 +67,7 @@ export default {
       {
         name: "La Manu",
         email: "contact@lamanu.fr",
+        logo: "/upload/logo/lamanu.png",
         phone: "0344000001",
         description:
           "École supérieure des métiers du numérique formant les futurs experts en développement web, data, cybersécurité et design digital.",
@@ -78,6 +82,7 @@ export default {
       {
         name: "École Supérieure du Numérique (ESN)",
         email: "admission@esn-tech.fr",
+        logo: "/upload/logo/esn-tech.png",
         phone: "0140000004",
         description:
           "Grande école technologique privée formant des experts en développement full-stack, DevOps et gouvernance numérique.",
@@ -92,6 +97,7 @@ export default {
       {
         name: "Institut Digital de France (IDF)",
         email: "contact@idf-digital.fr",
+        logo: "/upload/logo/idf-digital.png",
         phone: "0140000005",
         description:
           "Institut d'enseignement supérieur d'excellence spécialisé dans les architectures logicielles modernes, l'IA et le big data.",
@@ -106,6 +112,7 @@ export default {
       {
         name: "Polytech Web & Data",
         email: "info@polytech-webdata.fr",
+        logo: "/upload/logo/polytech-webdata.png",
         phone: "0472000001",
         description:
           "Centre de formation supérieur dédié à l'ingénierie des données, à la cybersécurité et aux technologies web distribuées.",
@@ -120,6 +127,7 @@ export default {
       {
         name: "Aquitaine Tech Academy",
         email: "contact@aquitaine-tech.fr",
+        logo: "/upload/logo/aquitaine-tech.png",
         phone: "0556000001",
         description:
           "Campus régional d'apprentissage des technologies informatiques préparant aux métiers de développeur d'applications et lead tech.",
@@ -134,6 +142,7 @@ export default {
       {
         name: "Grand Ouest Coding School",
         email: "hello@grand-ouest-code.fr",
+        logo: "/upload/logo/grand-ouest-code.png",
         phone: "0240000001",
         description:
           "École immersive d'informatique et de programmation web orientée vers l'innovation logicielle et les méthodologies agiles.",
@@ -148,6 +157,7 @@ export default {
       {
         name: "Méditerranée Tech Campus",
         email: "contact@med-tech-campus.fr",
+        logo: "/upload/logo/med-tech-campus.png",
         phone: "0491000001",
         description:
           "Pôle d'enseignement supérieur axé sur le développement logiciel, les solutions cloud natives et l'Internet des objets (IoT).",

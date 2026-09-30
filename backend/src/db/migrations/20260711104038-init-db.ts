@@ -24,6 +24,10 @@ export default {
         unique: true,
         type: DataTypes.STRING,
       },
+      logo: {
+        allowNull: false,
+        type: DataTypes.TEXT("long"),
+      },
       description: {
         type: DataTypes.TEXT,
       },
@@ -266,7 +270,7 @@ export default {
         type: DataTypes.STRING,
       },
       logo: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT("long"),
       },
       company: {
         type: DataTypes.STRING,
@@ -314,7 +318,7 @@ export default {
         type: DataTypes.STRING,
       },
       path: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT("long"),
       },
       userId: {
         allowNull: false,

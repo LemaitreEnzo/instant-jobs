@@ -16,6 +16,7 @@ export interface Organization extends Model<
   name: string;
   email: string;
   phone: string;
+  logo: string;
   description: string;
   role: string;
   postcode: number;
@@ -49,6 +50,26 @@ export const Organization = sequelize.define<Organization>(
     },
     description: {
       type: DataTypes.TEXT,
+    },
+    logo: {
+      allowNull: false,
+      type: DataTypes.TEXT("long"),
+      validate: {
+        validateSize(value: string) {
+          if (value) {
+            const size: number = 10;
+            const maxSizeBytes = size * 1024 * 1024; // octet to Mo
+
+            const base64String = value.split(",")[1] || value;
+            const paddingBytes = (base64String.match(/=/g) || []).length;
+            const realSizeBytes = (base64String.length * 3) / 4 - paddingBytes;
+
+            if (realSizeBytes > maxSizeBytes) {
+              throw new Error(`The file is too large (maximum ${size} MB).`);
+            }
+          }
+        },
+      },
     },
     role: {
       type: DataTypes.STRING,

@@ -34,7 +34,23 @@ export const Media = sequelize.define<Media>(
       type: DataTypes.STRING,
     },
     path: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT("long"),
+      validate: {
+        validateSize(value: string) {
+          if (value) {
+            const size: number = 10;
+            const maxSizeBytes = size * 1024 * 1024; // octet to Mo
+
+            const base64String = value.split(",")[1] || value;
+            const paddingBytes = (base64String.match(/=/g) || []).length;
+            const realSizeBytes = (base64String.length * 3) / 4 - paddingBytes;
+
+            if (realSizeBytes > maxSizeBytes) {
+              throw new Error(`The file is too large (maximum ${size} MB).`);
+            }
+          }
+        },
+      },
     },
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,
