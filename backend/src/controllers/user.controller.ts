@@ -130,26 +130,18 @@ export const login = async (req: Request, res: Response) => {
 
         const rawUserData: any = user.get({ plain: true });
 
-        const {
-          password_hash,
-          createdAt,
-          updatedAt,
-          campusId,
-          promotionId,
-          specialityId,
-          subSpecialityId,
-          applications,
-          ...userData
-        } = rawUserData;
-
-        if (userData.role === "student") {
-          return res.status(200).json({
-            ...userData,
-            applications,
-          });
+        if (rawUserData.role !== "student") {
+          delete rawUserData.applications;
+          delete rawUserData.promotion;
+          delete rawUserData.speciality;
+          delete rawUserData.subSpeciality;
         }
 
-        return res.status(200).json(userData);
+        excludedData.forEach((key) => {
+          delete rawUserData[key];
+        });
+
+        return res.status(200).json(rawUserData);
       } else {
         return res.status(401).json({ message: "Invalid email or password" });
       }
@@ -315,30 +307,16 @@ export const getAuth = async (req: Request, res: Response) => {
     }
 
     const rawUserData: any = user.get({ plain: true });
-    const {
-      password_hash,
-      createdAt,
-      updatedAt,
-      campus,
-      applications,
-      promotion,
-      speciality,
-      subSpeciality,
-      ...userData
-    } = rawUserData;
 
-    if (userData.role === "student") {
-      return res.status(200).json({
-        ...userData,
-        applications,
-        campus,
-        promotion,
-        speciality,
-        subSpeciality,
-      });
+    if (rawUserData.role !== "student") {
+      delete rawUserData.applications;
+      delete rawUserData.campus;
+      delete rawUserData.promotion;
+      delete rawUserData.speciality;
+      delete rawUserData.subSpeciality;
     }
 
-    return res.status(200).json(userData);
+    return res.status(200).json(rawUserData);
   } catch (error) {
     return res.status(500).json({ message: "Internal server error" });
   }
@@ -398,30 +376,14 @@ export const getOneUser = async (req: Request, res: Response) => {
 
     const rawUserData: any = user.get({ plain: true });
 
-    const {
-      password_hash,
-      createdAt,
-      updatedAt,
-      campus,
-      applications,
-      promotion,
-      speciality,
-      subSpeciality,
-      ...userData
-    } = rawUserData;
-
-    if (userData.role === "student") {
-      return res.status(200).json({
-        ...userData,
-        applications,
-        campus,
-        promotion,
-        speciality,
-        subSpeciality,
-      });
+    if (rawUserData.role !== "student") {
+      delete rawUserData.applications;
+      delete rawUserData.promotion;
+      delete rawUserData.speciality;
+      delete rawUserData.subSpeciality;
     }
 
-    res.status(200).json(userData);
+    return res.status(200).json(rawUserData);
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
   }
@@ -443,9 +405,13 @@ export const createUser = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const { password_hash, createdAt, updatedAt, ...returnedUser } = userData;
+    const rawUserData: any = user.get({ plain: true });
 
-    res.status(201).json(returnedUser);
+    delete rawUserData.password_hash;
+    delete rawUserData.createdAt;
+    delete rawUserData.updatedAt;
+
+    return res.status(200).json(rawUserData);
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
   }
