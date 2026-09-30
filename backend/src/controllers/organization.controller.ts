@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { Attributes } from "sequelize";
+import { Attributes, Op } from "sequelize";
 import {
   Campus,
   Media,
@@ -168,44 +168,70 @@ export const getUsers = async (req: Request, res: Response) => {
   try {
     const { organizationId } = req.params;
 
-    const users = await User.findAll({
-      where: { organizationId },
-      attributes: { exclude: excludedUserData },
-      include: [
-        {
-          model: Media,
-          as: "medias",
-          required: false,
-          attributes: { exclude: excludedMediaData },
-        },
-        {
-          model: Campus,
-          as: "campus",
-          required: false,
-          attributes: { exclude: [...excludedCampusData, "organizationId"] },
-        },
-        {
-          model: Promotion,
-          as: "promotion",
-          required: false,
-          attributes: { exclude: excludedPromotionData },
-        },
-        {
-          model: Speciality,
-          as: "speciality",
-          required: false,
-          attributes: { exclude: excludedSpecialityData },
-        },
-        {
-          model: SubSpeciality,
-          as: "subSpeciality",
-          required: false,
-          attributes: { exclude: excludedSubSpecialityData },
-        },
-      ],
-    });
+    const [students, otherUsers] = await Promise.all([
+      User.findAll({
+        where: { organizationId, role: "student" },
+        attributes: { exclude: excludedUserData },
+        include: [
+          {
+            model: Media,
+            as: "medias",
+            required: false,
+            attributes: { exclude: excludedMediaData },
+          },
+          {
+            model: Campus,
+            as: "campus",
+            required: false,
+            attributes: { exclude: [...excludedCampusData, "organizationId"] },
+          },
+          {
+            model: Promotion,
+            as: "promotion",
+            required: false,
+            attributes: { exclude: excludedPromotionData },
+          },
+          {
+            model: Speciality,
+            as: "speciality",
+            required: false,
+            attributes: { exclude: excludedSpecialityData },
+          },
+          {
+            model: SubSpeciality,
+            as: "subSpeciality",
+            required: false,
+            attributes: { exclude: excludedSubSpecialityData },
+          },
+        ],
+      }),
 
-    if (!users) {
+      User.findAll({
+        where: {
+          organizationId,
+          role: { [Op.ne]: "student" },
+        },
+        attributes: { exclude: excludedUserData },
+        include: [
+          {
+            model: Media,
+            as: "medias",
+            required: false,
+            attributes: { exclude: excludedMediaData },
+          },
+          {
+            model: Campus,
+            as: "campus",
+            required: false,
+            attributes: { exclude: [...excludedCampusData, "organizationId"] },
+          },
+        ],
+      }),
+    ]);
+
+    const users: User[] = [...students, ...otherUsers];
+
+    if (!users || users.length === 0) {
       return res.status(404).json({ message: "Users not found" });
     }
 
