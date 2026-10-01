@@ -1,6 +1,7 @@
 import { BASE_URL } from "../constants/global.constant";
 import type {
   Application,
+  ApplicationsStatisticsResponse,
   Appointment,
   Campus,
   Media,
@@ -226,6 +227,27 @@ class ApiClient {
       return this.request<User[]>(`organization/${organizationId}/users`, {
         method: "GET",
       });
+    },
+
+    fetchApplicationStatistics: (
+      organizationId: number,
+      params?: { year?: number; campusId?: number }
+    ): Promise<ApplicationsStatisticsResponse> => {
+      const searchParams = new URLSearchParams();
+
+      if (params?.year) {
+        searchParams.append("year", params.year.toString());
+      };
+
+      if (params?.campusId) {
+        searchParams.append("campusId", params.campusId.toString());
+      };
+
+      const query = searchParams.toString() ? `?${searchParams.toString()}` : "";
+      return this.request<ApplicationsStatisticsResponse>(
+        `organization/${organizationId}/statistics/applications${query}`,
+        { method: "GET" }
+      );
     },
   };
 

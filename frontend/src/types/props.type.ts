@@ -1,5 +1,5 @@
 import type { SetStateAction } from "react";
-import type { Application, Appointment, Campus, Organization, Promotion, Speciality, SubSpeciality } from "../interfaces/models.interface";
+import type { Application, Appointment, Campus, MonthApplicationStat, Organization, Promotion, Speciality, SubSpeciality } from "../interfaces/models.interface";
 import type { Student, User } from "../interfaces/user.interface";
 import type { PropsBase, AppointmentCalendar } from "../types/global.type";
 import type { ApplicationStatus } from "./enum.type";
@@ -151,4 +151,9 @@ export type PropsApplicationHeader = {
 
 export type PropsPageTilte = {
   title: string;
+}
+
+export interface PropsCampusApplicationsChart {
+  data: MonthApplicationStat[];
+  title?: string;
 }
