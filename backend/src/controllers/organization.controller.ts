@@ -220,7 +220,6 @@ export const getApplicationStatistics = async (req: Request, res: Response) => {
   try {
     const { organizationId } = req.params;
     const year = parseInt(req.query.year as string, 10) || new Date().getFullYear();
-    const campusId = req.query.campusId ? parseInt(req.query.campusId as string, 10) : null;
 
     if (req.user?.organizationId !== Number(organizationId)) {
       return res.status(403).json({ message: "Forbidden: Access restricted to your organization" });
@@ -228,23 +227,21 @@ export const getApplicationStatistics = async (req: Request, res: Response) => {
 
     const query = `
     SELECT
-      EXTRACT(MONTH FROM a."createdAt")::INTEGER AS month,
-      COUNT(CASE WHEN u."campusId" = :campusId THEN 1 END)::INTEGER AS "campusCount",
-      COUNT(a.id)::INTEGER AS "organizationCount"
-    FROM "Application" a
-    INNER JOIN "User" u ON a."userId" = u.id
-    WHERE u."organizationId" = :organizationId
-      AND EXTRACT(YEAR FROM a."createdAt") = :year
-    GROUP BY EXTRACT(MONTH FROM a."createdAt")
-    ORDER BY month ASC;
+        EXTRACT(MONTH FROM a."createdAt")::INTEGER AS month,
+        COUNT(a.id)::INTEGER AS "organizationCount"
+      FROM "Application" a
+      INNER JOIN "User" u ON a."userId" = u.id
+      WHERE u."organizationId" = :organizationId
+        AND EXTRACT(YEAR FROM a."createdAt") = :year
+      GROUP BY EXTRACT(MONTH FROM a."createdAt")
+      ORDER BY month ASC;
     `;
 
     const rawStats: Array<{
       month: number;
-      campusCount: number;
-      organiztionCount: number;
+      organizationCount: number;
     }> = await sequelize.query(query, {
-      replacements: { organizationId: Number(organizationId), campusId, year },
+      replacements: { organizationId: Number(organizationId), year },
       type: QueryTypes.SELECT,
     });
 
@@ -253,29 +250,23 @@ export const getApplicationStatistics = async (req: Request, res: Response) => {
       "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
     ];
 
-    const statsMap = new Map<number, { campusCount: number; organizationCount: number }>();
+    const statsMap = new Map<number, number>();
     rawStats.forEach((stat) => {
-      statsMap.set(stat.month, {
-        campusCount: stat.campusCount,
-        organizationCount: stat.organiztionCount,
-      });
+      statsMap.set(stat.month, stat.organizationCount);
     });
 
     const monthsData = monthNames.map((name, index) => {
       const monthNum = index + 1;
-      const stat = statsMap.get(monthNum) || {campusCount: 0, organizationCount: 0};
 
       return {
         month: name,
         monthIndex: monthNum,
-        campusCount: stat.campusCount,
-        organizationCount: stat.organizationCount
+        organizationCount: statsMap.get(monthNum) || 0,
       };
     });
 
     return res.status(200).json({
       year,
-      campusId,
       organizationId: Number(organizationId),
       months: monthsData,
     });

@@ -49,13 +49,15 @@
 }
 
 .chart-bar {
-  fill: var(--primary-color);
-  transition: opacity 0.2s ease;
-  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.chart-bar.organization {
+  fill: #a78bfa;
 }
 
 .chart-bar:hover {
-  opacity: 0.85;
+  opacity: 0.8;
 }
 
 .chart-footer {
@@ -83,10 +85,6 @@
   width: 10px;
   height: 10px;
   border-radius: 50%;
-}
-
-.legend-dot.campus {
-  background-color: var(--primary-color);
 }
 
 .legend-dot.organization {

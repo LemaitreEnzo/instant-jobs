@@ -4,6 +4,7 @@ import "./assets/css/global.css";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { routes } from "./constants/routes.constant";
 import Dashboard from "./pages/Dashboard";
+import TestApplicationsChart from "./pages/TestApplicationsChart";
 import Login from "./pages/Login";
 import Unauthorized from "./pages/Unauthorized";
 import type { Route as AppRoute } from "./types/global.type";
@@ -30,6 +31,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/test"
+          element={
+            <ProtectedRoute>
+              <TestApplicationsChart />
             </ProtectedRoute>
           }
         />

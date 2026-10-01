@@ -2,9 +2,9 @@ import { useState } from "react";
 import type { PropsCampusApplicationsChart } from "../../../types/props.type";
 import type { MonthApplicationStat } from "../../../interfaces/models.interface";
 
-import "./CampusApplicationsChart.css";
+import "./pplicationsChart.css";
 
-const CampusApplicationsChart = ({ data, title = "Moyenne de candidatures envoy√©es sur le campus" }: PropsCampusApplicationsChart) => {
+const ApplicationsChart = ({ data, title = "Candidatures envoy√©es dans l'organisation" }: PropsCampusApplicationsChart) => {
 
   const [hoveredMonth, setHoveredMonth] = useState<MonthApplicationStat | null>(null);
 
@@ -18,14 +18,15 @@ const CampusApplicationsChart = ({ data, title = "Moyenne de candidatures envoy√
   const chartHeight = svgHeight - paddingTop - paddingBottom;
   const chartWidth = svgWidth - paddingLeft - paddingRight;
 
-  const maxDataValue = Math.max(...data.map((d) => Math.max(d.campusCount, d.organizationCount)), 0);
+  const barWidth = 20;
 
-  const maxScale = maxDataValue > 80 ? 100 : maxDataValue > 40 ? 50 : maxDataValue > 10 ? 20 : 10;
+  const maxDataValue = Math.max(...data.map((d) => d.organizationCount), 0);
+
+  const maxScale = Math.max(10, Math.ceil(maxDataValue * 1.15 / 5) * 5);
   const step = maxScale / 5;
   const yTicks = [maxScale, step * 4, step * 3, step * 2, step, 0];
 
-  const barWidth = 18;
-  const slotWidth = chartWidth / data.length;
+  const slotWidth = chartWidth / (data.length || 1);
 
   return (
     <div className="campus-applications-chart">
@@ -64,33 +65,40 @@ const CampusApplicationsChart = ({ data, title = "Moyenne de candidatures envoy√
           })}
 
           {data.map((item, index) => {
-            const clampedVal = Math.min(Math.max(item.campusCount, 0), maxScale);
-            const barHeight = (clampedVal / maxScale) * chartHeight;
-
-            const x = paddingLeft + index * slotWidth + (slotWidth - barWidth) / 2;
-            const y = paddingTop + chartHeight - barHeight;
+            const countVal = Math.max(item.organizationCount ?? 0, 0);
+            const barHeight = (countVal / maxScale) * chartHeight;
+            const barX = paddingLeft + index * slotWidth + (slotWidth - barWidth) / 2;
+            const barY = paddingTop + chartHeight - barHeight;
 
             return (
               <g
                 key={item.month}
                 onMouseEnter={() => setHoveredMonth(item)}
                 onMouseLeave={() => setHoveredMonth(null)}
+                style={{ cursor: "pointer" }}
               >
+                <rect
+                  x={paddingLeft + index * slotWidth}
+                  y={paddingTop}
+                  width={slotWidth}
+                  height={chartHeight}
+                  fill="transparent"
+                />
 
                 {barHeight > 0 && (
                   <rect
-                    x={x}
-                    y={y}
+                    x={barX}
+                    y={barY}
                     width={barWidth}
                     height={barHeight}
                     rx={barWidth / 2}
                     ry={barWidth / 2}
-                    className="chart-bar"
+                    className="chart-bar organization"
                   />
                 )}
 
                 <text
-                  x={x + barWidth / 2}
+                  x={barX + barWidth / 2}
                   y={svgHeight - 12}
                   textAnchor="middle"
                   className="chart-axis-label"
@@ -98,7 +106,7 @@ const CampusApplicationsChart = ({ data, title = "Moyenne de candidatures envoy√
                   {item.month}
                 </text>
               </g>
-            )
+            );
           })}
 
         </svg>
@@ -106,10 +114,6 @@ const CampusApplicationsChart = ({ data, title = "Moyenne de candidatures envoy√
 
       <div className="chart-footer">
         <div className="chart-legend">
-          <div className="legend-item">
-            <span className="legend-dot campus" />
-            <span>Campus</span>
-          </div>
           <div className="legend-item">
             <span className="legend-dot organization" />
             <span>Organisation totale</span>
@@ -120,7 +124,7 @@ const CampusApplicationsChart = ({ data, title = "Moyenne de candidatures envoy√
       <div className="chart-tooltip-text">
         {hoveredMonth ? (
           <span>
-            <strong>{hoveredMonth.month} :</strong> {hoveredMonth.campusCount} candidatures sur le campus ({hoveredMonth.organizationCount} au total dans l'organisation)
+            <strong>{hoveredMonth.month} :</strong> {hoveredMonth.organizationCount} candidature{hoveredMonth.organizationCount > 1 ? "s" : ""}
           </span>
         ) : (
           <span>Survolez un mois pour voir les d√©tails</span>
@@ -130,4 +134,4 @@ const CampusApplicationsChart = ({ data, title = "Moyenne de candidatures envoy√
     </div>
   );
 }
-export default CampusApplicationsChart
+export default ApplicationsChart

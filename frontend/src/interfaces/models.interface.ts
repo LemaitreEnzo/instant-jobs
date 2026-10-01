@@ -68,13 +68,11 @@ export interface SubSpeciality {
 export interface MonthApplicationStat {
   month: string;
   monthIndex: number;
-  campusCount: number;
   organizationCount: number;
 }
 
 export interface ApplicationsStatisticsResponse {
   year: number;
-  campusId?: number | null;
   organizationId: number;
   months: MonthApplicationStat[];
 }

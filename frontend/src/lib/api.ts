@@ -231,16 +231,12 @@ class ApiClient {
 
     fetchApplicationStatistics: (
       organizationId: number,
-      params?: { year?: number; campusId?: number }
+      params?: { year?: number }
     ): Promise<ApplicationsStatisticsResponse> => {
       const searchParams = new URLSearchParams();
 
       if (params?.year) {
         searchParams.append("year", params.year.toString());
-      };
-
-      if (params?.campusId) {
-        searchParams.append("campusId", params.campusId.toString());
       };
 
       const query = searchParams.toString() ? `?${searchParams.toString()}` : "";
