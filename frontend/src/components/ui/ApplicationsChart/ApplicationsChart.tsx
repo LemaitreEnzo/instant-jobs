@@ -2,7 +2,7 @@ import { useState } from "react";
 import type { PropsCampusApplicationsChart } from "../../../types/props.type";
 import type { MonthApplicationStat } from "../../../interfaces/models.interface";
 
-import "./pplicationsChart.css";
+import "./ApplicationsChart.css";
 
 const ApplicationsChart = ({ data, title = "Candidatures envoyées dans l'organisation" }: PropsCampusApplicationsChart) => {
 
