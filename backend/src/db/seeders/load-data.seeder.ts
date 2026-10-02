@@ -6,6 +6,7 @@ import {
   ApplicationStatus,
   ApplicationType,
 } from "../../models/enums/application.enum";
+import { OrganizationRole } from "../../models/enums/organization.enum";
 import { StudentStatus, UserRole } from "../../models/enums/user.enum";
 
 /** @type {import("sequelize-cli").Migration} */
@@ -23,7 +24,7 @@ export default {
         email: "contact@technova.fr",
         phone: "0140000001",
         logo: "/upload/logo/technova.png",
-        role: "company",
+        role: OrganizationRole.COMPANY,
         description:
           "Entreprise spécialisée dans le développement de solutions logicielles SaaS et le conseil en transformation digitale pour les grands comptes et scale-ups.",
         postcode: 75008,
@@ -38,7 +39,7 @@ export default {
         email: "contact@innowave.io",
         phone: "0140000002",
         logo: "/upload/logo/innowave.png",
-        role: "company",
+        role: OrganizationRole.COMPANY,
         description:
           "Agence d'ingénierie web, mobile et intelligence artificielle concevant des plateformes applicatives scalables et innovantes.",
         postcode: 69002,
@@ -53,7 +54,7 @@ export default {
         email: "contact@nexora.fr",
         logo: "/upload/logo/nexora.png",
         phone: "0140000003",
-        role: "company",
+        role: OrganizationRole.COMPANY,
         description:
           "Cabinet de conseil en technologies numériques, stratégie IT, cybersécurité et architectures cloud d'entreprise.",
         postcode: 59000,
@@ -69,7 +70,7 @@ export default {
         email: "contact@lamanu.fr",
         logo: "/upload/logo/lamanu.png",
         phone: "0344000001",
-        role: "school",
+        role: OrganizationRole.SCHOOL,
         description:
           "École supérieure des métiers du numérique formant les futurs experts en développement web, data, cybersécurité et design digital.",
         postcode: 60200,
@@ -84,7 +85,7 @@ export default {
         email: "admission@esn-tech.fr",
         logo: "/upload/logo/esn-tech.png",
         phone: "0140000004",
-        role: "school",
+        role: OrganizationRole.SCHOOL,
         description:
           "Grande école technologique privée formant des experts en développement full-stack, DevOps et gouvernance numérique.",
         postcode: 75011,
@@ -99,7 +100,7 @@ export default {
         email: "contact@idf-digital.fr",
         logo: "/upload/logo/idf-digital.png",
         phone: "0140000005",
-        role: "school",
+        role: OrganizationRole.SCHOOL,
         description:
           "Institut d'enseignement supérieur d'excellence spécialisé dans les architectures logicielles modernes, l'IA et le big data.",
         postcode: 78000,
@@ -114,7 +115,7 @@ export default {
         email: "info@polytech-webdata.fr",
         logo: "/upload/logo/polytech-webdata.png",
         phone: "0472000001",
-        role: "school",
+        role: OrganizationRole.SCHOOL,
         description:
           "Centre de formation supérieur dédié à l'ingénierie des données, à la cybersécurité et aux technologies web distribuées.",
         postcode: 69007,
@@ -129,7 +130,7 @@ export default {
         email: "contact@aquitaine-tech.fr",
         logo: "/upload/logo/aquitaine-tech.png",
         phone: "0556000001",
-        role: "school",
+        role: OrganizationRole.SCHOOL,
         description:
           "Campus régional d'apprentissage des technologies informatiques préparant aux métiers de développeur d'applications et lead tech.",
         postcode: 33000,
@@ -144,7 +145,7 @@ export default {
         email: "hello@grand-ouest-code.fr",
         logo: "/upload/logo/grand-ouest-code.png",
         phone: "0240000001",
-        role: "school",
+        role: OrganizationRole.SCHOOL,
         description:
           "École immersive d'informatique et de programmation web orientée vers l'innovation logicielle et les méthodologies agiles.",
         postcode: 44000,
@@ -159,7 +160,7 @@ export default {
         email: "contact@med-tech-campus.fr",
         logo: "/upload/logo/med-tech-campus.png",
         phone: "0491000001",
-        role: "school",
+        role: OrganizationRole.SCHOOL,
         description:
           "Pôle d'enseignement supérieur axé sur le développement logiciel, les solutions cloud natives et l'Internet des objets (IoT).",
         postcode: 13001,
