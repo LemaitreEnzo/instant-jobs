@@ -74,5 +74,6 @@ export interface MonthApplicationStat {
 export interface ApplicationsStatisticsResponse {
   year: number;
   organizationId: number;
+  studentId?: number | null;
   months: MonthApplicationStat[];
 }

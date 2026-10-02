@@ -220,9 +220,21 @@ export const getApplicationStatistics = async (req: Request, res: Response) => {
   try {
     const { organizationId } = req.params;
     const year = parseInt(req.query.year as string, 10) || new Date().getFullYear();
+    const studentId = req.query.studentId ? parseInt(req.query.studentId as string, 10) : null;
 
     if (req.user?.organizationId !== Number(organizationId)) {
       return res.status(403).json({ message: "Forbidden: Access restricted to your organization" });
+    }
+
+    let studentCondition = "";
+    const replacements: Record<string, any> = {
+      organizationId: Number(organizationId),
+      year,
+    }
+
+    if (studentId) {
+      studentCondition = `AND u.id = :studentId`;
+      replacements.studentId = studentId;
     }
 
     const query = `
@@ -233,6 +245,7 @@ export const getApplicationStatistics = async (req: Request, res: Response) => {
       INNER JOIN "User" u ON a."userId" = u.id
       WHERE u."organizationId" = :organizationId
         AND EXTRACT(YEAR FROM a."createdAt") = :year
+        ${studentCondition}
       GROUP BY EXTRACT(MONTH FROM a."createdAt")
       ORDER BY month ASC;
     `;
@@ -241,7 +254,7 @@ export const getApplicationStatistics = async (req: Request, res: Response) => {
       month: number;
       organizationCount: number;
     }> = await sequelize.query(query, {
-      replacements: { organizationId: Number(organizationId), year },
+      replacements,
       type: QueryTypes.SELECT,
     });
 
@@ -268,6 +281,7 @@ export const getApplicationStatistics = async (req: Request, res: Response) => {
     return res.status(200).json({
       year,
       organizationId: Number(organizationId),
+      studentId: studentId ?? null,
       months: monthsData,
     });
 

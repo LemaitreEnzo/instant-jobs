@@ -20,11 +20,6 @@ declare global {
   }
 }
 
-/**
- * Authentication middleware for protected routes.
- * Returns 401 if token is missing, expired, or invalid.
- * Returns 403 if user role is not recognized in VALID_ROLES.
- */
 export const authenticateUser = async (
   req: Request,
   res: Response,

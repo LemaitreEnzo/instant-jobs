@@ -156,4 +156,7 @@ export type PropsPageTilte = {
 export interface PropsCampusApplicationsChart {
   data: MonthApplicationStat[];
   title?: string;
+  students?: User[];
+  selectedStudentId?: number | null;
+  onStudentChange?: (studentId: number | null) => void;
 }

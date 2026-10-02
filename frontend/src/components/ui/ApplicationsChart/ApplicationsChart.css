@@ -60,41 +60,27 @@
   opacity: 0.8;
 }
 
-.chart-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 12px;
-  border-top: 1px solid #f1f3f5;
-  font-size: 13px;
-  color: #6c757d;
-}
-
-.chart-legend {
-  display: flex;
-  gap: 16px;
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.legend-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-}
-
-.legend-dot.organization {
-  background-color: #a78bfa;
-}
-
 .chart-tooltip-text {
   font-size: 13px;
 }
 
 .chart-tooltip-text strong {
   color: #1a1a1a;
+}
+
+.student-filter-select {
+  padding: 6px 12px;
+  font-size: 14px;
+  border: 1px solid var(--stroke-color);
+  border-radius: 8px;
+  background-color: #fff;
+  color: #1a1a1a;
+  outline: none;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.student-filter-select:hover,
+.student-filter-select:focus {
+  border-color: var(--primary-color);
 }

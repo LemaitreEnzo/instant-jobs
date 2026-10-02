@@ -4,9 +4,16 @@ import type { MonthApplicationStat } from "../../../interfaces/models.interface"
 
 import "./ApplicationsChart.css";
 
-const ApplicationsChart = ({ data, title = "Candidatures envoyées dans l'organisation" }: PropsCampusApplicationsChart) => {
+const ApplicationsChart = ({ data, title, students = [], selectedStudentId = null, onStudentChange }: PropsCampusApplicationsChart) => {
 
   const [hoveredMonth, setHoveredMonth] = useState<MonthApplicationStat | null>(null);
+
+  const selectedStudent = students.find((s) => s.id === selectedStudentId);
+  const displayTitle =
+    title ||
+    (selectedStudent
+      ? `Candidatures envoyées par ${selectedStudent.firstname} ${selectedStudent.lastname}`
+      : "Candidatures envoyées dans l'organisation");
 
   const svgWidth = 800;
   const svgHeight = 280;
@@ -31,7 +38,27 @@ const ApplicationsChart = ({ data, title = "Candidatures envoyées dans l'organi
   return (
     <div className="campus-applications-chart">
       <div className="chart-header">
-        <h3>{title}</h3>
+        <h3>{displayTitle}</h3>
+
+        {onStudentChange && (
+          <div className="chart-filter">
+            <select
+              className="student-filter-select"
+              value={selectedStudentId ?? ""}
+              onChange={(e) => {
+                const val = e.target.value;
+                onStudentChange(val ? Number(val) : null);
+              }}
+            >
+              <option value="">Tous les étudiants</option>
+              {students.map((student) => (
+                <option key={student.id} value={student.id}>
+                  {student.firstname} {student.lastname}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
       </div>
 
       <div className="chart-svg-container">
@@ -110,15 +137,6 @@ const ApplicationsChart = ({ data, title = "Candidatures envoyées dans l'organi
           })}
 
         </svg>
-      </div>
-
-      <div className="chart-footer">
-        <div className="chart-legend">
-          <div className="legend-item">
-            <span className="legend-dot organization" />
-            <span>Organisation totale</span>
-          </div>
-        </div>
       </div>
 
       <div className="chart-tooltip-text">

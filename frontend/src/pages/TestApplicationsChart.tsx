@@ -3,17 +3,36 @@ import MainLayout from "../components/layout/MainLayout/MainLayout";
 import ApplicationsChart from "../components/ui/ApplicationsChart/ApplicationsChart";
 import { useAuth } from "../context/AuthContext";
 import { api } from "../lib/api";
-import type { MonthApplicationStat } from "../interfaces/models.interface";
-import "../assets/css/pages/dashboard.css";
 import ApplicationAddButton from "../components/common/ApplicationAddButton/ApplicationAddButton";
+import type { User } from "../interfaces/user.interface";
+import type { MonthApplicationStat } from "../interfaces/models.interface";
+
+import "../assets/css/pages/dashboard.css";
+
 
 function Dashboard() {
   const { user, role, loading: authLoading } = useAuth();
   const [stats, setStats] = useState<MonthApplicationStat[]>([]);
+  const [students, setStudents] = useState<User[]>([]);
+  const [selectedStudentId, setSelectedStudentId] = useState<number | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   const isStaffOrAdmin = role === "staff" || role === "admin";
+
+  useEffect(() => {
+    if (!isStaffOrAdmin || !user?.organizationId) return;
+    const loadStudents = async () => {
+      try {
+        const users = await api.organization.fetchUsers(Number(user.organizationId));
+        const studentList = users.filter((u) => u.role === "student");
+        setStudents(studentList);
+      } catch (err) {
+        console.error("Erreur lors du chargement des étudiants :", err);
+      }
+    };
+    loadStudents();
+  }, [isStaffOrAdmin, user?.organizationId]);
 
   useEffect(() => {
     if (!isStaffOrAdmin || !user?.organizationId) return;
@@ -26,6 +45,7 @@ function Dashboard() {
           Number(user.organizationId),
           {
             year: new Date().getFullYear(),
+            studentId: selectedStudentId ?? undefined,
           }
         );
         setStats(response.months);
@@ -38,7 +58,7 @@ function Dashboard() {
     };
 
     loadStatistics();
-  }, [isStaffOrAdmin, user?.organizationId]);
+  }, [isStaffOrAdmin, user?.organizationId, selectedStudentId]);
 
   if (authLoading) {
     return (
@@ -60,7 +80,9 @@ function Dashboard() {
             {!loading && !error && (
               <ApplicationsChart
                 data={stats}
-                title="Candidatures envoyées dans l'organisation"
+                students={students}
+                selectedStudentId={selectedStudentId}
+                onStudentChange={setSelectedStudentId}
               />
             )}
           </div>
