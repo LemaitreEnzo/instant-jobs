@@ -5,6 +5,7 @@ import helmet from "helmet";
 
 import getEnv from "./utils/envHelper";
 
+import { customRateLimiter } from "config/rate-limit";
 import { authenticateUser } from "./middlewares/auth.middleware";
 
 import applicationsRoutes from "src/routes/application.route";
@@ -21,6 +22,7 @@ const app = express();
 const VERSION = getEnv("VERSION");
 
 app.use(helmet());
+app.use(customRateLimiter({}));
 
 app.use(cookieParser());
 app.use(express.json());
