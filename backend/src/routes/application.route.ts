@@ -11,16 +11,31 @@ import {
 } from "controllers/application.controller";
 
 import express from "express";
+import { Application } from "src/models";
+import { UserRole } from "src/models/enums/user.enum";
+import { checkUser } from "../../middlewares/auth.middleware";
 
 const applicationsRoutes = express.Router({ mergeParams: true });
 
 applicationsRoutes.get("/:id", getOneApplication);
 
-applicationsRoutes.post("/", createApplication);
+applicationsRoutes.post(
+  "/",
+  checkUser(Object.values(UserRole), Application),
+  createApplication,
+);
 
-applicationsRoutes.patch("/:id", updateApplication);
+applicationsRoutes.patch(
+  "/:id",
+  checkUser(Object.values(UserRole), Application),
+  updateApplication,
+);
 
-applicationsRoutes.delete("/:id", deleteApplication);
+applicationsRoutes.delete(
+  "/:id",
+  checkUser(Object.values(UserRole), Application),
+  deleteApplication,
+);
 
 applicationsRoutes.get("/:applicationId/appointments", getAppointments);
 

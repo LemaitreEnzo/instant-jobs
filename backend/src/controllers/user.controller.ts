@@ -11,7 +11,7 @@ import {
   SubSpeciality,
   User,
 } from "src/models";
-import { VALID_ROLES } from "../../middlewares/auth.middleware";
+import { UserRole } from "src/models/enums/user.enum";
 import getEnv from "../../utils/envHelper";
 
 const excludedData: (keyof Attributes<User>)[] = [
@@ -106,7 +106,7 @@ export const login = async (req: Request, res: Response) => {
 
       if (passwordCheck) {
         // Strict role validation: reject unauthorized roles immediately (e.g., "staffie")
-        if (!VALID_ROLES.includes(data.role as any)) {
+        if (!Object.values(UserRole).includes(data.role)) {
           return res
             .status(403)
             .json({ message: "Forbidden: Unrecognized or unauthorized role" });
@@ -178,7 +178,7 @@ export const getAuth = async (req: Request, res: Response) => {
     let decoded: {
       id?: number;
       uuid: string;
-      role: string;
+      role: UserRole;
       organizationId?: number;
     };
 
@@ -186,7 +186,7 @@ export const getAuth = async (req: Request, res: Response) => {
       decoded = jwt.verify(token, secret) as {
         id?: number;
         uuid: string;
-        role: string;
+        role: UserRole;
         organizationId?: number;
       };
     } catch {
@@ -195,7 +195,7 @@ export const getAuth = async (req: Request, res: Response) => {
     }
 
     // Validate role in token
-    if (!VALID_ROLES.includes(decoded.role as any)) {
+    if (!Object.values(UserRole).includes(decoded.role)) {
       return res
         .status(403)
         .json({ message: "Forbidden: Unrecognized or unauthorized role" });
@@ -300,7 +300,7 @@ export const getAuth = async (req: Request, res: Response) => {
     }
 
     // Validate user role in database
-    if (!VALID_ROLES.includes(user.role as any)) {
+    if (!Object.values(UserRole).includes(user.role)) {
       return res
         .status(403)
         .json({ message: "Forbidden: Unrecognized or unauthorized role" });

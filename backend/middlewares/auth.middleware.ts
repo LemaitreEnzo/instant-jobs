@@ -1,21 +1,17 @@
 import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
+import { UserRole } from "src/models/enums/user.enum";
 import getEnv from "../utils/envHelper";
-
-export const VALID_ROLES = ["student", "admin", "staff"] as const;
-export type ValidRole = (typeof VALID_ROLES)[number];
 
 declare global {
   namespace Express {
     interface Request {
-      user?:
-        | {
-            id?: number;
-            uuid: string;
-            role: string;
-            organizationId?: number;
-          }
-        | undefined;
+      user?: {
+        id?: number;
+        uuid: string;
+        role: UserRole;
+        organizationId?: number;
+      };
     }
   }
 }
@@ -23,7 +19,6 @@ declare global {
 /**
  * Authentication middleware for protected routes.
  * Returns 401 if token is missing, expired, or invalid.
- * Returns 403 if user role is not recognized in VALID_ROLES.
  */
 export const authenticateUser = async (
   req: Request,
@@ -45,11 +40,11 @@ export const authenticateUser = async (
       const decoded = jwt.verify(token, secret) as {
         id?: number;
         uuid: string;
-        role: string;
+        role: UserRole;
         organizationId?: number;
       };
 
-      if (!VALID_ROLES.includes(decoded.role as ValidRole)) {
+      if (!Object.values(UserRole).includes(decoded.role)) {
         return res
           .status(403)
           .json({ message: "Forbidden: Unrecognized or unauthorized role" });
@@ -65,9 +60,9 @@ export const authenticateUser = async (
           "name" in jwtError &&
           jwtError.name === "TokenExpiredError")
       ) {
-        return res
-          .status(401)
-          .json({ message: "Unauthorized: Session expired, please log in again" });
+        return res.status(401).json({
+          message: "Unauthorized: Session expired, please log in again",
+        });
       }
 
       return res
@@ -79,4 +74,49 @@ export const authenticateUser = async (
   }
 };
 
-export default authenticateUser;
+export const checkUser = (
+  allowedRoles: UserRole[] = Object.values(UserRole),
+  model: any = null,
+) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user;
+    const targetId = Number(req.params.id);
+
+    if (!user) return res.status(401).json({ message: "Not authenticated" });
+
+    if (!allowedRoles.includes(user.role)) {
+      return res
+        .status(403)
+        .json({ message: "Access denied: unauthorized role" });
+    }
+
+    if (user.role === UserRole.STUDENT) {
+      if (model) {
+        try {
+          const modelData = await model.findByPk(targetId);
+
+          if (!modelData) {
+            return res.status(404).json({ message: "Resource not found" });
+          }
+
+          if (modelData.userId !== user.id) {
+            return res.status(403).json({
+              message: "Access denied: you can only access your own resources.",
+            });
+          }
+        } catch (error) {
+          return res
+            .status(500)
+            .json({ message: "Database verification failed" });
+        }
+      } else if (user.id !== targetId) {
+        return res.status(403).json({
+          message:
+            "Access denied: a student can only modify their own account.",
+        });
+      }
+    }
+
+    next();
+  };
+};

@@ -1,16 +1,18 @@
+import express from "express";
 import {
   createUser,
   deleteUser,
-  getAuth,
-  getOneUser,
   getApplications,
+  getAuth,
   getMedias,
+  getOneUser,
   login,
   logout,
   updateUser,
 } from "src/controllers/user.controller";
-import express from "express";
-import authenticateUser from "../../middlewares/auth.middleware";
+import { UserRole } from "src/models/enums/user.enum";
+import { authenticateUser, checkUser } from "../../middlewares/auth.middleware";
+import { checkRole } from "../../middlewares/role.middleware";
 
 const usersRoutes = express.Router({ mergeParams: true });
 
@@ -22,11 +24,21 @@ usersRoutes.get("/me", getAuth);
 
 usersRoutes.get("/:id", authenticateUser, getOneUser);
 
-usersRoutes.post("/", authenticateUser, createUser);
+usersRoutes.post(
+  "/",
+  authenticateUser,
+  checkRole([UserRole.ADMIN, UserRole.STAFF]),
+  createUser,
+);
 
-usersRoutes.patch("/:id", authenticateUser, updateUser);
+usersRoutes.patch("/:id", authenticateUser, checkUser(), updateUser);
 
-usersRoutes.delete("/:id", authenticateUser, deleteUser);
+usersRoutes.delete(
+  "/:id",
+  authenticateUser,
+  checkRole([UserRole.ADMIN, UserRole.STAFF]),
+  deleteUser,
+);
 
 usersRoutes.get("/:userId/medias", authenticateUser, getMedias);
 

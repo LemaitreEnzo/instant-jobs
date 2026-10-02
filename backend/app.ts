@@ -5,7 +5,7 @@ import helmet from "helmet";
 
 import getEnv from "./utils/envHelper";
 
-import authenticateUser from "./middlewares/auth.middleware";
+import { authenticateUser } from "./middlewares/auth.middleware";
 
 import applicationsRoutes from "src/routes/application.route";
 import appointmentsRoutes from "src/routes/appointment.route";
@@ -32,7 +32,7 @@ app.use(
   }),
 );
 
-app.get(`/${VERSION}`, (req: Request, res: Response) => {
+app.get(`/${VERSION}`, authenticateUser, (req: Request, res: Response) => {
   res.status(200).send("Hello world!");
 });
 
