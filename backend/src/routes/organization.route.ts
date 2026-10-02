@@ -2,29 +2,38 @@
    RESSOURCE : ORGANIZATIONS
 ========================= */
 
+import express from "express";
 import {
   createOrganization,
   deleteOrganization,
   getAllOrganizations,
-  getOneOrganization,
   getCampuses,
+  getOneOrganization,
   getUsers,
   updateOrganization,
 } from "src/controllers/organization.controller";
-import express from "express";
+import { UserRole } from "src/models/enums/user.enum";
+import { checkRole } from "../../middlewares/role.middleware";
 
 const organizationsRoutes = express.Router({ mergeParams: true });
 
 organizationsRoutes.get("/", getAllOrganizations);
 
-organizationsRoutes.post("/", createOrganization);
+organizationsRoutes.post("/", checkRole([UserRole.ADMIN]), createOrganization);
 
 organizationsRoutes.get("/:id", getOneOrganization);
 
-organizationsRoutes.patch("/:id", updateOrganization);
-organizationsRoutes.put("/:id", updateOrganization);
+organizationsRoutes.patch(
+  "/:id",
+  checkRole([UserRole.ADMIN]),
+  updateOrganization,
+);
 
-organizationsRoutes.delete("/:id", deleteOrganization);
+organizationsRoutes.delete(
+  "/:id",
+  checkRole([UserRole.ADMIN]),
+  deleteOrganization,
+);
 
 organizationsRoutes.get("/:organizationId/campus", getCampuses);
 
