@@ -59,7 +59,7 @@ export const updatePromotion = async (req: Request, res: Response) => {
     }
 
     await promotion.update(data);
-    res.status(206).json(promotion);
+    res.status(200).json(promotion);
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
   }
@@ -96,11 +96,6 @@ export const getSpecialities = async (
         exclude: excludedSpecialityData,
       },
     });
-
-    if (!specialities) {
-      res.status(404).json({ message: "Specialities not found" });
-      return;
-    }
 
     res.status(200).json(specialities);
   } catch (error) {

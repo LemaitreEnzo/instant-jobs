@@ -54,7 +54,7 @@ export const updateSubSpeciality = async (req: Request, res: Response) => {
     }
 
     await subSpeciality.update(data);
-    res.status(206).json(subSpeciality);
+    res.status(200).json(subSpeciality);
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
   }

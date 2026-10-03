@@ -58,7 +58,7 @@ export const updateSpeciality = async (req: Request, res: Response) => {
     }
 
     await speciality.update(data);
-    res.status(206).json(speciality);
+    res.status(200).json(speciality);
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
   }
@@ -97,11 +97,6 @@ export const getSubSpecialities = async (
         exclude: excludedSubSpecialityData,
       },
     });
-
-    if (!subSpecialities) {
-      res.status(404).json({ message: "Sub-specialities not found" });
-      return;
-    }
 
     res.status(200).json(subSpecialities);
   } catch (error) {

@@ -401,17 +401,13 @@ export const createUser = async (req: Request, res: Response) => {
     };
     const user = await User.create(userData);
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
     const rawUserData: any = user.get({ plain: true });
 
     delete rawUserData.password_hash;
     delete rawUserData.createdAt;
     delete rawUserData.updatedAt;
 
-    return res.status(200).json(rawUserData);
+    return res.status(201).json(rawUserData);
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
   }
@@ -433,7 +429,7 @@ export const updateUser = async (req: Request, res: Response) => {
     }
 
     await user.update(data);
-    res.status(206).json(user);
+    res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
   }
@@ -498,10 +494,6 @@ export const getApplications = async (req: Request, res: Response) => {
 
     const applications = await Application.findAll(queryOptions);
 
-    if (!applications) {
-      return res.status(404).json({ message: "Applications not found" });
-    }
-
     res.status(200).json(applications);
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
@@ -518,10 +510,6 @@ export const getMedias = async (req: Request, res: Response) => {
         exclude: excludedMediaData,
       },
     });
-
-    if (!medias) {
-      return res.status(404).json({ message: "Medias not found" });
-    }
 
     res.status(200).json(medias);
   } catch (error) {
