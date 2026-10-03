@@ -1,156 +1,558 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
-import { Campus } from "models/campus.model";
-import { Organization } from "src/models/organization.model";
 import request from "supertest";
+
+import { Campus, Promotion } from "src/models";
+import { UserRole } from "../../models/enums/user.enum";
+
 import app from "../../../app";
 import getEnv from "../../../utils/envHelper";
 
 const VERSION = getEnv("VERSION");
-const CAMPUS_URL = `/${VERSION}/organization/la-manu/campus`;
+const CAMPUS_URL = `/${VERSION}/campus`;
 
-// Create mock for organization model
-jest.mock("models/organizations.model", () => ({
-  Organization: {
-    findOne: jest.fn(),
+interface MockUser {
+  id: number;
+  uuid: string;
+  role: UserRole;
+  organizationId?: number;
+}
+
+let currentUser: MockUser | undefined = {
+  id: 1,
+  uuid: "00000000-0000-0000-0000-000000000001",
+  role: UserRole.ADMIN,
+  organizationId: 1,
+};
+
+let triggerRateLimit = false;
+
+jest.mock("../../../middlewares/auth.middleware", () => ({
+  authenticateUser: jest.fn((req: any, res: any, next: any) => {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !currentUser) {
+      return res
+        .status(401)
+        .json({ message: "Unauthorized: Missing authentication token" });
+    }
+    req.user = currentUser;
+    next();
+  }),
+  checkUser: jest.fn(() => (req: any, res: any, next: any) => next()),
+}));
+
+jest.mock("../../../middlewares/role.middleware", () => ({
+  checkRole: jest.fn(
+    (allowedRoles: UserRole[]) => (req: any, res: any, next: any) => {
+      if (!req.user) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+      if (allowedRoles.includes(req.user.role)) {
+        return next();
+      }
+      return res
+        .status(403)
+        .json({ message: "Access denied: Insufficient privileges" });
+    },
+  ),
+}));
+
+jest.mock("config/rate-limit", () => ({
+  customRateLimiter: jest.fn(() => (req: any, res: any, next: any) => {
+    if (triggerRateLimit) {
+      return res.status(429).json({
+        error: "Too many requests",
+        message: "You have exceeded the rate limit. Try again in 60 seconds.",
+        retryAfter: 60,
+      });
+    }
+    next();
+  }),
+}));
+
+jest.mock("config/db", () => ({
+  sequelize: {
+    define: jest.fn(() => ({
+      hasMany: jest.fn(),
+      belongsTo: jest.fn(),
+    })),
+    authenticate: jest.fn(),
+    sync: jest.fn(),
   },
 }));
 
-jest.mock("models/campus.model", () => ({
+jest.mock("src/models", () => ({
+  Organization: {
+    findAll: jest.fn(),
+    findOne: jest.fn(),
+    create: jest.fn(),
+    hasMany: jest.fn(),
+    belongsTo: jest.fn(),
+  },
   Campus: {
     findAll: jest.fn(),
     findOne: jest.fn(),
     create: jest.fn(),
-    update: jest.fn({ id: 1, name: "Compiègne" } as any),
-    destroy: jest.fn(),
+    hasMany: jest.fn(),
+    belongsTo: jest.fn(),
   },
+  User: {
+    findAll: jest.fn(),
+    findOne: jest.fn(),
+    create: jest.fn(),
+    hasMany: jest.fn(),
+    belongsTo: jest.fn(),
+  },
+  Media: { hasMany: jest.fn(), belongsTo: jest.fn() },
+  Promotion: {
+    findAll: jest.fn(),
+    findOne: jest.fn(),
+    create: jest.fn(),
+    hasMany: jest.fn(),
+    belongsTo: jest.fn(),
+  },
+  Speciality: { hasMany: jest.fn(), belongsTo: jest.fn() },
+  SubSpeciality: { hasMany: jest.fn(), belongsTo: jest.fn() },
+  Application: { hasMany: jest.fn(), belongsTo: jest.fn() },
+  Appointment: { hasMany: jest.fn(), belongsTo: jest.fn() },
 }));
 
-describe("GET CAMPUS", () => {
+const baseCampusData = {
+  id: 1,
+  name: "Campus Compiègne",
+  organizationId: 1,
+};
+
+const createMockCampusInstance = (data: any = baseCampusData) => {
+  const instance: any = {
+    ...data,
+    dataValues: { ...data },
+    get: jest.fn((options?: { plain?: boolean }) => ({ ...instance })),
+    update: jest.fn().mockImplementation(async (updateData: any) => {
+      Object.assign(instance, updateData);
+      Object.assign(instance.dataValues, updateData);
+      return instance;
+    }),
+    destroy: jest.fn(),
+  };
+  return instance;
+};
+
+const mockPromotions = [
+  {
+    id: 1,
+    name: "Promotion 2026 - Bachelor Développeur Full-Stack - Campus Compiègne",
+    campusId: 1,
+  },
+  {
+    id: 2,
+    name: "Promotion 2025 - Mastère Data & IA - Campus Compiègne",
+    campusId: 1,
+  },
+];
+
+const AUTH_HEADER = { Authorization: "Bearer test-valid-token" };
+
+describe("FUNCTIONAL TESTS - CAMPUS", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    triggerRateLimit = false;
+    currentUser = {
+      id: 1,
+      uuid: "00000000-0000-0000-0000-000000000001",
+      role: UserRole.ADMIN,
+      organizationId: 1,
+    };
   });
 
-  it("should return 200", async () => {
-    const res = await request(app).get(CAMPUS_URL);
-    expect(res.status).toBe(200);
-  });
+  describe("GET /campus/:id", () => {
+    it("should return 200 with one campus", async () => {
+      const mockInstance = createMockCampusInstance();
+      jest.mocked(Campus.findOne).mockResolvedValue(mockInstance as any);
 
-  it("Returns all campus", async () => {
-    jest.mocked(Organization.findOne).mockResolvedValue({
-      id: 1,
-      name: "La Manu",
-    } as any);
-    jest
-      .mocked(Campus.findAll)
-      .mockResolvedValue([
-        { id: 1, name: "Compiègne" } as any,
-        { id: 2, name: "Amiens" } as any,
-      ]);
+      const res = await request(app).get(`${CAMPUS_URL}/1`).set(AUTH_HEADER);
 
-    const res = await request(app).get(CAMPUS_URL);
-    expect(res.body).toEqual({
-      campus: [
-        { id: 1, name: "Compiègne" },
-        { id: 2, name: "Amiens" },
-      ],
-    });
-  });
-
-  it("Returns one campus", async () => {
-    jest.mocked(Organization.findOne).mockResolvedValue({
-      id: 1,
-      name: "La Manu",
-    } as any);
-    jest.mocked(Campus.findOne).mockResolvedValue({
-      id: 1,
-      name: "Compiègne",
-    } as any);
-
-    const res = await request(app).get(`${CAMPUS_URL}/compiegne`);
-    expect(res.body).toEqual({
-      campus: {
+      expect(res.status).toBe(200);
+      expect(res.body).toMatchObject({
         id: 1,
-        name: "Compiègne",
-      },
+        name: "Campus Compiègne",
+        organizationId: 1,
+      });
+      expect(Campus.findOne).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { id: "1" },
+        }),
+      );
+    });
+
+    it("should return 404 if the campus doesn't exist", async () => {
+      jest.mocked(Campus.findOne).mockResolvedValue(null);
+
+      const res = await request(app).get(`${CAMPUS_URL}/999`).set(AUTH_HEADER);
+
+      expect(res.status).toBe(404);
+      expect(res.body).toEqual({ message: "Campus not found" });
+    });
+
+    it("should return 401 if the user isn't authenticated", async () => {
+      const res = await request(app).get(`${CAMPUS_URL}/1`);
+
+      expect(res.status).toBe(401);
+      expect(res.body).toEqual({
+        message: "Unauthorized: Missing authentication token",
+      });
+    });
+
+    it("should return 500 if there is a database error", async () => {
+      jest
+        .mocked(Campus.findOne)
+        .mockRejectedValue(new Error("Database connection failure"));
+
+      const res = await request(app).get(`${CAMPUS_URL}/1`).set(AUTH_HEADER);
+
+      expect(res.status).toBe(500);
+      expect(res.body).toEqual({ message: "Internal server error" });
     });
   });
-});
 
-describe("CREATE CAMPUS", () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+  describe("POST /campus", () => {
+    const newCampusPayload = {
+      name: "Campus Compiègne",
+      organizationId: 1,
+    };
 
-  it("POST -> should return 201", async () => {
-    jest.mocked(Organization.findOne).mockResolvedValue({
-      id: 1,
-      name: "La Manu",
-    } as any);
-    jest.mocked(Campus.findOne).mockResolvedValue(null);
-    jest.mocked(Campus.create).mockResolvedValue({
-      id: 1,
-      name: "Compiègne",
-    } as any);
-
-    const res = await request(app).post(CAMPUS_URL).send({ name: "Compiègne" });
-
-    expect(res.status).toBe(201);
-    expect(res.body).toMatchObject({
-      campus: {
-        id: expect.any(Number),
-        name: "Compiègne",
-      },
-    });
-  });
-});
-
-describe("UPDATE CAMPUS", () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
-  it("PUT -> should return 206", async () => {
-    jest.mocked(Organization.findOne).mockResolvedValue({
-      id: 1,
-      name: "La Manu",
-    } as any);
-    jest.mocked(Campus.findOne).mockResolvedValue({ id: 1 } as any);
-    jest.mocked(Campus.update).mockResolvedValue({
-      id: 1,
-      name: "Amiens",
-    } as any);
-
-    const res = await request(app)
-      .put(`${CAMPUS_URL}/1`)
-      .send({ name: "Amiens" });
-
-    expect(res.status).toBe(206);
-    expect(res.body).toMatchObject({
-      campus: {
+    it("should return 201 with the new campus when an admin creates it", async () => {
+      jest.mocked(Campus.create).mockResolvedValue({
         id: 1,
-        name: "Amiens",
-      },
+        ...newCampusPayload,
+      } as any);
+
+      const res = await request(app)
+        .post(CAMPUS_URL)
+        .set(AUTH_HEADER)
+        .send(newCampusPayload);
+
+      expect(res.status).toBe(201);
+      expect(res.body).toMatchObject({
+        id: 1,
+        name: "Campus Compiègne",
+        organizationId: 1,
+      });
+      expect(Campus.create).toHaveBeenCalledWith(newCampusPayload);
+    });
+
+    it("should return 403 if user role is “STAFF“", async () => {
+      currentUser = {
+        id: 2,
+        uuid: "00000000-0000-0000-0000-000000000002",
+        role: UserRole.STAFF,
+        organizationId: 1,
+      };
+
+      const res = await request(app)
+        .post(CAMPUS_URL)
+        .set(AUTH_HEADER)
+        .send(newCampusPayload);
+
+      expect(res.status).toBe(403);
+      expect(res.body).toEqual({
+        message: "Access denied: Insufficient privileges",
+      });
+      expect(Campus.create).not.toHaveBeenCalled();
+    });
+
+    it("should return 403 if user role is “STUDENT“", async () => {
+      currentUser = {
+        id: 3,
+        uuid: "00000000-0000-0000-0000-000000000003",
+        role: UserRole.STUDENT,
+        organizationId: 1,
+      };
+
+      const res = await request(app)
+        .post(CAMPUS_URL)
+        .set(AUTH_HEADER)
+        .send(newCampusPayload);
+
+      expect(res.status).toBe(403);
+      expect(res.body).toEqual({
+        message: "Access denied: Insufficient privileges",
+      });
+      expect(Campus.create).not.toHaveBeenCalled();
+    });
+
+    it("should return 401 if the user isn't authenticated", async () => {
+      const res = await request(app).post(CAMPUS_URL).send(newCampusPayload);
+
+      expect(res.status).toBe(401);
+      expect(res.body).toEqual({
+        message: "Unauthorized: Missing authentication token",
+      });
+    });
+
+    it("should return 500 if the creation fails", async () => {
+      jest
+        .mocked(Campus.create)
+        .mockRejectedValue(new Error("SequelizeDatabaseError"));
+
+      const res = await request(app)
+        .post(CAMPUS_URL)
+        .set(AUTH_HEADER)
+        .send(newCampusPayload);
+
+      expect(res.status).toBe(500);
+      expect(res.body).toEqual({ message: "Internal server error" });
     });
   });
-});
 
-describe("DELETE CAMPUS", () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
+  describe("PATCH /campus/:id", () => {
+    const updatePayload = {
+      name: "Campus Compiègne Centre",
+    };
+
+    it("should return 200 with the updated campus when an admin updates it", async () => {
+      const mockInstance = createMockCampusInstance();
+      jest.mocked(Campus.findOne).mockResolvedValue(mockInstance as any);
+
+      const res = await request(app)
+        .patch(`${CAMPUS_URL}/1`)
+        .set(AUTH_HEADER)
+        .send(updatePayload);
+
+      expect(res.status).toBe(200);
+      expect(res.body).toMatchObject({
+        id: 1,
+        name: "Campus Compiègne Centre",
+        organizationId: 1,
+      });
+      expect(mockInstance.update).toHaveBeenCalledWith(updatePayload);
+    });
+
+    it("should return 200 with the updated campus when a staff updates it", async () => {
+      currentUser = {
+        id: 2,
+        uuid: "00000000-0000-0000-0000-000000000002",
+        role: UserRole.STAFF,
+        organizationId: 1,
+      };
+
+      const mockInstance = createMockCampusInstance();
+      jest.mocked(Campus.findOne).mockResolvedValue(mockInstance as any);
+
+      const res = await request(app)
+        .patch(`${CAMPUS_URL}/1`)
+        .set(AUTH_HEADER)
+        .send(updatePayload);
+
+      expect(res.status).toBe(200);
+      expect(res.body).toMatchObject({
+        id: 1,
+        name: "Campus Compiègne Centre",
+        organizationId: 1,
+      });
+      expect(mockInstance.update).toHaveBeenCalledWith(updatePayload);
+    });
+
+    it("should return 403 if user role is “STUDENT“", async () => {
+      currentUser = {
+        id: 3,
+        uuid: "00000000-0000-0000-0000-000000000003",
+        role: UserRole.STUDENT,
+        organizationId: 1,
+      };
+
+      const res = await request(app)
+        .patch(`${CAMPUS_URL}/1`)
+        .set(AUTH_HEADER)
+        .send(updatePayload);
+
+      expect(res.status).toBe(403);
+      expect(res.body).toEqual({
+        message: "Access denied: Insufficient privileges",
+      });
+      expect(Campus.findOne).not.toHaveBeenCalled();
+    });
+
+    it("should return 404 if the campus doesn't exist", async () => {
+      jest.mocked(Campus.findOne).mockResolvedValue(null);
+
+      const res = await request(app)
+        .patch(`${CAMPUS_URL}/999`)
+        .set(AUTH_HEADER)
+        .send(updatePayload);
+
+      expect(res.status).toBe(404);
+      expect(res.body).toEqual({ message: "Campus not found" });
+    });
+
+    it("should return 401 if the user isn't authenticated", async () => {
+      const res = await request(app)
+        .patch(`${CAMPUS_URL}/1`)
+        .send(updatePayload);
+
+      expect(res.status).toBe(401);
+      expect(res.body).toEqual({
+        message: "Unauthorized: Missing authentication token",
+      });
+    });
+
+    it("should return 500 if the update fails", async () => {
+      jest.mocked(Campus.findOne).mockRejectedValue(new Error("Database failure"));
+
+      const res = await request(app)
+        .patch(`${CAMPUS_URL}/1`)
+        .set(AUTH_HEADER)
+        .send(updatePayload);
+
+      expect(res.status).toBe(500);
+      expect(res.body).toEqual({ message: "Internal server error" });
+    });
   });
 
-  it("should return 204", async () => {
-    jest.mocked(Organization.findOne).mockResolvedValue({
-      id: 1,
-      name: "La Manu",
-    } as any);
-    jest.mocked(Campus.destroy).mockResolvedValue({
-      id: 1,
-      name: "Compiègne",
-    } as any);
+  describe("DELETE /campus/:id", () => {
+    it("should return 204 when an admin deletes a campus", async () => {
+      const mockInstance = createMockCampusInstance();
+      jest.mocked(Campus.findOne).mockResolvedValue(mockInstance as any);
 
-    const res = await request(app).delete(`${CAMPUS_URL}/1`);
-    expect(res.status).toBe(204);
-    expect(Campus.destroy).toHaveBeenCalled();
+      const res = await request(app).delete(`${CAMPUS_URL}/1`).set(AUTH_HEADER);
+
+      expect(res.status).toBe(204);
+      expect(res.text).toBe("");
+      expect(mockInstance.destroy).toHaveBeenCalled();
+    });
+
+    it("should return 404 if the campus doesn't exist", async () => {
+      jest.mocked(Campus.findOne).mockResolvedValue(null);
+
+      const res = await request(app)
+        .delete(`${CAMPUS_URL}/999`)
+        .set(AUTH_HEADER);
+
+      expect(res.status).toBe(404);
+      expect(res.body).toEqual({ message: "Campus not found" });
+    });
+
+    it("should return 403 if user role is “STAFF“", async () => {
+      currentUser = {
+        id: 2,
+        uuid: "00000000-0000-0000-0000-000000000002",
+        role: UserRole.STAFF,
+        organizationId: 1,
+      };
+
+      const res = await request(app).delete(`${CAMPUS_URL}/1`).set(AUTH_HEADER);
+
+      expect(res.status).toBe(403);
+      expect(res.body).toEqual({
+        message: "Access denied: Insufficient privileges",
+      });
+      expect(Campus.findOne).not.toHaveBeenCalled();
+    });
+
+    it("should return 403 if user role is “STUDENT“", async () => {
+      currentUser = {
+        id: 3,
+        uuid: "00000000-0000-0000-0000-000000000003",
+        role: UserRole.STUDENT,
+        organizationId: 1,
+      };
+
+      const res = await request(app).delete(`${CAMPUS_URL}/1`).set(AUTH_HEADER);
+
+      expect(res.status).toBe(403);
+      expect(res.body).toEqual({
+        message: "Access denied: Insufficient privileges",
+      });
+      expect(Campus.findOne).not.toHaveBeenCalled();
+    });
+
+    it("should return 401 if the user isn't authenticated", async () => {
+      const res = await request(app).delete(`${CAMPUS_URL}/1`);
+
+      expect(res.status).toBe(401);
+      expect(res.body).toEqual({
+        message: "Unauthorized: Missing authentication token",
+      });
+    });
+
+    it("should return 500 if the delete fails", async () => {
+      jest.mocked(Campus.findOne).mockRejectedValue(new Error("Database failure"));
+
+      const res = await request(app).delete(`${CAMPUS_URL}/1`).set(AUTH_HEADER);
+
+      expect(res.status).toBe(500);
+      expect(res.body).toEqual({ message: "Internal server error" });
+    });
+  });
+
+  describe("GET /campus/:campusId/promotions", () => {
+    it("should return 200 with all promotions of the campus", async () => {
+      jest.mocked(Promotion.findAll).mockResolvedValue(mockPromotions as any);
+
+      const res = await request(app)
+        .get(`${CAMPUS_URL}/1/promotions`)
+        .set(AUTH_HEADER);
+
+      expect(res.status).toBe(200);
+      expect(Array.isArray(res.body)).toBe(true);
+      expect(res.body).toHaveLength(2);
+      expect(res.body[0]).toMatchObject({
+        id: 1,
+        name: "Promotion 2026 - Bachelor Développeur Full-Stack - Campus Compiègne",
+        campusId: 1,
+      });
+      expect(Promotion.findAll).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { campusId: "1" },
+        }),
+      );
+    });
+
+    it("should return 200 with empty array if no promotion exists", async () => {
+      jest.mocked(Promotion.findAll).mockResolvedValue([]);
+
+      const res = await request(app)
+        .get(`${CAMPUS_URL}/1/promotions`)
+        .set(AUTH_HEADER);
+
+      expect(res.status).toBe(200);
+      expect(res.body).toEqual([]);
+    });
+
+    it("should return 401 if the user isn't authenticated", async () => {
+      const res = await request(app).get(`${CAMPUS_URL}/1/promotions`);
+
+      expect(res.status).toBe(401);
+      expect(res.body).toEqual({
+        message: "Unauthorized: Missing authentication token",
+      });
+    });
+
+    it("should return 500 if the promotions search fails", async () => {
+      jest
+        .mocked(Promotion.findAll)
+        .mockRejectedValue(new Error("Database failure"));
+
+      const res = await request(app)
+        .get(`${CAMPUS_URL}/1/promotions`)
+        .set(AUTH_HEADER);
+
+      expect(res.status).toBe(500);
+      expect(res.body).toEqual({ message: "Internal server error" });
+    });
+  });
+
+  describe("Rate Limiting (customRateLimiter)", () => {
+    it("should return 429 if the user exceeded the rate limit", async () => {
+      triggerRateLimit = true;
+
+      const res = await request(app).get(`${CAMPUS_URL}/1`).set(AUTH_HEADER);
+
+      expect(res.status).toBe(429);
+      expect(res.body).toMatchObject({
+        error: "Too many requests",
+        message: expect.stringContaining("You have exceeded the rate limit"),
+        retryAfter: expect.any(Number),
+      });
+    });
   });
 });

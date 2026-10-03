@@ -55,7 +55,7 @@ export const updateCampus = async (req: Request, res: Response) => {
     }
 
     await campus.update(data);
-    res.status(206).json(campus);
+    res.status(200).json(campus);
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
   }
@@ -92,10 +92,6 @@ export const getPromotions = async (req: Request, res: Response) => {
         exclude: excludedPromotionData,
       },
     });
-
-    if (!promotions) {
-      return res.status(404).json({ message: "Promotions not found" });
-    }
 
     res.status(200).json(promotions);
   } catch (error) {

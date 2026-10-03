@@ -60,10 +60,6 @@ export const getAllOrganizations = async (req: Request, res: Response) => {
       },
     });
 
-    if (!organizations) {
-      return res.status(404).json({ message: "Organizations not found" });
-    }
-
     res.status(200).json(organizations);
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
@@ -117,7 +113,7 @@ export const updateOrganization = async (req: Request, res: Response) => {
     }
 
     await organization.update(data);
-    res.status(206).json(organization);
+    res.status(200).json(organization);
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
   }
@@ -153,10 +149,6 @@ export const getCampuses = async (req: Request, res: Response) => {
         exclude: excludedCampusData,
       },
     });
-
-    if (!campuses) {
-      return res.status(404).json({ message: "Campuses not found" });
-    }
 
     res.status(200).json(campuses);
   } catch (error) {
@@ -230,10 +222,6 @@ export const getUsers = async (req: Request, res: Response) => {
     ]);
 
     const users: User[] = [...students, ...otherUsers];
-
-    if (!users || users.length === 0) {
-      return res.status(404).json({ message: "Users not found" });
-    }
 
     res.status(200).json(users);
   } catch (error) {

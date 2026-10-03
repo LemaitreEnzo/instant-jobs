@@ -52,7 +52,7 @@ export const updateAppointment = async (req: Request, res: Response) => {
     }
 
     await appointment.update(data);
-    res.status(206).json(appointment);
+    res.status(200).json(appointment);
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
   }

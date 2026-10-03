@@ -51,7 +51,7 @@ export const updateMedia = async (req: Request, res: Response) => {
     }
 
     await media.update(data);
-    res.status(206).json(media);
+    res.status(200).json(media);
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
   }

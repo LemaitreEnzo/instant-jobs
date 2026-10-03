@@ -1,19 +1,14 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import request from "supertest";
 
-import { Application, Appointment } from "src/models";
-import {
-  ApplicationResend,
-  ApplicationStatus,
-  ApplicationType,
-} from "../../models/enums/application.enum";
+import { Appointment } from "src/models";
 import { UserRole } from "../../models/enums/user.enum";
 
 import app from "../../../app";
 import getEnv from "../../../utils/envHelper";
 
 const VERSION = getEnv("VERSION");
-const APPLICATION_URL = `/${VERSION}/application`;
+const APPOINTMENT_URL = `/${VERSION}/appointment`;
 
 const AUTH_HEADER = { Authorization: "Bearer test-valid-token" };
 
@@ -203,21 +198,15 @@ jest.mock("src/models", () => ({
   },
 }));
 
-const baseApplicationData = {
+const baseAppointmentData = {
   id: 1,
-  title: "Développeur Full-Stack React / Node.js",
-  type: ApplicationType.APPRENTICESHIP,
-  logo: "logo-technova.png",
-  company: "TechNova Solutions",
-  city: "Paris",
-  date: "2026-09-01",
-  status: ApplicationStatus.PENDING,
-  resend: ApplicationResend.NO,
-  description: "Poste de développeur full-stack au sein de l'équipe produit SaaS.",
+  date: "2026-09-06T10:00:00.000Z",
+  reason: "Premier entretien téléphonique RH",
+  applicationId: 1,
   userId: 10,
 };
 
-const createMockApplicationInstance = (data: any = baseApplicationData) => {
+const createMockAppointmentInstance = (data: any = baseAppointmentData) => {
   const instance: any = {
     ...data,
     dataValues: { ...data },
@@ -231,20 +220,7 @@ const createMockApplicationInstance = (data: any = baseApplicationData) => {
   return instance;
 };
 
-const mockAppointments = [
-  {
-    id: 1,
-    date: new Date("2026-09-06T10:00:00.000Z"),
-    reason: "Premier entretien téléphonique RH",
-  },
-  {
-    id: 2,
-    date: new Date("2026-09-13T14:30:00.000Z"),
-    reason: "Entretien technique et présentation des projets",
-  },
-];
-
-describe("FUNCTIONAL TESTS - APPLICATION", () => {
+describe("FUNCTIONAL TESTS - APPOINTMENT", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     triggerRateLimit = false;
@@ -256,31 +232,24 @@ describe("FUNCTIONAL TESTS - APPLICATION", () => {
     };
   });
 
-  describe("GET /application/:id", () => {
-    it("should return 200 and the application when it exists", async () => {
-      const mockInstance = createMockApplicationInstance();
-      jest.mocked(Application.findOne).mockResolvedValue(mockInstance as any);
+  describe("GET /appointment/:id", () => {
+    it("should return 200 and the appointment when it exists", async () => {
+      const mockInstance = createMockAppointmentInstance();
+      jest.mocked(Appointment.findOne).mockResolvedValue(mockInstance as any);
 
       const res = await request(app)
-        .get(`${APPLICATION_URL}/1`)
+        .get(`${APPOINTMENT_URL}/1`)
         .set(AUTH_HEADER);
 
       expect(res.status).toBe(200);
       expect(res.body).toMatchObject({
         id: 1,
-        title: "Développeur Full-Stack React / Node.js",
-        type: ApplicationType.APPRENTICESHIP,
-        logo: "logo-technova.png",
-        company: "TechNova Solutions",
-        city: "Paris",
-        date: "2026-09-01",
-        status: ApplicationStatus.PENDING,
-        resend: ApplicationResend.NO,
-        description:
-          "Poste de développeur full-stack au sein de l'équipe produit SaaS.",
+        date: "2026-09-06T10:00:00.000Z",
+        reason: "Premier entretien téléphonique RH",
+        applicationId: 1,
         userId: 10,
       });
-      expect(Application.findOne).toHaveBeenCalledWith({
+      expect(Appointment.findOne).toHaveBeenCalledWith({
         where: { id: "1" },
         attributes: {
           exclude: ["createdAt", "updatedAt"],
@@ -288,19 +257,19 @@ describe("FUNCTIONAL TESTS - APPLICATION", () => {
       });
     });
 
-    it("should return 404 if application is not found", async () => {
-      jest.mocked(Application.findOne).mockResolvedValue(null);
+    it("should return 404 if appointment is not found", async () => {
+      jest.mocked(Appointment.findOne).mockResolvedValue(null);
 
       const res = await request(app)
-        .get(`${APPLICATION_URL}/999`)
+        .get(`${APPOINTMENT_URL}/999`)
         .set(AUTH_HEADER);
 
       expect(res.status).toBe(404);
-      expect(res.body).toEqual({ message: "Application not found" });
+      expect(res.body).toEqual({ message: "Appointment not found" });
     });
 
     it("should return 401 if not authenticated", async () => {
-      const res = await request(app).get(`${APPLICATION_URL}/1`);
+      const res = await request(app).get(`${APPOINTMENT_URL}/1`);
 
       expect(res.status).toBe(401);
       expect(res.body).toEqual({
@@ -310,11 +279,11 @@ describe("FUNCTIONAL TESTS - APPLICATION", () => {
 
     it("should return 500 on database error", async () => {
       jest
-        .mocked(Application.findOne)
+        .mocked(Appointment.findOne)
         .mockRejectedValue(new Error("Database failure"));
 
       const res = await request(app)
-        .get(`${APPLICATION_URL}/1`)
+        .get(`${APPOINTMENT_URL}/1`)
         .set(AUTH_HEADER);
 
       expect(res.status).toBe(500);
@@ -322,68 +291,53 @@ describe("FUNCTIONAL TESTS - APPLICATION", () => {
     });
   });
 
-  describe("POST /application", () => {
-    it("should return 201 and create application successfully as admin", async () => {
-      const newApplicationPayload = {
-        title: "Stage Développeur Frontend Next.js",
-        type: ApplicationType.INTERNSHIP,
-        logo: "logo-innowave.png",
-        company: "InnoWave Digital",
-        city: "Lyon",
-        date: "2026-08-15",
-        status: ApplicationStatus.ACCEPTED,
-        resend: ApplicationResend.INTERVIEW_COMPLETED,
-        description:
-          "Stage de fin d'études en intégration web et optimisation de performance.",
-        userId: 10,
+  describe("POST /appointment", () => {
+    it("should return 201 and create appointment successfully as admin", async () => {
+      const newAppointmentPayload = {
+        date: "2026-09-13T14:30:00.000Z",
+        reason: "Entretien technique et présentation des projets",
+        applicationId: 1,
       };
-      const createdApp = { id: 2, ...newApplicationPayload };
-      jest.mocked(Application.create).mockResolvedValue(createdApp as any);
+      const createdAppt = { id: 2, ...newAppointmentPayload };
+      jest.mocked(Appointment.create).mockResolvedValue(createdAppt as any);
 
       const res = await request(app)
-        .post(APPLICATION_URL)
+        .post(APPOINTMENT_URL)
         .set(AUTH_HEADER)
-        .send(newApplicationPayload);
+        .send(newAppointmentPayload);
 
       expect(res.status).toBe(201);
-      expect(res.body).toEqual(createdApp);
-      expect(Application.create).toHaveBeenCalledWith(newApplicationPayload);
+      expect(res.body).toEqual(createdAppt);
+      expect(Appointment.create).toHaveBeenCalledWith(newAppointmentPayload);
     });
 
-    it("should return 201 and create application successfully as student", async () => {
+    it("should return 201 and create appointment successfully as student", async () => {
       currentUser = {
         id: 10,
         uuid: "00000000-0000-0000-0000-000000000010",
         role: UserRole.STUDENT,
       };
-      const newApplicationPayload = {
-        title: "Alternance Data Engineer",
-        type: ApplicationType.APPRENTICESHIP,
-        logo: "logo-nexora.png",
-        company: "Nexora Conseil",
-        city: "Lille",
-        date: "2026-09-10",
-        status: ApplicationStatus.PENDING,
-        resend: ApplicationResend.FOLLOW_UP,
-        description: "Création et maintenance de pipelines ETL temps-réel.",
-        userId: 10,
+      const newAppointmentPayload = {
+        date: "2026-09-18T16:00:00.000Z",
+        reason: "Entretien final avec le tuteur d'entreprise & signature",
+        applicationId: 1,
       };
-      const createdApp = { id: 3, ...newApplicationPayload };
-      jest.mocked(Application.create).mockResolvedValue(createdApp as any);
+      const createdAppt = { id: 3, ...newAppointmentPayload };
+      jest.mocked(Appointment.create).mockResolvedValue(createdAppt as any);
 
       const res = await request(app)
-        .post(APPLICATION_URL)
+        .post(APPOINTMENT_URL)
         .set(AUTH_HEADER)
-        .send(newApplicationPayload);
+        .send(newAppointmentPayload);
 
       expect(res.status).toBe(201);
-      expect(res.body).toEqual(createdApp);
+      expect(res.body).toEqual(createdAppt);
     });
 
     it("should return 401 if not authenticated", async () => {
       const res = await request(app)
-        .post(APPLICATION_URL)
-        .send({ title: "Candidature" });
+        .post(APPOINTMENT_URL)
+        .send({ reason: "Entretien" });
 
       expect(res.status).toBe(401);
       expect(res.body).toEqual({
@@ -393,96 +347,90 @@ describe("FUNCTIONAL TESTS - APPLICATION", () => {
 
     it("should return 500 on database error", async () => {
       jest
-        .mocked(Application.create)
+        .mocked(Appointment.create)
         .mockRejectedValue(new Error("Database failure"));
 
       const res = await request(app)
-        .post(APPLICATION_URL)
+        .post(APPOINTMENT_URL)
         .set(AUTH_HEADER)
-        .send({ title: "Candidature" });
+        .send({ reason: "Entretien" });
 
       expect(res.status).toBe(500);
       expect(res.body).toEqual({ message: "Internal server error" });
     });
   });
 
-  describe("PATCH /application/:id", () => {
-    it("should return 200 and update application as admin", async () => {
-      const mockInstance = createMockApplicationInstance();
-      jest.mocked(Application.findOne).mockResolvedValue(mockInstance as any);
+  describe("PATCH /appointment/:id", () => {
+    it("should return 200 and update appointment as admin", async () => {
+      const mockInstance = createMockAppointmentInstance();
+      jest.mocked(Appointment.findOne).mockResolvedValue(mockInstance as any);
 
-      const updateData = {
-        title: "Lead Développeur Full-Stack React / Node.js",
-        status: ApplicationStatus.ACCEPTED,
-      };
+      const updateData = { reason: "Entretien technique reporté" };
       const res = await request(app)
-        .patch(`${APPLICATION_URL}/1`)
+        .patch(`${APPOINTMENT_URL}/1`)
         .set(AUTH_HEADER)
         .send(updateData);
 
       expect(res.status).toBe(200);
-      expect(res.body.title).toBe(
-        "Lead Développeur Full-Stack React / Node.js",
-      );
-      expect(res.body.status).toBe(ApplicationStatus.ACCEPTED);
+      expect(res.body.reason).toBe("Entretien technique reporté");
       expect(mockInstance.update).toHaveBeenCalledWith(updateData);
     });
 
-    it("should return 200 and update application as staff", async () => {
+    it("should return 200 and update appointment as staff", async () => {
       currentUser = {
         id: 2,
         uuid: "00000000-0000-0000-0000-000000000002",
         role: UserRole.STAFF,
         organizationId: 1,
       };
-      const mockInstance = createMockApplicationInstance();
-      jest.mocked(Application.findOne).mockResolvedValue(mockInstance as any);
+      const mockInstance = createMockAppointmentInstance();
+      jest.mocked(Appointment.findOne).mockResolvedValue(mockInstance as any);
 
-      const updateData = { city: "Lyon" };
+      const updateData = { reason: "Entretien validé par le staff" };
       const res = await request(app)
-        .patch(`${APPLICATION_URL}/1`)
+        .patch(`${APPOINTMENT_URL}/1`)
         .set(AUTH_HEADER)
         .send(updateData);
 
       expect(res.status).toBe(200);
-      expect(res.body.city).toBe("Lyon");
+      expect(res.body.reason).toBe("Entretien validé par le staff");
     });
 
-    it("should return 200 when student updates their own application", async () => {
+    it("should return 200 when student updates their own appointment", async () => {
       currentUser = {
         id: 10,
         uuid: "00000000-0000-0000-0000-000000000010",
         role: UserRole.STUDENT,
       };
-      const mockInstance = createMockApplicationInstance();
-      jest.mocked(Application.findByPk).mockResolvedValue(mockInstance as any);
-      jest.mocked(Application.findOne).mockResolvedValue(mockInstance as any);
+      const mockInstance = createMockAppointmentInstance();
+      jest.mocked(Appointment.findByPk).mockResolvedValue(mockInstance as any);
+      jest.mocked(Appointment.findOne).mockResolvedValue(mockInstance as any);
 
-      const updateData = { resend: ApplicationResend.FOLLOW_UP };
+      const updateData = { date: "2026-09-08T14:00:00.000Z" };
       const res = await request(app)
-        .patch(`${APPLICATION_URL}/1`)
+        .patch(`${APPOINTMENT_URL}/1`)
         .set(AUTH_HEADER)
         .send(updateData);
 
       expect(res.status).toBe(200);
-      expect(res.body.resend).toBe(ApplicationResend.FOLLOW_UP);
-      expect(Application.findByPk).toHaveBeenCalledWith(1);
+      expect(res.body.date).toBe("2026-09-08T14:00:00.000Z");
+      expect(Appointment.findByPk).toHaveBeenCalledWith(1);
       expect(mockInstance.update).toHaveBeenCalledWith(updateData);
     });
 
-    it("should return 403 when student attempts to update another user's application", async () => {
+    it("should return 403 when student attempts to update another user's appointment", async () => {
       currentUser = {
         id: 99,
         uuid: "00000000-0000-0000-0000-000000000099",
         role: UserRole.STUDENT,
       };
-      const mockInstance = createMockApplicationInstance();
-      jest.mocked(Application.findOne).mockResolvedValue(mockInstance as any);
+      const mockInstance = createMockAppointmentInstance();
+      jest.mocked(Appointment.findByPk).mockResolvedValue(mockInstance as any);
 
       const res = await request(app)
-        .patch(`${APPLICATION_URL}/1`)
+        .patch(`${APPOINTMENT_URL}/1`)
         .set(AUTH_HEADER)
-        .send({ title: "Hack attempt" });
+        .send({ reason: "Hack attempt" });
 
       expect(res.status).toBe(403);
       expect(res.body).toEqual({
@@ -491,22 +439,22 @@ describe("FUNCTIONAL TESTS - APPLICATION", () => {
       expect(mockInstance.update).not.toHaveBeenCalled();
     });
 
-    it("should return 404 if application is not found", async () => {
-      jest.mocked(Application.findOne).mockResolvedValue(null);
+    it("should return 404 if appointment is not found", async () => {
+      jest.mocked(Appointment.findOne).mockResolvedValue(null);
 
       const res = await request(app)
-        .patch(`${APPLICATION_URL}/999`)
+        .patch(`${APPOINTMENT_URL}/999`)
         .set(AUTH_HEADER)
-        .send({ title: "Non-existent" });
+        .send({ reason: "Non-existent" });
 
       expect(res.status).toBe(404);
-      expect(res.body).toEqual({ message: "Application not found" });
+      expect(res.body).toEqual({ message: "Appointment not found" });
     });
 
     it("should return 401 if not authenticated", async () => {
       const res = await request(app)
-        .patch(`${APPLICATION_URL}/1`)
-        .send({ title: "Updated" });
+        .patch(`${APPOINTMENT_URL}/1`)
+        .send({ reason: "Updated" });
 
       expect(res.status).toBe(401);
       expect(res.body).toEqual({
@@ -516,80 +464,80 @@ describe("FUNCTIONAL TESTS - APPLICATION", () => {
 
     it("should return 500 on database error", async () => {
       jest
-        .mocked(Application.findOne)
+        .mocked(Appointment.findOne)
         .mockRejectedValue(new Error("Database failure"));
 
       const res = await request(app)
-        .patch(`${APPLICATION_URL}/1`)
+        .patch(`${APPOINTMENT_URL}/1`)
         .set(AUTH_HEADER)
-        .send({ title: "Updated" });
+        .send({ reason: "Updated" });
 
       expect(res.status).toBe(500);
       expect(res.body).toEqual({ message: "Internal server error" });
     });
   });
 
-  describe("DELETE /application/:id", () => {
-    it("should return 204 and delete application as admin", async () => {
-      const mockInstance = createMockApplicationInstance();
-      jest.mocked(Application.findOne).mockResolvedValue(mockInstance as any);
+  describe("DELETE /appointment/:id", () => {
+    it("should return 204 and delete appointment as admin", async () => {
+      const mockInstance = createMockAppointmentInstance();
+      jest.mocked(Appointment.findOne).mockResolvedValue(mockInstance as any);
 
       const res = await request(app)
-        .delete(`${APPLICATION_URL}/1`)
+        .delete(`${APPOINTMENT_URL}/1`)
         .set(AUTH_HEADER);
 
       expect(res.status).toBe(204);
       expect(mockInstance.destroy).toHaveBeenCalledTimes(1);
     });
 
-    it("should return 204 and delete application as staff", async () => {
+    it("should return 204 and delete appointment as staff", async () => {
       currentUser = {
         id: 2,
         uuid: "00000000-0000-0000-0000-000000000002",
         role: UserRole.STAFF,
         organizationId: 1,
       };
-      const mockInstance = createMockApplicationInstance();
-      jest.mocked(Application.findOne).mockResolvedValue(mockInstance as any);
+      const mockInstance = createMockAppointmentInstance();
+      jest.mocked(Appointment.findOne).mockResolvedValue(mockInstance as any);
 
       const res = await request(app)
-        .delete(`${APPLICATION_URL}/1`)
+        .delete(`${APPOINTMENT_URL}/1`)
         .set(AUTH_HEADER);
 
       expect(res.status).toBe(204);
       expect(mockInstance.destroy).toHaveBeenCalledTimes(1);
     });
 
-    it("should return 204 when student deletes their own application", async () => {
+    it("should return 204 when student deletes their own appointment", async () => {
       currentUser = {
         id: 10,
         uuid: "00000000-0000-0000-0000-000000000010",
         role: UserRole.STUDENT,
       };
-      const mockInstance = createMockApplicationInstance();
-      jest.mocked(Application.findByPk).mockResolvedValue(mockInstance as any);
-      jest.mocked(Application.findOne).mockResolvedValue(mockInstance as any);
+      const mockInstance = createMockAppointmentInstance();
+      jest.mocked(Appointment.findByPk).mockResolvedValue(mockInstance as any);
+      jest.mocked(Appointment.findOne).mockResolvedValue(mockInstance as any);
 
       const res = await request(app)
-        .delete(`${APPLICATION_URL}/1`)
+        .delete(`${APPOINTMENT_URL}/1`)
         .set(AUTH_HEADER);
 
       expect(res.status).toBe(204);
-      expect(Application.findByPk).toHaveBeenCalledWith(1);
+      expect(Appointment.findByPk).toHaveBeenCalledWith(1);
       expect(mockInstance.destroy).toHaveBeenCalledTimes(1);
     });
 
-    it("should return 403 when student attempts to delete another user's application", async () => {
+    it("should return 403 when student attempts to delete another user's appointment", async () => {
       currentUser = {
         id: 99,
         uuid: "00000000-0000-0000-0000-000000000099",
         role: UserRole.STUDENT,
       };
-      const mockInstance = createMockApplicationInstance();
-      jest.mocked(Application.findOne).mockResolvedValue(mockInstance as any);
+      const mockInstance = createMockAppointmentInstance();
+      jest.mocked(Appointment.findByPk).mockResolvedValue(mockInstance as any);
 
       const res = await request(app)
-        .delete(`${APPLICATION_URL}/1`)
+        .delete(`${APPOINTMENT_URL}/1`)
         .set(AUTH_HEADER);
 
       expect(res.status).toBe(403);
@@ -599,19 +547,19 @@ describe("FUNCTIONAL TESTS - APPLICATION", () => {
       expect(mockInstance.destroy).not.toHaveBeenCalled();
     });
 
-    it("should return 404 if application is not found", async () => {
-      jest.mocked(Application.findOne).mockResolvedValue(null);
+    it("should return 404 if appointment is not found", async () => {
+      jest.mocked(Appointment.findOne).mockResolvedValue(null);
 
       const res = await request(app)
-        .delete(`${APPLICATION_URL}/999`)
+        .delete(`${APPOINTMENT_URL}/999`)
         .set(AUTH_HEADER);
 
       expect(res.status).toBe(404);
-      expect(res.body).toEqual({ message: "Application not found" });
+      expect(res.body).toEqual({ message: "Appointment not found" });
     });
 
     it("should return 401 if not authenticated", async () => {
-      const res = await request(app).delete(`${APPLICATION_URL}/1`);
+      const res = await request(app).delete(`${APPOINTMENT_URL}/1`);
 
       expect(res.status).toBe(401);
       expect(res.body).toEqual({
@@ -621,76 +569,11 @@ describe("FUNCTIONAL TESTS - APPLICATION", () => {
 
     it("should return 500 on database error", async () => {
       jest
-        .mocked(Application.findOne)
+        .mocked(Appointment.findOne)
         .mockRejectedValue(new Error("Database failure"));
 
       const res = await request(app)
-        .delete(`${APPLICATION_URL}/1`)
-        .set(AUTH_HEADER);
-
-      expect(res.status).toBe(500);
-      expect(res.body).toEqual({ message: "Internal server error" });
-    });
-  });
-
-  describe("GET /application/:applicationId/appointments", () => {
-    it("should return 200 and list of appointments for the application", async () => {
-      jest
-        .mocked(Appointment.findAll)
-        .mockResolvedValue(mockAppointments as any);
-
-      const res = await request(app)
-        .get(`${APPLICATION_URL}/1/appointments`)
-        .set(AUTH_HEADER);
-
-      expect(res.status).toBe(200);
-      expect(res.body).toEqual([
-        {
-          id: 1,
-          date: "2026-09-06T10:00:00.000Z",
-          reason: "Premier entretien téléphonique RH",
-        },
-        {
-          id: 2,
-          date: "2026-09-13T14:30:00.000Z",
-          reason: "Entretien technique et présentation des projets",
-        },
-      ]);
-      expect(Appointment.findAll).toHaveBeenCalledWith({
-        where: { applicationId: "1" },
-        attributes: {
-          exclude: ["createdAt", "updatedAt", "applicationId"],
-        },
-      });
-    });
-
-    it("should return 200 and empty array when no appointments exist", async () => {
-      jest.mocked(Appointment.findAll).mockResolvedValue([]);
-
-      const res = await request(app)
-        .get(`${APPLICATION_URL}/1/appointments`)
-        .set(AUTH_HEADER);
-
-      expect(res.status).toBe(200);
-      expect(res.body).toEqual([]);
-    });
-
-    it("should return 401 if not authenticated", async () => {
-      const res = await request(app).get(`${APPLICATION_URL}/1/appointments`);
-
-      expect(res.status).toBe(401);
-      expect(res.body).toEqual({
-        message: "Unauthorized: Missing authentication token",
-      });
-    });
-
-    it("should return 500 on database error", async () => {
-      jest
-        .mocked(Appointment.findAll)
-        .mockRejectedValue(new Error("Database failure"));
-
-      const res = await request(app)
-        .get(`${APPLICATION_URL}/1/appointments`)
+        .delete(`${APPOINTMENT_URL}/1`)
         .set(AUTH_HEADER);
 
       expect(res.status).toBe(500);
@@ -699,13 +582,13 @@ describe("FUNCTIONAL TESTS - APPLICATION", () => {
   });
 
   describe("Rate Limiting (customRateLimiter)", () => {
-    it("should return 429 when rate limit is exceeded on POST /application", async () => {
+    it("should return 429 when rate limit is exceeded on POST /appointment", async () => {
       triggerRateLimit = true;
 
       const res = await request(app)
-        .post(APPLICATION_URL)
+        .post(APPOINTMENT_URL)
         .set(AUTH_HEADER)
-        .send({ title: "Candidature" });
+        .send({ reason: "Entretien" });
 
       expect(res.status).toBe(429);
       expect(res.body).toEqual({
@@ -715,13 +598,13 @@ describe("FUNCTIONAL TESTS - APPLICATION", () => {
       });
     });
 
-    it("should return 429 when rate limit is exceeded on PATCH /application/:id", async () => {
+    it("should return 429 when rate limit is exceeded on PATCH /appointment/:id", async () => {
       triggerRateLimit = true;
 
       const res = await request(app)
-        .patch(`${APPLICATION_URL}/1`)
+        .patch(`${APPOINTMENT_URL}/1`)
         .set(AUTH_HEADER)
-        .send({ title: "Candidature mise à jour" });
+        .send({ reason: "Entretien reporté" });
 
       expect(res.status).toBe(429);
       expect(res.body).toEqual({
@@ -731,11 +614,11 @@ describe("FUNCTIONAL TESTS - APPLICATION", () => {
       });
     });
 
-    it("should return 429 when rate limit is exceeded on DELETE /application/:id", async () => {
+    it("should return 429 when rate limit is exceeded on DELETE /appointment/:id", async () => {
       triggerRateLimit = true;
 
       const res = await request(app)
-        .delete(`${APPLICATION_URL}/1`)
+        .delete(`${APPOINTMENT_URL}/1`)
         .set(AUTH_HEADER);
 
       expect(res.status).toBe(429);

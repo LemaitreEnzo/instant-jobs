@@ -23,11 +23,7 @@ specialitiesRoutes.post(
   createSpeciality,
 );
 
-specialitiesRoutes.get(
-  "/:id",
-  checkRole([UserRole.ADMIN, UserRole.STAFF]),
-  getOneSpeciality,
-);
+specialitiesRoutes.get("/:id", getOneSpeciality);
 specialitiesRoutes.patch(
   "/:id",
   customRateLimiter({ limit: 20 }),

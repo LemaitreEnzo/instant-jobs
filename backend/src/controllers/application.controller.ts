@@ -58,7 +58,7 @@ export const updateApplication = async (req: Request, res: Response) => {
     }
 
     await application.update(data);
-    res.status(206).json(application);
+    res.status(200).json(application);
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
   }
@@ -95,10 +95,6 @@ export const getAppointments = async (req: Request, res: Response) => {
         exclude: excludedAppointmentData,
       },
     });
-
-    if (!appointments) {
-      return res.status(404).json({ message: "Appointments not found" });
-    }
 
     res.status(200).json(appointments);
   } catch (error) {
