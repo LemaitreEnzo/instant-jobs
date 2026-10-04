@@ -157,4 +157,8 @@ export type PropsSchoolCard = {
   name: string;
   logo: string;
   description: string;
+}  
+  
+export type PropsSoon = {
+  data: Appointment[];
 }

@@ -16,6 +16,18 @@ export enum ApplicationResend {
   NOT_NECESSARY = "not necessary",
 }
 
+export enum AppointmentStatus {
+  INCOMING = "incoming",
+  CANCELED = "canceled",
+  FINISHED = "finished",
+}
+
+export const AppointmentStatusLabel = {
+  [AppointmentStatus.INCOMING]: "À venir",
+  [AppointmentStatus.CANCELED]: "Annulé",
+  [AppointmentStatus.FINISHED]: "Passé",
+};
+
 export enum UserRole {
   STUDENT = "student",
   ADMIN = "admin",
@@ -26,6 +38,12 @@ export enum StudentStatus {
   SEARCH = "search",
   PENDING = "pending",
   FOUND = "found",
+}
+
+export enum CalendarView {
+  MONTH = "month",
+  WEEK = "week",
+  DAY = "day",
 }
 
 export enum OrganizationRole {
