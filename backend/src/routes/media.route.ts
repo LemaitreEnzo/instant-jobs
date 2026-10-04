@@ -8,6 +8,7 @@ import {
 import { Media } from "src/models";
 import { UserRole } from "src/models/enums/user.enum";
 import { checkUser } from "../../middlewares/auth.middleware";
+import { checkRole } from "../../middlewares/role.middleware";
 
 const mediasRoutes = express.Router({ mergeParams: true });
 
@@ -15,7 +16,7 @@ const mediasRoutes = express.Router({ mergeParams: true });
 mediasRoutes.get("/:id", getOneMedia);
 
 // CREATE
-mediasRoutes.post("/", checkUser(Object.values(UserRole), Media), createMedia);
+mediasRoutes.post("/", checkRole([UserRole.STUDENT]), createMedia);
 
 // UPDATE
 mediasRoutes.patch(

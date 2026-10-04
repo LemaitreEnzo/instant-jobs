@@ -62,11 +62,11 @@ export type PropsUserModal = {
 };
 
 export type PropsCardDocument = {
+  id: number
   name: string;
-  added_at: Date;
-  stockage: number;
-  used: number;
-  pdf_url: string;
+  createdAt: string | Date;
+  path: string;
+  onDelete?: () => void;
 };
 
 export type PropsSmallCalendar = {
@@ -152,3 +152,10 @@ export type PropsApplicationHeader = {
 export type PropsPageTilte = {
   title: string;
 }
+
+export type PropsMediaFormModal = {
+  open: boolean;
+  onOpenChange: React.Dispatch<React.SetStateAction<boolean>>;
+  onSuccess?: () => void;
+};
+

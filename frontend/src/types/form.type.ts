@@ -17,6 +17,11 @@ export type dataApplication = {
   resend: string;
 };
 
+export type dataMedia = {
+  name: string;
+  path: string;
+}
+
 export type FieldValue =
   | string
   | number

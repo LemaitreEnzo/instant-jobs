@@ -38,7 +38,7 @@ const FileInput = ({
     }
 
     if (accept && !isFileTypeValid(selectedFile, accept)) {
-      onError?.("Format de fichier non autorisé. Formats acceptés : JPEG, PNG, SVG, WebP.");
+      onError?.("Format de fichier non autorisé.");
       return;
     }
 

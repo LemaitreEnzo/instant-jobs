@@ -44,6 +44,7 @@ export interface Media {
   id: number;
   name: string;
   path: string;
+  createdAt: string | Date;
   userId: number;
 }
 

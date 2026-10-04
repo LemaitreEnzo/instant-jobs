@@ -3,7 +3,7 @@
     margin-left: 20px;
     margin-bottom: 20px;
     flex-direction: column;
-    width: 20%;
+    width: 350px;
     border: 1px #afafaf solid;
     border-radius: 10px;
 }
@@ -20,10 +20,21 @@
     border-top-right-radius: 10px;
 }
 
-.pdf-preview {
+.preview {
+    width: 140px;
+    height: 198px;
     overflow: hidden;
     pointer-events: none;
     border: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff;
+}
+.preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .card-document-content {
@@ -47,4 +58,8 @@
 .card-document-footer-icons {
     display: flex;
     gap: 0.5rem;
+}
+
+.card-document .clickable-svg {
+    cursor: pointer;
 }

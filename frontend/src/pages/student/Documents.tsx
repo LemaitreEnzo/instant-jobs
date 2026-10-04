@@ -1,14 +1,14 @@
-import MainLayout from "../components/layout/MainLayout/MainLayout";
+import MainLayout from "../../components/layout/MainLayout/MainLayout";
 import "../assets/css/pages/dashboard.css";
-import CardDocument from "../components/layout/CardDocument/CardDocument";
-import { useAuth } from "../context/AuthContext";
-import useUser from "../hooks/useUser";
-import type { Media } from "../interfaces/models.interface";
-import useMedia from "../hooks/useMedia";
+import CardDocument from "../../components/layout/CardDocument/CardDocument";
+import { useAuth } from "../../context/AuthContext";
+import useUser from "../../hooks/useUser";
+import type { Media } from "../../interfaces/models.interface";
+import useMedia from "../../hooks/useMedia";
 import { useEffect, useState } from "react";
-import MediaAddButton from "../components/common/MediaAddButton/MediaAddButton";
+import MediaAddButton from "../../components/common/MediaAddButton/MediaAddButton";
 
-function Dashboard() {
+function Document() {
   const { user } = useAuth();
   const { fetchMedias, loading } = useUser();
   const [medias, setMedias] = useState<Media[]>([]);
@@ -67,4 +67,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default Document;
