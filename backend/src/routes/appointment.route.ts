@@ -9,15 +9,19 @@ import {
   updateAppointment,
 } from "controllers/appointment.controller";
 
+import { customRateLimiter } from "config/rate-limit";
 import express from "express";
 import { Appointment } from "src/models";
 import { UserRole } from "src/models/enums/user.enum";
 import { checkUser } from "../../middlewares/auth.middleware";
-import { customRateLimiter } from "config/rate-limit";
 
 const appointmentsRoutes = express.Router({ mergeParams: true });
 
-appointmentsRoutes.get("/:id", getOneAppointment);
+appointmentsRoutes.get(
+  "/:id",
+  checkUser(Object.values(UserRole), Appointment),
+  getOneAppointment,
+);
 
 appointmentsRoutes.post(
   "/",
