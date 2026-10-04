@@ -1,0 +1,23 @@
+info:
+  name: update
+  type: http
+  seq: 9
+
+http:
+  method: PATCH
+  url: "{{URL}}/user/1"
+  body:
+    type: json
+    data: |-
+      {
+        "firstname": "Joe",
+        "email": "joe.dupont.1@technova.fr"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

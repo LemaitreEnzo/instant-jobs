@@ -1,0 +1,24 @@
+info:
+  name: create
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{URL}}/media"
+  body:
+    type: json
+    data: |-
+      {
+        "name": "CV - IA",
+        "path": "/uploads/cv-dev-web.pdf",
+        "userId": 34
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

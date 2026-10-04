@@ -1,0 +1,7 @@
+info:
+  name: Campus
+  type: folder
+  seq: 2
+
+request:
+  auth: inherit
