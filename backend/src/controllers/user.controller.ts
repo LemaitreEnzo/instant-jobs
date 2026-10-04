@@ -121,7 +121,7 @@ export const login = async (req: Request, res: Response) => {
       if (passwordCheck) {
         // Strict role validation: reject unauthorized roles immediately (e.g., "staffie")
         if (!Object.values(UserRole).includes(data.role)) {
-          res
+          return res
             .status(403)
             .json({ message: "Forbidden: Unrecognized or unauthorized role" });
         }
@@ -172,7 +172,7 @@ export const logout = async (req: Request, res: Response) => {
   try {
     const token = getEnv("TOKEN");
 
-    return res.clearCookie(token, { path: "/" });
+    res.clearCookie(token, { path: "/" });
     return res.status(200).json({ message: "Successfully logged out" });
   } catch (error) {
     return res.status(500).json({ message: "Internal server error" });
@@ -211,7 +211,7 @@ export const getAuth = async (req: Request, res: Response) => {
 
     // Validate role in token
     if (!Object.values(UserRole).includes(decoded.role)) {
-      res
+      return res
         .status(403)
         .json({ message: "Forbidden: Unrecognized or unauthorized role" });
     }
@@ -328,7 +328,7 @@ export const getAuth = async (req: Request, res: Response) => {
 
     // Validate user role in database
     if (!Object.values(UserRole).includes(user.role)) {
-      res
+      return res
         .status(403)
         .json({ message: "Forbidden: Unrecognized or unauthorized role" });
     }
