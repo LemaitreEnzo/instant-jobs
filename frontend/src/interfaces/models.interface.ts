@@ -10,6 +10,7 @@ export interface Organization {
   name: string;
   email: string;
   phone: string;
+  logo: string;
   role: OrganizationRole;
   description: string;
   postcode: number;

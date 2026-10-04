@@ -153,6 +153,12 @@ export type PropsPageTilte = {
   title: string;
 }
 
+export type PropsSchoolCard = {
+  name: string;
+  logo: string;
+  description: string;
+}  
+  
 export type PropsSoon = {
-  data: Appointment[]
+  data: Appointment[];
 }
