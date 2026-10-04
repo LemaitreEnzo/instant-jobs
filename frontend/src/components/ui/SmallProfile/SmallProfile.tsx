@@ -4,10 +4,10 @@ import './SmallProfile.css';
 
 function SmallProfile(props: PropsSmallProfile) {
     const data = props.data;
-    const campus = data.campus;
-    const promotion = data.promotion;
-    const speciality = data.speciality;
-    const subSpeciality = data.subSpeciality;
+    const campusName = data.campus?.name;
+    const promotionName = data.promotion?.name;
+    const specialityName = data.speciality?.name;
+    const subSpecialityName = data.subSpeciality?.name;
     const statusTranslate = {[StudentStatus.FOUND]: 'Accepté', [StudentStatus.PENDING]: 'En attente', [StudentStatus.SEARCH]: 'Recherche'};
     
   return (
@@ -30,7 +30,7 @@ function SmallProfile(props: PropsSmallProfile) {
                     Campus :
                 </p>
                 <p className='sp-right-data'>
-                    {campus.name};
+                    {campusName?.slice(0,15)};
                 </p>
             </div>
             <div className='sp-right-content'>
@@ -38,7 +38,7 @@ function SmallProfile(props: PropsSmallProfile) {
                     Promotion :
                 </p>
                 <p className='sp-right-data'>
-                    {promotion.name}
+                    {promotionName?.slice(0,15)}
                 </p>
             </div>
             <div className='sp-right-content'>
@@ -46,7 +46,7 @@ function SmallProfile(props: PropsSmallProfile) {
                     Spécialité :
                 </p>
                 <p className='sp-right-data'>
-                    {speciality.name}
+                    {specialityName?.slice(0,15)}
                 </p>
             </div>
             <div className='sp-right-content'>
@@ -54,7 +54,7 @@ function SmallProfile(props: PropsSmallProfile) {
                     Sous-spécialité :
                 </p>
                 <p className='sp-right-data'>
-                    {subSpeciality.name}
+                    {subSpecialityName?.slice(0,15)}
                 </p>
             </div>
             <div className='sp-right-content'>

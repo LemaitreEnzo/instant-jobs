@@ -1,6 +1,10 @@
 import type { StudentStatus, UserRole } from "../types/enum.type";
 import type {
+  Campus,
   Media,
+  Promotion,
+  Speciality,
+  SubSpeciality,
 } from "./models.interface";
 export interface User {
   id: number;
@@ -11,12 +15,12 @@ export interface User {
   role: UserRole;
   medias: Media[] | null;
   organizationId: string;
-  campusId: string | null;
+  campus: Campus | null;
 }
 
 export interface Student extends User {
-  promotionId: number | null;
-  specialityId: number | null;
-  subSpecialityId: number | null;
+  promotion: Promotion | null;
+  speciality: Speciality | null;
+  subSpeciality: SubSpeciality | null;
   status: StudentStatus;
 }

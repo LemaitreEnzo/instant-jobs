@@ -12,6 +12,7 @@
     display: flex;
     column-gap: 10px;
     align-items: center;
+    width: calc(20% - 20px);
 }
 
 .sp-first-letter{
@@ -20,7 +21,8 @@
     align-items: center;
     border-radius: 10px;
     background-color: var(--primary-color);
-    padding: 25px 19px;
+    width: 84px;
+    height: 84px;
 
     p{
         color: var(--background-color);
@@ -42,7 +44,7 @@
     display: flex;
     align-items: center;
     column-gap: 18px;
-    flex: 2;
+    width: calc(80% - 20px);
 }
 
 .sp-right-content{

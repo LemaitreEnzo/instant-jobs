@@ -21,6 +21,7 @@ const Button = ({
 }: PropsButton) => {
   const finalClassName = [`btn-${shape}`, className, props.customClassName].join(" ").trim();
   const navigate = useNavigate();
+  const { navigateBack, ...buttonProps } = props;
 
   const handleBack = () => {
   if (window.history.length > 1) {
@@ -30,25 +31,25 @@ const Button = ({
   }
 };
 
-  if (props.navigateBack) {
+  if (navigateBack) {
     return (
-      <button {...props} className={finalClassName} onClick={handleBack}>
-        {props.children} 
+      <button {...buttonProps} className={finalClassName} onClick={handleBack}>
+        {buttonProps.children} 
       </button>
     );
   }
 
-  if (props.href) {
+  if (buttonProps.href) {
     return (
       <a {...props} href={props.href} className={finalClassName}>
-        {props.children} 
+        {buttonProps.children} 
       </a>
     );
   }
 
   return (
-    <button {...props} type={type} className={finalClassName}>
-      {props.children}
+    <button {...buttonProps} type={type} className={finalClassName}>
+      {buttonProps.children}
     </button>
   );
 };

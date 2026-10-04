@@ -27,7 +27,7 @@ function MySchool() {
                     const organizationData = await fetchOne(parseInt(user.organizationId));
                     const studentDataOnly = usersData.filter((user): user is Student => { return user.role === UserRole.STUDENT });
                     setOrganization(organizationData);
-                    // setStudents(studentDataOnly);
+                    setStudents(studentDataOnly);
 
                 } else {
                     throw new Error('No user found');
@@ -40,22 +40,19 @@ function MySchool() {
         loadData();
     }, [])
 
-    if (students) {
+    if (students && organization) {
         return (
             <MainLayout >
                 <div className='my-school'>
-                    <div></div>
+                    <SchoolCard name={organization.name} logo={organization.logo} description={organization.description} />
                     <div className='my-school-header'>
                         <PageTitle title='Mon école' />
                     </div>
 
                     <div className='my-school-students'>
-                        {organization &&
-                            <SchoolCard name={organization?.name} logo={organization?.logo} description={organization?.description} />
-                        }
-                        {students?.map((student) => {
+                        {students.map((student, index) => {
                             return(
-                                <SmallProfile data={student} />
+                                <SmallProfile key={index} data={student} />
                             )
                         })}
                     </div>
