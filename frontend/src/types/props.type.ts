@@ -152,3 +152,9 @@ export type PropsApplicationHeader = {
 export type PropsPageTilte = {
   title: string;
 }
+
+export type PropsSchoolCard = {
+  name: string;
+  logo: string;
+  description: string;
+}
