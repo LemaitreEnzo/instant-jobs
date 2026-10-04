@@ -5,34 +5,36 @@ import helmet from "helmet";
 
 import getEnv from "./utils/envHelper";
 
-import authenticateUser from "./middlewares/auth.middleware";
+import { customRateLimiter } from "config/rate-limit";
+import { authenticateUser } from "./middlewares/auth.middleware";
 
+import applicationsRoutes from "src/routes/application.route";
+import appointmentsRoutes from "src/routes/appointment.route";
 import campusRoutes from "src/routes/campus.route";
+import mediasRoutes from "src/routes/media.route";
 import organizationsRoutes from "src/routes/organization.route";
 import promotionsRoutes from "src/routes/promotion.route";
 import specialitiesRoutes from "src/routes/speciality.route";
 import subSpecialitiesRoutes from "src/routes/subSpeciality.route";
-import applicationsRoutes from "src/routes/application.route";
-import appointmentsRoutes from "src/routes/appointment.route";
-import mediasRoutes from "src/routes/media.route";
 import usersRoutes from "src/routes/user.route";
 const app = express();
 
 const VERSION = getEnv("VERSION");
 
 app.use(helmet());
+app.use(customRateLimiter({}));
 
 app.use(cookieParser());
-app.use(express.json({limit: '10Mb'}));
+app.use(express.json());
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173"],
     credentials: true,
   }),
 );
 
-app.get(`/${VERSION}`, (req: Request, res: Response) => {
+app.get(`/${VERSION}`, authenticateUser, (req: Request, res: Response) => {
   res.status(200).send("Hello world!");
 });
 

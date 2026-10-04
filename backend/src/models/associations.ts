@@ -96,6 +96,18 @@ Application.belongsTo(User, {
 User.hasMany(Media, { foreignKey: "userId", sourceKey: "id", as: "medias" });
 Media.belongsTo(User, { foreignKey: "userId", targetKey: "id", as: "users" });
 
+// User <-> Appointment
+User.hasMany(Appointment, {
+  foreignKey: "userId",
+  sourceKey: "id",
+  as: "appointments",
+});
+Appointment.belongsTo(User, {
+  foreignKey: "userId",
+  targetKey: "id",
+  as: "users",
+});
+
 // Campus <-> Promotion
 Campus.hasMany(Promotion, { foreignKey: "campusId", sourceKey: "id" });
 Promotion.belongsTo(Campus, {

@@ -1,9 +1,10 @@
 import bcrypt from "bcryptjs";
 import type { Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { Attributes, FindOptions, Op } from "sequelize";
+import { Attributes } from "sequelize";
 import {
   Application,
+  Appointment,
   Campus,
   Media,
   Promotion,
@@ -11,7 +12,7 @@ import {
   SubSpeciality,
   User,
 } from "src/models";
-import { VALID_ROLES } from "../../middlewares/auth.middleware";
+import { UserRole } from "src/models/enums/user.enum";
 import getEnv from "../../utils/envHelper";
 
 const excludedData: (keyof Attributes<User>)[] = [
@@ -33,6 +34,13 @@ const excludedApplicationData: (keyof Attributes<Application>)[] = [
   "updatedAt",
   "userId",
 ];
+
+const excludedAppointmentData: (keyof Attributes<Appointment>)[] = [
+  "createdAt",
+  "updatedAt",
+  "userId",
+];
+
 const excludedCampusData: (keyof Attributes<Campus>)[] = [
   "createdAt",
   "updatedAt",
@@ -74,6 +82,12 @@ export const login = async (req: Request, res: Response) => {
           attributes: { exclude: excludedApplicationData },
         },
         {
+          model: Appointment,
+          as: "appointments",
+          required: false,
+          attributes: { exclude: excludedAppointmentData },
+        },
+        {
           model: Campus,
           as: "campus",
           required: false,
@@ -106,8 +120,8 @@ export const login = async (req: Request, res: Response) => {
 
       if (passwordCheck) {
         // Strict role validation: reject unauthorized roles immediately (e.g., "staffie")
-        if (!VALID_ROLES.includes(data.role as any)) {
-          return res
+        if (!Object.values(UserRole).includes(data.role)) {
+          res
             .status(403)
             .json({ message: "Forbidden: Unrecognized or unauthorized role" });
         }
@@ -130,26 +144,19 @@ export const login = async (req: Request, res: Response) => {
 
         const rawUserData: any = user.get({ plain: true });
 
-        const {
-          password_hash,
-          createdAt,
-          updatedAt,
-          campusId,
-          promotionId,
-          specialityId,
-          subSpecialityId,
-          applications,
-          ...userData
-        } = rawUserData;
-
-        if (userData.role === "student") {
-          return res.status(200).json({
-            ...userData,
-            applications,
-          });
+        if (rawUserData.role !== "student") {
+          delete rawUserData.applications;
+          delete rawUserData.appointments;
+          delete rawUserData.promotion;
+          delete rawUserData.speciality;
+          delete rawUserData.subSpeciality;
         }
 
-        return res.status(200).json(userData);
+        excludedData.forEach((key) => {
+          delete rawUserData[key];
+        });
+
+        return res.status(200).json(rawUserData);
       } else {
         return res.status(401).json({ message: "Invalid email or password" });
       }
@@ -157,7 +164,7 @@ export const login = async (req: Request, res: Response) => {
       return res.status(401).json({ message: "Invalid email or password" });
     }
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -165,10 +172,10 @@ export const logout = async (req: Request, res: Response) => {
   try {
     const token = getEnv("TOKEN");
 
-    res.clearCookie(token, { path: "/" });
-    res.status(200).json({ message: "Successfully logged out" });
+    return res.clearCookie(token, { path: "/" });
+    return res.status(200).json({ message: "Successfully logged out" });
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -178,7 +185,7 @@ export const getAuth = async (req: Request, res: Response) => {
     const secret = getEnv("SECRET");
     const token = req.cookies?.[tokenName];
 
-    // Silent session check: if no token/session, return 200 with null cleanly without console errors
+    // Silent session check: if no token/session, 200 with null cleanly without console errors
     if (!token) {
       return res.status(200).json(null);
     }
@@ -186,7 +193,7 @@ export const getAuth = async (req: Request, res: Response) => {
     let decoded: {
       id?: number;
       uuid: string;
-      role: string;
+      role: UserRole;
       organizationId?: number;
     };
 
@@ -194,17 +201,17 @@ export const getAuth = async (req: Request, res: Response) => {
       decoded = jwt.verify(token, secret) as {
         id?: number;
         uuid: string;
-        role: string;
+        role: UserRole;
         organizationId?: number;
       };
     } catch {
-      // Expired or invalid token: silently return 200 with null
+      // Expired or invalid token: silently 200 with null
       return res.status(200).json(null);
     }
 
     // Validate role in token
-    if (!VALID_ROLES.includes(decoded.role as any)) {
-      return res
+    if (!Object.values(UserRole).includes(decoded.role)) {
+      res
         .status(403)
         .json({ message: "Forbidden: Unrecognized or unauthorized role" });
     }
@@ -228,6 +235,12 @@ export const getAuth = async (req: Request, res: Response) => {
             as: "applications",
             required: false,
             attributes: { exclude: excludedApplicationData },
+          },
+          {
+            model: Appointment,
+            as: "appointments",
+            required: false,
+            attributes: { exclude: excludedAppointmentData },
           },
           {
             model: Campus,
@@ -276,6 +289,12 @@ export const getAuth = async (req: Request, res: Response) => {
             attributes: { exclude: excludedApplicationData },
           },
           {
+            model: Appointment,
+            as: "appointments",
+            required: false,
+            attributes: { exclude: excludedAppointmentData },
+          },
+          {
             model: Campus,
             as: "campus",
             required: false,
@@ -308,37 +327,24 @@ export const getAuth = async (req: Request, res: Response) => {
     }
 
     // Validate user role in database
-    if (!VALID_ROLES.includes(user.role as any)) {
-      return res
+    if (!Object.values(UserRole).includes(user.role)) {
+      res
         .status(403)
         .json({ message: "Forbidden: Unrecognized or unauthorized role" });
     }
 
     const rawUserData: any = user.get({ plain: true });
-    const {
-      password_hash,
-      createdAt,
-      updatedAt,
-      campus,
-      applications,
-      promotion,
-      speciality,
-      subSpeciality,
-      ...userData
-    } = rawUserData;
 
-    if (userData.role === "student") {
-      return res.status(200).json({
-        ...userData,
-        applications,
-        campus,
-        promotion,
-        speciality,
-        subSpeciality,
-      });
+    if (rawUserData.role !== "student") {
+      delete rawUserData.applications;
+      delete rawUserData.appointments;
+      delete rawUserData.campus;
+      delete rawUserData.promotion;
+      delete rawUserData.speciality;
+      delete rawUserData.subSpeciality;
     }
 
-    return res.status(200).json(userData);
+    return res.status(200).json(rawUserData);
   } catch (error) {
     return res.status(500).json({ message: "Internal server error" });
   }
@@ -364,6 +370,12 @@ export const getOneUser = async (req: Request, res: Response) => {
           as: "applications",
           required: false,
           attributes: { exclude: excludedApplicationData },
+        },
+        {
+          model: Appointment,
+          as: "appointments",
+          required: false,
+          attributes: { exclude: excludedAppointmentData },
         },
         {
           model: Campus,
@@ -398,32 +410,17 @@ export const getOneUser = async (req: Request, res: Response) => {
 
     const rawUserData: any = user.get({ plain: true });
 
-    const {
-      password_hash,
-      createdAt,
-      updatedAt,
-      campus,
-      applications,
-      promotion,
-      speciality,
-      subSpeciality,
-      ...userData
-    } = rawUserData;
-
-    if (userData.role === "student") {
-      return res.status(200).json({
-        ...userData,
-        applications,
-        campus,
-        promotion,
-        speciality,
-        subSpeciality,
-      });
+    if (rawUserData.role !== "student") {
+      delete rawUserData.applications;
+      delete rawUserData.appointments;
+      delete rawUserData.promotion;
+      delete rawUserData.speciality;
+      delete rawUserData.subSpeciality;
     }
 
-    res.status(200).json(userData);
+    return res.status(200).json(rawUserData);
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -439,15 +436,15 @@ export const createUser = async (req: Request, res: Response) => {
     };
     const user = await User.create(userData);
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+    const rawUserData: any = user.get({ plain: true });
 
-    const { password_hash, createdAt, updatedAt, ...returnedUser } = userData;
+    delete rawUserData.password_hash;
+    delete rawUserData.createdAt;
+    delete rawUserData.updatedAt;
 
-    res.status(201).json(returnedUser);
+    return res.status(201).json(rawUserData);
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -467,9 +464,9 @@ export const updateUser = async (req: Request, res: Response) => {
     }
 
     await user.update(data);
-    res.status(206).json(user);
+    return res.status(200).json(user);
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -488,57 +485,26 @@ export const deleteUser = async (req: Request, res: Response) => {
     }
 
     await user.destroy();
-    res.status(204).end();
+    return res.status(204).end();
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
 export const getApplications = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    const whereOptions: Record<string, any> = { userId };
 
-    if (req.query.status) {
-      const statuses = (req.query.status as string)
-        .split(",")
-        .map((s) => s.trim());
-      whereOptions.status = { [Op.in]: statuses };
-    }
-
-    if (req.query.type) {
-      const types = (req.query.type as string).split(",").map((t) => t.trim());
-      whereOptions.type = { [Op.in]: types };
-    }
-
-    if (req.query.resend) {
-      const resends = (req.query.resend as string)
-        .split(",")
-        .map((r) => r.trim());
-      whereOptions.resend = { [Op.in]: resends };
-    }
-
-    const queryOptions: FindOptions = {
-      where: whereOptions,
-      order: [["createdAt", "DESC"]],
+    const applications = await Application.findAll({
+      where: { userId },
       attributes: {
         exclude: excludedApplicationData,
       },
-    };
+    });
 
-    if (req.query.limit !== undefined && !isNaN(Number(req.query.limit))) {
-      queryOptions.limit = parseInt(req.query.limit as string);
-    }
-
-    const applications = await Application.findAll(queryOptions);
-
-    if (!applications) {
-      return res.status(404).json({ message: "Applications not found" });
-    }
-
-    res.status(200).json(applications);
+    return res.status(200).json(applications);
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -553,12 +519,25 @@ export const getMedias = async (req: Request, res: Response) => {
       },
     });
 
-    if (!medias) {
-      return res.status(404).json({ message: "Medias not found" });
-    }
-
-    res.status(200).json(medias);
+    return res.status(200).json(medias);
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const getAppointmentsByUser = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+
+    const appointments = await Appointment.findAll({
+      where: { userId },
+      attributes: {
+        exclude: excludedAppointmentData,
+      },
+    });
+
+    return res.status(200).json(appointments);
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error" });
   }
 };

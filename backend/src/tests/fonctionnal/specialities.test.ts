@@ -1,136 +1,644 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
-import { Promotion } from "src/models/promotion.model";
-import { Speciality } from "src/models/speciality.model";
 import request from "supertest";
+
+import { Speciality, SubSpeciality } from "src/models";
+import { UserRole } from "../../models/enums/user.enum";
+
 import app from "../../../app";
 import getEnv from "../../../utils/envHelper";
 
 const VERSION = getEnv("VERSION");
-const Speciality_URL = `/${VERSION}/organization/la-manu/campus/compiegne/promotion/b3/specialities`;
+const SPECIALITY_URL = `/${VERSION}/speciality`;
 
-jest.mock("models/promotions.model", () => ({
-  Promotion: {
-    findOne: jest.fn(),
+interface MockUser {
+  id: number;
+  uuid: string;
+  role: UserRole;
+  organizationId?: number;
+}
+
+let currentUser: MockUser | undefined = {
+  id: 1,
+  uuid: "00000000-0000-0000-0000-000000000001",
+  role: UserRole.ADMIN,
+  organizationId: 1,
+};
+
+let triggerRateLimit = false;
+
+jest.mock("../../../middlewares/auth.middleware", () => ({
+  authenticateUser: jest.fn((req: any, res: any, next: any) => {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !currentUser) {
+      return res
+        .status(401)
+        .json({ message: "Unauthorized: Missing authentication token" });
+    }
+    req.user = currentUser;
+    next();
+  }),
+  checkUser: jest.fn(() => (req: any, res: any, next: any) => next()),
+}));
+
+jest.mock("../../../middlewares/role.middleware", () => ({
+  checkRole: jest.fn(
+    (allowedRoles: UserRole[]) => (req: any, res: any, next: any) => {
+      if (!req.user) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+      if (allowedRoles.includes(req.user.role)) {
+        return next();
+      }
+      return res
+        .status(403)
+        .json({ message: "Access denied: Insufficient privileges" });
+    },
+  ),
+}));
+
+jest.mock("config/rate-limit", () => ({
+  customRateLimiter: jest.fn(() => (req: any, res: any, next: any) => {
+    if (triggerRateLimit) {
+      return res.status(429).json({
+        error: "Too many requests",
+        message: "You have exceeded the rate limit. Try again in 60 seconds.",
+        retryAfter: 60,
+      });
+    }
+    next();
+  }),
+}));
+
+jest.mock("config/db", () => ({
+  sequelize: {
+    define: jest.fn(() => ({
+      hasMany: jest.fn(),
+      belongsTo: jest.fn(),
+    })),
+    authenticate: jest.fn(),
+    sync: jest.fn(),
   },
 }));
 
-jest.mock("models/specialities.model", () => ({
+jest.mock("src/models", () => ({
+  Organization: {
+    findAll: jest.fn(),
+    findOne: jest.fn(),
+    findByPk: jest.fn(),
+    create: jest.fn(),
+    hasMany: jest.fn(),
+    belongsTo: jest.fn(),
+  },
+  Campus: {
+    findAll: jest.fn(),
+    findOne: jest.fn(),
+    findByPk: jest.fn(),
+    create: jest.fn(),
+    hasMany: jest.fn(),
+    belongsTo: jest.fn(),
+  },
+  User: {
+    findAll: jest.fn(),
+    findOne: jest.fn(),
+    findByPk: jest.fn(),
+    create: jest.fn(),
+    hasMany: jest.fn(),
+    belongsTo: jest.fn(),
+  },
+  Media: { hasMany: jest.fn(), belongsTo: jest.fn() },
+  Promotion: {
+    findAll: jest.fn(),
+    findOne: jest.fn(),
+    findByPk: jest.fn(),
+    create: jest.fn(),
+    hasMany: jest.fn(),
+    belongsTo: jest.fn(),
+  },
   Speciality: {
     findAll: jest.fn(),
     findOne: jest.fn(),
+    findByPk: jest.fn(),
     create: jest.fn(),
-    update: jest.fn(),
-    destroy: jest.fn(),
+    hasMany: jest.fn(),
+    belongsTo: jest.fn(),
   },
+  SubSpeciality: {
+    findAll: jest.fn(),
+    findOne: jest.fn(),
+    findByPk: jest.fn(),
+    create: jest.fn(),
+    hasMany: jest.fn(),
+    belongsTo: jest.fn(),
+  },
+  Application: { hasMany: jest.fn(), belongsTo: jest.fn() },
+  Appointment: { hasMany: jest.fn(), belongsTo: jest.fn() },
 }));
 
-beforeEach(() => {
-  jest.clearAllMocks();
-});
+const baseSpecialityData = {
+  id: 1,
+  name: "Développement Web & Mobile",
+  promotionId: 1,
+};
 
-describe("GET Speciality", () => {
-  it("should return 200", async () => {
-    const res = await request(app).get(Speciality_URL);
-    expect(res.status).toBe(200);
-  });
+const createMockSpecialityInstance = (data: any = baseSpecialityData) => {
+  const instance: any = {
+    ...data,
+    dataValues: { ...data },
+    get: jest.fn((options?: { plain?: boolean }) => ({ ...instance })),
+    update: jest.fn().mockImplementation(async (updateData: any) => {
+      Object.assign(instance, updateData);
+      Object.assign(instance.dataValues, updateData);
+      return instance;
+    }),
+    destroy: jest.fn(),
+  };
+  return instance;
+};
 
-  it("Returns all Speciality", async () => {
-    jest
-      .mocked(Speciality.findAll)
-      .mockResolvedValue([
-        { id: 1, name: "Designeur" } as any,
-        { id: 2, name: "Développeur" } as any,
-      ]);
+const mockSubSpecialities = [
+  {
+    id: 1,
+    name: "Frontend React & Next.js",
+    specialityId: 1,
+  },
+  {
+    id: 2,
+    name: "Backend Node.js & NestJS",
+    specialityId: 1,
+  },
+];
 
-    const res = await request(app).get(Speciality_URL);
-    expect(res.body).toEqual({
-      Speciality: [
-        { id: 1, name: "Designeur" },
-        { id: 2, name: "Développeur" },
-      ],
-    });
-  });
+const AUTH_HEADER = { Authorization: "Bearer test-valid-token" };
 
-  it("Return one speciality", async () => {
-    jest.mocked(Speciality.findOne).mockResolvedValue({
+describe("FUNCTIONAL TESTS - SPECIALITY", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    triggerRateLimit = false;
+    currentUser = {
       id: 1,
-      name: "Designeur",
-    } as any);
+      uuid: "00000000-0000-0000-0000-000000000001",
+      role: UserRole.ADMIN,
+      organizationId: 1,
+    };
+  });
 
-    const res = await request(app).get(`${Speciality_URL}/1`);
-    expect(res.body).toEqual({
-      speciality: {
+  describe("GET /speciality/:id", () => {
+    it("should return 200 with one speciality when an admin requests it", async () => {
+      const mockInstance = createMockSpecialityInstance();
+      jest.mocked(Speciality.findOne).mockResolvedValue(mockInstance as any);
+
+      const res = await request(app)
+        .get(`${SPECIALITY_URL}/1`)
+        .set(AUTH_HEADER);
+
+      expect(res.status).toBe(200);
+      expect(res.body).toMatchObject({
         id: 1,
-        name: "Designeur",
-      },
+        name: "Développement Web & Mobile",
+        promotionId: 1,
+      });
+      expect(Speciality.findOne).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { id: "1" },
+        }),
+      );
+    });
+
+    it("should return 200 with one speciality when a staff requests it", async () => {
+      currentUser = {
+        id: 2,
+        uuid: "00000000-0000-0000-0000-000000000002",
+        role: UserRole.STAFF,
+        organizationId: 1,
+      };
+
+      const mockInstance = createMockSpecialityInstance();
+      jest.mocked(Speciality.findOne).mockResolvedValue(mockInstance as any);
+
+      const res = await request(app)
+        .get(`${SPECIALITY_URL}/1`)
+        .set(AUTH_HEADER);
+
+      expect(res.status).toBe(200);
+      expect(res.body).toMatchObject({
+        id: 1,
+        name: "Développement Web & Mobile",
+        promotionId: 1,
+      });
+      expect(Speciality.findOne).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { id: "1" },
+        }),
+      );
+    });
+
+    it("should return 404 if the speciality doesn't exist", async () => {
+      jest.mocked(Speciality.findOne).mockResolvedValue(null);
+
+      const res = await request(app)
+        .get(`${SPECIALITY_URL}/999`)
+        .set(AUTH_HEADER);
+
+      expect(res.status).toBe(404);
+      expect(res.body).toEqual({ message: "Speciality not found" });
+    });
+
+    it("should return 401 if the user isn't authenticated", async () => {
+      const res = await request(app).get(`${SPECIALITY_URL}/1`);
+
+      expect(res.status).toBe(401);
+      expect(res.body).toEqual({
+        message: "Unauthorized: Missing authentication token",
+      });
+    });
+
+    it("should return 500 if there is a database error", async () => {
+      jest
+        .mocked(Speciality.findOne)
+        .mockRejectedValue(new Error("Database connection failure"));
+
+      const res = await request(app)
+        .get(`${SPECIALITY_URL}/1`)
+        .set(AUTH_HEADER);
+
+      expect(res.status).toBe(500);
+      expect(res.body).toEqual({ message: "Internal server error" });
     });
   });
-});
 
-describe("CREATE SPECIALITY", () => {
-  it("POST -> should return 201", async () => {
-    jest.mocked(Promotion.findOne).mockResolvedValue({
-      id: 1,
-      name: "b3",
-      organizationId: 1,
-    } as any);
-    jest.mocked(Speciality.create).mockResolvedValue({
-      id: 1,
-      name: "Designeur",
-    } as any);
+  describe("POST /speciality", () => {
+    const newSpecialityPayload = {
+      name: "Développement Web & Mobile",
+      promotionId: 1,
+    };
 
-    const res = await request(app)
-      .post(Speciality_URL)
-      .send({ name: "Designeur" });
+    it("should return 201 with the new speciality when an admin creates it", async () => {
+      const createdInstance = createMockSpecialityInstance({
+        id: 1,
+        ...newSpecialityPayload,
+      });
+      jest.mocked(Speciality.create).mockResolvedValue(createdInstance as any);
 
-    expect(res.status).toBe(201);
-    expect(res.body).toMatchObject({
-      id: expect.any(Number),
-      name: "Designeur",
+      const res = await request(app)
+        .post(SPECIALITY_URL)
+        .set(AUTH_HEADER)
+        .send(newSpecialityPayload);
+
+      expect(res.status).toBe(201);
+      expect(res.body).toMatchObject({
+        id: 1,
+        name: "Développement Web & Mobile",
+        promotionId: 1,
+      });
+      expect(Speciality.create).toHaveBeenCalledWith(newSpecialityPayload);
+    });
+
+    it("should return 201 with the new speciality when a staff creates it", async () => {
+      currentUser = {
+        id: 2,
+        uuid: "00000000-0000-0000-0000-000000000002",
+        role: UserRole.STAFF,
+        organizationId: 1,
+      };
+
+      const createdInstance = createMockSpecialityInstance({
+        id: 1,
+        ...newSpecialityPayload,
+      });
+      jest.mocked(Speciality.create).mockResolvedValue(createdInstance as any);
+
+      const res = await request(app)
+        .post(SPECIALITY_URL)
+        .set(AUTH_HEADER)
+        .send(newSpecialityPayload);
+
+      expect(res.status).toBe(201);
+      expect(res.body).toMatchObject({
+        id: 1,
+        name: "Développement Web & Mobile",
+        promotionId: 1,
+      });
+      expect(Speciality.create).toHaveBeenCalledWith(newSpecialityPayload);
+    });
+
+    it("should return 403 if user role is “STUDENT“", async () => {
+      currentUser = {
+        id: 3,
+        uuid: "00000000-0000-0000-0000-000000000003",
+        role: UserRole.STUDENT,
+        organizationId: 1,
+      };
+
+      const res = await request(app)
+        .post(SPECIALITY_URL)
+        .set(AUTH_HEADER)
+        .send(newSpecialityPayload);
+
+      expect(res.status).toBe(403);
+      expect(res.body).toEqual({
+        message: "Access denied: Insufficient privileges",
+      });
+      expect(Speciality.create).not.toHaveBeenCalled();
+    });
+
+    it("should return 401 if the user isn't authenticated", async () => {
+      const res = await request(app)
+        .post(SPECIALITY_URL)
+        .send(newSpecialityPayload);
+
+      expect(res.status).toBe(401);
+      expect(res.body).toEqual({
+        message: "Unauthorized: Missing authentication token",
+      });
+    });
+
+    it("should return 500 if the creation fails", async () => {
+      jest
+        .mocked(Speciality.create)
+        .mockRejectedValue(new Error("SequelizeDatabaseError"));
+
+      const res = await request(app)
+        .post(SPECIALITY_URL)
+        .set(AUTH_HEADER)
+        .send(newSpecialityPayload);
+
+      expect(res.status).toBe(500);
+      expect(res.body).toEqual({ message: "Internal server error" });
     });
   });
-});
 
-describe("UPDATE SPECIALITY", () => {
-  it("PATCH -> should return 206", async () => {
-    jest.mocked(Promotion.findOne).mockResolvedValue({
-      id: 1,
-      name: "B3",
-      organizationId: 1,
-    } as any);
-    jest.mocked(Speciality.findOne).mockResolvedValue({ id: 1 } as any);
-    jest.mocked(Speciality.update).mockResolvedValue({
-      id: 1,
-      name: "Marketing",
-    } as any);
+  describe("PATCH /speciality/:id", () => {
+    const updatePayload = {
+      name: "Développement Web, Mobile & IA",
+    };
 
-    const res = await request(app)
-      .patch(`${Speciality_URL}/1`)
-      .send({ name: "Marketing" });
+    it("should return 200 with the updated speciality when an admin updates it", async () => {
+      const mockInstance = createMockSpecialityInstance();
+      jest.mocked(Speciality.findOne).mockResolvedValue(mockInstance as any);
 
-    expect(res.status).toBe(206);
-    expect(res.body).toMatchObject({
-      specialityUpdated: {
-        id: expect.any(Number),
-        name: "Marketing",
-      },
+      const res = await request(app)
+        .patch(`${SPECIALITY_URL}/1`)
+        .set(AUTH_HEADER)
+        .send(updatePayload);
+
+      expect(res.status).toBe(200);
+      expect(res.body).toMatchObject({
+        id: 1,
+        name: "Développement Web, Mobile & IA",
+        promotionId: 1,
+      });
+      expect(mockInstance.update).toHaveBeenCalledWith(updatePayload);
+    });
+
+    it("should return 200 with the updated speciality when a staff updates it", async () => {
+      currentUser = {
+        id: 2,
+        uuid: "00000000-0000-0000-0000-000000000002",
+        role: UserRole.STAFF,
+        organizationId: 1,
+      };
+
+      const mockInstance = createMockSpecialityInstance();
+      jest.mocked(Speciality.findOne).mockResolvedValue(mockInstance as any);
+
+      const res = await request(app)
+        .patch(`${SPECIALITY_URL}/1`)
+        .set(AUTH_HEADER)
+        .send(updatePayload);
+
+      expect(res.status).toBe(200);
+      expect(res.body).toMatchObject({
+        id: 1,
+        name: "Développement Web, Mobile & IA",
+        promotionId: 1,
+      });
+      expect(mockInstance.update).toHaveBeenCalledWith(updatePayload);
+    });
+
+    it("should return 403 if user role is “STUDENT“", async () => {
+      currentUser = {
+        id: 3,
+        uuid: "00000000-0000-0000-0000-000000000003",
+        role: UserRole.STUDENT,
+        organizationId: 1,
+      };
+
+      const res = await request(app)
+        .patch(`${SPECIALITY_URL}/1`)
+        .set(AUTH_HEADER)
+        .send(updatePayload);
+
+      expect(res.status).toBe(403);
+      expect(res.body).toEqual({
+        message: "Access denied: Insufficient privileges",
+      });
+      expect(Speciality.findOne).not.toHaveBeenCalled();
+    });
+
+    it("should return 404 if the speciality doesn't exist", async () => {
+      jest.mocked(Speciality.findOne).mockResolvedValue(null);
+
+      const res = await request(app)
+        .patch(`${SPECIALITY_URL}/999`)
+        .set(AUTH_HEADER)
+        .send(updatePayload);
+
+      expect(res.status).toBe(404);
+      expect(res.body).toEqual({ message: "Speciality not found" });
+    });
+
+    it("should return 401 if the user isn't authenticated", async () => {
+      const res = await request(app)
+        .patch(`${SPECIALITY_URL}/1`)
+        .send(updatePayload);
+
+      expect(res.status).toBe(401);
+      expect(res.body).toEqual({
+        message: "Unauthorized: Missing authentication token",
+      });
+    });
+
+    it("should return 500 if the update fails", async () => {
+      const mockInstance = createMockSpecialityInstance();
+      mockInstance.update = jest
+        .fn<() => Promise<never>>()
+        .mockRejectedValue(new Error("Update failed"));
+
+      jest.mocked(Speciality.findOne).mockResolvedValue(mockInstance as any);
+
+      const res = await request(app)
+        .patch(`${SPECIALITY_URL}/1`)
+        .set(AUTH_HEADER)
+        .send(updatePayload);
+
+      expect(res.status).toBe(500);
+      expect(res.body).toEqual({ message: "Internal server error" });
     });
   });
-});
 
-describe("DELETE SPECIALITY", () => {
-  it("should return 204", async () => {
-    jest.mocked(Promotion.findOne).mockResolvedValue({
-      id: 1,
-      name: "Compiègne",
-    } as any);
-    jest.mocked(Speciality.destroy).mockResolvedValue({
-      id: 1,
-      name: "Designeur",
-    } as any);
-    const res = await request(app).delete(`${Speciality_URL}/designeur`);
+  describe("DELETE /speciality/:id", () => {
+    it("should return 204 when an admin deletes a speciality", async () => {
+      const mockInstance = createMockSpecialityInstance();
+      jest.mocked(Speciality.findOne).mockResolvedValue(mockInstance as any);
 
-    expect(res.status).toBe(204);
-    expect(Speciality.destroy).toHaveBeenCalled();
+      const res = await request(app)
+        .delete(`${SPECIALITY_URL}/1`)
+        .set(AUTH_HEADER);
+
+      expect(res.status).toBe(204);
+      expect(res.text).toBe("");
+      expect(mockInstance.destroy).toHaveBeenCalledTimes(1);
+    });
+
+    it("should return 204 when a staff deletes a speciality", async () => {
+      currentUser = {
+        id: 2,
+        uuid: "00000000-0000-0000-0000-000000000002",
+        role: UserRole.STAFF,
+        organizationId: 1,
+      };
+
+      const mockInstance = createMockSpecialityInstance();
+      jest.mocked(Speciality.findOne).mockResolvedValue(mockInstance as any);
+
+      const res = await request(app)
+        .delete(`${SPECIALITY_URL}/1`)
+        .set(AUTH_HEADER);
+
+      expect(res.status).toBe(204);
+      expect(res.text).toBe("");
+      expect(mockInstance.destroy).toHaveBeenCalledTimes(1);
+    });
+
+    it("should return 403 if user role is “STUDENT“", async () => {
+      currentUser = {
+        id: 3,
+        uuid: "00000000-0000-0000-0000-000000000003",
+        role: UserRole.STUDENT,
+        organizationId: 1,
+      };
+
+      const res = await request(app)
+        .delete(`${SPECIALITY_URL}/1`)
+        .set(AUTH_HEADER);
+
+      expect(res.status).toBe(403);
+      expect(res.body).toEqual({
+        message: "Access denied: Insufficient privileges",
+      });
+      expect(Speciality.findOne).not.toHaveBeenCalled();
+    });
+
+    it("should return 404 if the speciality doesn't exist", async () => {
+      jest.mocked(Speciality.findOne).mockResolvedValue(null);
+
+      const res = await request(app)
+        .delete(`${SPECIALITY_URL}/999`)
+        .set(AUTH_HEADER);
+
+      expect(res.status).toBe(404);
+      expect(res.body).toEqual({ message: "Speciality not found" });
+    });
+
+    it("should return 401 if the user isn't authenticated", async () => {
+      const res = await request(app).delete(`${SPECIALITY_URL}/1`);
+
+      expect(res.status).toBe(401);
+      expect(res.body).toEqual({
+        message: "Unauthorized: Missing authentication token",
+      });
+    });
+
+    it("should return 500 if the delete fails", async () => {
+      const mockInstance = createMockSpecialityInstance();
+      mockInstance.destroy = jest
+        .fn<() => Promise<never>>()
+        .mockRejectedValue(new Error("Delete failed"));
+
+      jest.mocked(Speciality.findOne).mockResolvedValue(mockInstance as any);
+
+      const res = await request(app)
+        .delete(`${SPECIALITY_URL}/1`)
+        .set(AUTH_HEADER);
+
+      expect(res.status).toBe(500);
+      expect(res.body).toEqual({ message: "Internal server error" });
+    });
+  });
+
+  describe("GET /speciality/:specialityId/sub-specialities", () => {
+    it("should return 200 with all sub-specialities of the speciality", async () => {
+      jest
+        .mocked(SubSpeciality.findAll)
+        .mockResolvedValue(mockSubSpecialities as any);
+
+      const res = await request(app)
+        .get(`${SPECIALITY_URL}/1/sub-specialities`)
+        .set(AUTH_HEADER);
+
+      expect(res.status).toBe(200);
+      expect(Array.isArray(res.body)).toBe(true);
+      expect(res.body).toHaveLength(2);
+      expect(res.body[0]).toMatchObject({
+        id: 1,
+        name: "Frontend React & Next.js",
+        specialityId: 1,
+      });
+      expect(SubSpeciality.findAll).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { specialityId: "1" },
+        }),
+      );
+    });
+
+    it("should return 200 with empty array if no sub-speciality exists", async () => {
+      jest.mocked(SubSpeciality.findAll).mockResolvedValue([]);
+
+      const res = await request(app)
+        .get(`${SPECIALITY_URL}/1/sub-specialities`)
+        .set(AUTH_HEADER);
+
+      expect(res.status).toBe(200);
+      expect(res.body).toEqual([]);
+    });
+
+    it("should return 401 if the user isn't authenticated", async () => {
+      const res = await request(app).get(`${SPECIALITY_URL}/1/sub-specialities`);
+
+      expect(res.status).toBe(401);
+      expect(res.body).toEqual({
+        message: "Unauthorized: Missing authentication token",
+      });
+    });
+
+    it("should return 500 if the sub-specialities search fails", async () => {
+      jest
+        .mocked(SubSpeciality.findAll)
+        .mockRejectedValue(new Error("Database failure"));
+
+      const res = await request(app)
+        .get(`${SPECIALITY_URL}/1/sub-specialities`)
+        .set(AUTH_HEADER);
+
+      expect(res.status).toBe(500);
+      expect(res.body).toEqual({ message: "Internal server error" });
+    });
+  });
+
+  describe("Rate Limiting (customRateLimiter)", () => {
+    it("should return 429 if the user exceeded the rate limit", async () => {
+      triggerRateLimit = true;
+
+      const res = await request(app)
+        .get(`${SPECIALITY_URL}/1`)
+        .set(AUTH_HEADER);
+
+      expect(res.status).toBe(429);
+      expect(res.body).toMatchObject({
+        error: "Too many requests",
+        message: expect.stringContaining("You have exceeded the rate limit"),
+        retryAfter: expect.any(Number),
+      });
+    });
   });
 });

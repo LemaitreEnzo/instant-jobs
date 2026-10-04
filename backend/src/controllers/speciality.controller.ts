@@ -27,18 +27,18 @@ export const getOneSpeciality = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Speciality not found" });
     }
 
-    res.status(200).json(speciality);
+    return res.status(200).json(speciality);
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
 export const createSpeciality = async (req: Request, res: Response) => {
   try {
     const speciality = await Speciality.create(req.body);
-    res.status(201).json(speciality);
+    return res.status(201).json(speciality);
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -58,9 +58,9 @@ export const updateSpeciality = async (req: Request, res: Response) => {
     }
 
     await speciality.update(data);
-    res.status(206).json(speciality);
+    return res.status(200).json(speciality);
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -79,16 +79,13 @@ export const deleteSpeciality = async (req: Request, res: Response) => {
     }
 
     await speciality.destroy();
-    res.status(204).end();
+    return res.status(204).end();
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
-export const getSubSpecialities = async (
-  req: Request,
-  res: Response,
-): Promise<void> => {
+export const getSubSpecialities = async (req: Request, res: Response) => {
   try {
     const { specialityId } = req.params;
     const subSpecialities = await SubSpeciality.findAll({
@@ -98,13 +95,8 @@ export const getSubSpecialities = async (
       },
     });
 
-    if (!subSpecialities) {
-      res.status(404).json({ message: "Sub-specialities not found" });
-      return;
-    }
-
-    res.status(200).json(subSpecialities);
+    return res.status(200).json(subSpecialities);
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };

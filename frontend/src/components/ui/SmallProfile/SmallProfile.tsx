@@ -1,8 +1,14 @@
+import { StudentStatus } from '../../../types/enum.type';
 import type { PropsSmallProfile } from '../../../types/props.type';
 import './SmallProfile.css';
 
 function SmallProfile(props: PropsSmallProfile) {
     const data = props.data;
+    const campus = data.campus;
+    const promotion = data.promotion;
+    const speciality = data.speciality;
+    const subSpeciality = data.subSpeciality;
+    const statusTranslate = {[StudentStatus.FOUND]: 'Accepté', [StudentStatus.PENDING]: 'En attente', [StudentStatus.SEARCH]: 'Recherche'};
     
   return (
     <div className='sp'>
@@ -24,7 +30,7 @@ function SmallProfile(props: PropsSmallProfile) {
                     Campus :
                 </p>
                 <p className='sp-right-data'>
-                    Compiègne {/* To change */}
+                    {campus.name};
                 </p>
             </div>
             <div className='sp-right-content'>
@@ -32,7 +38,7 @@ function SmallProfile(props: PropsSmallProfile) {
                     Promotion :
                 </p>
                 <p className='sp-right-data'>
-                    Compiègne {/* To change */}
+                    {promotion.name}
                 </p>
             </div>
             <div className='sp-right-content'>
@@ -40,7 +46,7 @@ function SmallProfile(props: PropsSmallProfile) {
                     Spécialité :
                 </p>
                 <p className='sp-right-data'>
-                    Compiègne {/* To change */}
+                    {speciality.name}
                 </p>
             </div>
             <div className='sp-right-content'>
@@ -48,7 +54,7 @@ function SmallProfile(props: PropsSmallProfile) {
                     Sous-spécialité :
                 </p>
                 <p className='sp-right-data'>
-                    Compiègne {/* To change */}
+                    {subSpeciality.name}
                 </p>
             </div>
             <div className='sp-right-content'>
@@ -58,7 +64,7 @@ function SmallProfile(props: PropsSmallProfile) {
                 <div className='sp-right-status'>
                     <div className='sp-right-ellipse'></div>
                     <p>
-                        Compiègne {/* To change */}
+                        {statusTranslate[data.status]}
                     </p>
                 </div>
             </div>

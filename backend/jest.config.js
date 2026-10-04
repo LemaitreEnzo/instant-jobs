@@ -9,4 +9,5 @@ module.exports = {
     "^controllers/(.*)$": "<rootDir>/src/controllers/$1",
     "^config/(.*)$": "<rootDir>/config/$1",
   },
+  testPathIgnorePatterns: ["/node_modules/", "/dist/"],
 };

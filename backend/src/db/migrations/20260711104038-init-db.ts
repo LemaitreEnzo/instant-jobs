@@ -24,11 +24,16 @@ export default {
         unique: true,
         type: DataTypes.STRING,
       },
-      description: {
-        type: DataTypes.TEXT,
+      logo: {
+        allowNull: false,
+        type: DataTypes.TEXT("long"),
       },
       role: {
+        allowNull: false,
         type: DataTypes.STRING,
+      },
+      description: {
+        type: DataTypes.TEXT,
       },
       postcode: {
         type: DataTypes.INTEGER,
@@ -68,6 +73,8 @@ export default {
           model: "Organization",
           key: "id",
         },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       createdAt: {
         allowNull: false,
@@ -95,6 +102,8 @@ export default {
           model: "Campus",
           key: "id",
         },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       createdAt: {
         allowNull: false,
@@ -122,6 +131,8 @@ export default {
           model: "Promotion",
           key: "id",
         },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       createdAt: {
         allowNull: false,
@@ -150,6 +161,8 @@ export default {
           model: "Speciality",
           key: "id",
         },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       createdAt: {
         allowNull: false,
@@ -210,6 +223,8 @@ export default {
           model: "Organization",
           key: "id",
         },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       campusId: {
         allowNull: true,
@@ -218,6 +233,8 @@ export default {
           model: "Campus",
           key: "id",
         },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       promotionId: {
         allowNull: true,
@@ -226,6 +243,8 @@ export default {
           model: "Promotion",
           key: "id",
         },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       specialityId: {
         allowNull: true,
@@ -234,6 +253,8 @@ export default {
           model: "Speciality",
           key: "id",
         },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       subSpecialityId: {
         allowNull: true,
@@ -242,6 +263,8 @@ export default {
           model: "SubSpeciality",
           key: "id",
         },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       createdAt: {
         allowNull: false,
@@ -266,7 +289,7 @@ export default {
         type: DataTypes.STRING,
       },
       logo: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT("long"),
       },
       company: {
         type: DataTypes.STRING,
@@ -293,6 +316,8 @@ export default {
           model: "User",
           key: "id",
         },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       createdAt: {
         allowNull: false,
@@ -314,7 +339,7 @@ export default {
         type: DataTypes.STRING,
       },
       path: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT("long"),
       },
       userId: {
         allowNull: false,
@@ -323,6 +348,8 @@ export default {
           model: "User",
           key: "id",
         },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       createdAt: {
         allowNull: false,

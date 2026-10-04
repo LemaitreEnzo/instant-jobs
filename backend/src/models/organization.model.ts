@@ -8,6 +8,8 @@ import type {
 } from "sequelize";
 import { DataTypes } from "sequelize";
 
+import { OrganizationRole } from "./enums/organization.enum";
+
 export interface Organization extends Model<
   InferAttributes<Organization>,
   InferCreationAttributes<Organization>
@@ -16,8 +18,9 @@ export interface Organization extends Model<
   name: string;
   email: string;
   phone: string;
+  logo: string;
+  role: OrganizationRole;
   description: string;
-  role: string;
   postcode: number;
   city: string;
   address: string;
@@ -47,11 +50,32 @@ export const Organization = sequelize.define<Organization>(
       unique: true,
       type: DataTypes.STRING,
     },
-    description: {
-      type: DataTypes.TEXT,
+    logo: {
+      allowNull: false,
+      type: DataTypes.TEXT("long"),
+      validate: {
+        validateSize(value: string) {
+          if (value) {
+            const size: number = 10;
+            const maxSizeBytes = size * 1024 * 1024; // octet to Mo
+
+            const base64String = value.split(",")[1] || value;
+            const paddingBytes = (base64String.match(/=/g) || []).length;
+            const realSizeBytes = (base64String.length * 3) / 4 - paddingBytes;
+
+            if (realSizeBytes > maxSizeBytes) {
+              throw new Error(`The file is too large (maximum ${size} MB).`);
+            }
+          }
+        },
+      },
     },
     role: {
-      type: DataTypes.STRING,
+      allowNull: false,
+      type: DataTypes.ENUM(...Object.values(OrganizationRole)),
+    },
+    description: {
+      type: DataTypes.TEXT,
     },
     postcode: {
       type: DataTypes.INTEGER,

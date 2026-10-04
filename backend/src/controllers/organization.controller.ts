@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { Attributes } from "sequelize";
+import { Attributes, Op } from "sequelize";
 import {
   Campus,
   Media,
@@ -60,13 +60,9 @@ export const getAllOrganizations = async (req: Request, res: Response) => {
       },
     });
 
-    if (!organizations) {
-      return res.status(404).json({ message: "Organizations not found" });
-    }
-
-    res.status(200).json(organizations);
+    return res.status(200).json(organizations);
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -84,9 +80,9 @@ export const getOneOrganization = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Organization not found" });
     }
 
-    res.status(200).json(organization);
+    return res.status(200).json(organization);
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -95,9 +91,9 @@ export const createOrganization = async (req: Request, res: Response) => {
     const data = req.body;
     const organization = await Organization.create(data);
 
-    res.status(201).json(organization);
+    return res.status(201).json(organization);
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -117,9 +113,9 @@ export const updateOrganization = async (req: Request, res: Response) => {
     }
 
     await organization.update(data);
-    res.status(206).json(organization);
+    return res.status(200).json(organization);
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -137,9 +133,9 @@ export const deleteOrganization = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Organization not found" });
     }
     await organization.destroy();
-    res.status(204).end();
+    return res.status(204).end();
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -154,13 +150,9 @@ export const getCampuses = async (req: Request, res: Response) => {
       },
     });
 
-    if (!campuses) {
-      return res.status(404).json({ message: "Campuses not found" });
-    }
-
-    res.status(200).json(campuses);
+    return res.status(200).json(campuses);
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -168,49 +160,71 @@ export const getUsers = async (req: Request, res: Response) => {
   try {
     const { organizationId } = req.params;
 
-    const users = await User.findAll({
-      where: { organizationId },
-      attributes: { exclude: excludedUserData },
-      include: [
-        {
-          model: Media,
-          as: "medias",
-          required: false,
-          attributes: { exclude: excludedMediaData },
-        },
-        {
-          model: Campus,
-          as: "campus",
-          required: false,
-          attributes: { exclude: [...excludedCampusData, "organizationId"] },
-        },
-        {
-          model: Promotion,
-          as: "promotion",
-          required: false,
-          attributes: { exclude: excludedPromotionData },
-        },
-        {
-          model: Speciality,
-          as: "speciality",
-          required: false,
-          attributes: { exclude: excludedSpecialityData },
-        },
-        {
-          model: SubSpeciality,
-          as: "subSpeciality",
-          required: false,
-          attributes: { exclude: excludedSubSpecialityData },
-        },
-      ],
-    });
+    const [students, otherUsers] = await Promise.all([
+      User.findAll({
+        where: { organizationId, role: "student" },
+        attributes: { exclude: excludedUserData },
+        include: [
+          {
+            model: Media,
+            as: "medias",
+            required: false,
+            attributes: { exclude: excludedMediaData },
+          },
+          {
+            model: Campus,
+            as: "campus",
+            required: false,
+            attributes: { exclude: [...excludedCampusData, "organizationId"] },
+          },
+          {
+            model: Promotion,
+            as: "promotion",
+            required: false,
+            attributes: { exclude: excludedPromotionData },
+          },
+          {
+            model: Speciality,
+            as: "speciality",
+            required: false,
+            attributes: { exclude: excludedSpecialityData },
+          },
+          {
+            model: SubSpeciality,
+            as: "subSpeciality",
+            required: false,
+            attributes: { exclude: excludedSubSpecialityData },
+          },
+        ],
+      }),
 
-    if (!users) {
-      return res.status(404).json({ message: "Users not found" });
-    }
+      User.findAll({
+        where: {
+          organizationId,
+          role: { [Op.ne]: "student" },
+        },
+        attributes: { exclude: excludedUserData },
+        include: [
+          {
+            model: Media,
+            as: "medias",
+            required: false,
+            attributes: { exclude: excludedMediaData },
+          },
+          {
+            model: Campus,
+            as: "campus",
+            required: false,
+            attributes: { exclude: [...excludedCampusData, "organizationId"] },
+          },
+        ],
+      }),
+    ]);
 
-    res.status(200).json(users);
+    const users: User[] = [...students, ...otherUsers];
+
+    return res.status(200).json(users);
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };

@@ -10,7 +10,7 @@ const excludedData: (keyof Attributes<Application>)[] = [
 const excludedAppointmentData: (keyof Attributes<Appointment>)[] = [
   "createdAt",
   "updatedAt",
-  "applicationId"
+  "applicationId",
 ];
 
 export const getOneApplication = async (req: Request, res: Response) => {
@@ -27,18 +27,18 @@ export const getOneApplication = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Application not found" });
     }
 
-    res.status(200).json(application);
+    return res.status(200).json(application);
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
 export const createApplication = async (req: Request, res: Response) => {
   try {
     const application = await Application.create(req.body);
-    res.status(201).json(application);
+    return res.status(201).json(application);
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -58,9 +58,9 @@ export const updateApplication = async (req: Request, res: Response) => {
     }
 
     await application.update(data);
-    res.status(206).json(application);
+    return res.status(200).json(application);
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -79,13 +79,16 @@ export const deleteApplication = async (req: Request, res: Response) => {
     }
 
     await application.destroy();
-    res.status(204).end();
+    return res.status(204).end();
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
-export const getAppointments = async (req: Request, res: Response) => {
+export const getAppointmentsByApplication = async (
+  req: Request,
+  res: Response,
+) => {
   try {
     const { applicationId } = req.params;
 
@@ -96,12 +99,8 @@ export const getAppointments = async (req: Request, res: Response) => {
       },
     });
 
-    if (!appointments) {
-      return res.status(404).json({ message: "Appointments not found" });
-    }
-
-    res.status(200).json(appointments);
+    return res.status(200).json(appointments);
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
