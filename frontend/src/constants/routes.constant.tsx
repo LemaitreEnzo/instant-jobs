@@ -1,4 +1,5 @@
 import ProtectedRoute from "../components/ProtectedRoute";
+import Calendar from "../pages/Calendar";
 import Dashboard from "../pages/Dashboard";
 import MySchool from "../pages/student/MySchool";
 import Profile from "../pages/student/Profile";
@@ -25,7 +26,7 @@ export const routes: Array<Route> = [
     path: "calendar",
     element: (
       <ProtectedRoute>
-        <Dashboard />
+        <Calendar />
       </ProtectedRoute>
     ),
   },

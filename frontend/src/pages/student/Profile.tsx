@@ -83,7 +83,7 @@ function Profile() {
     if (user && organization && campus && promotion && speciality && subSpeciality) {
         return (
             <MainLayout >
-                <div className="pageProfile">
+                <div className="page-profile">
                     <ProfileComponent user={user} organization={organization} campus={campus} promotion={promotion} speciality={speciality} subSpeciality={subSpeciality} />
                     <PersonalInformations data={user} />
                 </div>
