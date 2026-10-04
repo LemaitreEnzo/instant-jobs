@@ -18,7 +18,7 @@ export interface PropsButton extends PropsBase {
 export interface PropsFormField extends PropsBase {
   label: string;
   name: string;
-  error: string | null;
+  error?: string;
   required?: boolean;
   customClassName?: string;
 }
@@ -60,6 +60,16 @@ export type PropsUserModal = {
   open: boolean;
   onOpenChange: React.Dispatch<SetStateAction<boolean>>;
 };
+
+export interface PropsModal extends PropsBase {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  title?: string;
+  description?: string;
+  size?: "sm" | "md" | "lg";
+  showCloseButton?: boolean;
+  customClassName?: string;
+}
 
 export type PropsCardDocument = {
   name: string;
@@ -151,6 +161,55 @@ export type PropsApplicationHeader = {
 
 export type PropsPageTilte = {
   title: string;
+}
+
+export interface PropsCheckbox {
+  id?: string;
+  name?: string;
+  label?: string;
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+  disabled?: boolean;
+  customClassName?: string;
+}
+
+export interface FilterOption {
+  id: string;
+  label: string;
+  checked?: boolean;
+}
+
+export interface FilterGroup {
+  id: string;
+  title: string;
+  options: FilterOption[];
+}
+
+export interface SortOption {
+  label: string;
+  value: string;
+}
+
+export interface SortState {
+  field: string;
+  direction: "asc" | "desc";
+}
+
+export interface PropsApplicationsList {
+  data?: Application[];
+  loading?: boolean;
+  onSuccess?: () => void;
+}
+
+export interface PropsFilterBar {
+  filterGroups?: FilterGroup[];
+  onFilterChange?: (activeFilters: string[]) => void;
+  sortOptions?: SortOption[];
+  defaultSort?: SortState;
+  onSortChange?: (sort: SortState) => void;
+  onAdd?: () => void;
+  onAddClick?: () => void;
+  customClassName?: string;
 }
 
 export type PropsSchoolCard = {

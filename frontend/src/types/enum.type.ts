@@ -3,10 +3,21 @@ export enum ApplicationType {
   APPRENTICESHIP = "apprenticeship",
 }
 
+export const ApplicationTypeLabel = {
+  [ApplicationType.INTERNSHIP]: "Stage",
+  [ApplicationType.APPRENTICESHIP]: "Alternance",
+}
+
 export enum ApplicationStatus {
   PENDING = "pending",
   REFUSED = "refused",
   ACCEPTED = "accepted",
+}
+
+export const ApplicationStatusLabel = {
+  [ApplicationStatus.PENDING]: "En attente",
+  [ApplicationStatus.REFUSED]: "Refusée",
+  [ApplicationStatus.ACCEPTED]: "Acceptée",
 }
 
 export enum ApplicationResend {
@@ -14,6 +25,13 @@ export enum ApplicationResend {
   INTERVIEW_COMPLETED = "interview completed",
   NO = "no follow up",
   NOT_NECESSARY = "not necessary",
+}
+
+export const ApplicationResendLabel = {
+  [ApplicationResend.FOLLOW_UP]: "À relancer",
+  [ApplicationResend.INTERVIEW_COMPLETED]: "Entretien passé",
+  [ApplicationResend.NO]: "Pas de relance",
+  [ApplicationResend.NOT_NECESSARY]: "Non nécessaire",
 }
 
 export enum AppointmentStatus {
@@ -26,7 +44,7 @@ export const AppointmentStatusLabel = {
   [AppointmentStatus.INCOMING]: "À venir",
   [AppointmentStatus.CANCELED]: "Annulé",
   [AppointmentStatus.FINISHED]: "Passé",
-};
+}
 
 export enum UserRole {
   STUDENT = "student",
