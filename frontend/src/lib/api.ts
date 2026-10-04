@@ -10,7 +10,6 @@ import type {
   SubSpeciality,
 } from "../interfaces/models.interface";
 import type { Student, User } from "../interfaces/user.interface";
-import type { ApplicationFilters } from "../types/props.type";
 
 export interface RequestOptions extends Omit<RequestInit, "body"> {
   body?: unknown;
@@ -49,7 +48,9 @@ class ApiClient {
       ...restOptions
     } = options;
 
-    const cleanEndpoint = endpoint.startsWith("/") ? endpoint.slice(1) : endpoint;
+    const cleanEndpoint = endpoint.startsWith("/")
+      ? endpoint.slice(1)
+      : endpoint;
     const url = `${this.baseUrl}/${cleanEndpoint}`;
 
     const headers: Record<string, string> = {
@@ -131,7 +132,8 @@ class ApiClient {
               errorMessage = "Bad request.";
               break;
             case 401:
-              errorMessage = "Session expired or unauthorized. Please log in again.";
+              errorMessage =
+                "Session expired or unauthorized. Please log in again.";
               break;
             case 403:
               errorMessage = "Access denied.";
@@ -205,7 +207,10 @@ class ApiClient {
       });
     },
 
-    update: (id: number, data: Partial<Organization>): Promise<Organization> => {
+    update: (
+      id: number,
+      data: Partial<Organization>,
+    ): Promise<Organization> => {
       return this.request<Organization>(`organization/${id}`, {
         method: "PATCH",
         body: data,
@@ -217,7 +222,7 @@ class ApiClient {
     },
 
     fetchCampuses: (organizationId: number): Promise<Campus[]> => {
-      return this.request<Campus[]>(`organization/${organizationId}/campus`, {
+      return this.request<Campus[]>(`organization/${organizationId}/campuses`, {
         method: "GET",
       });
     },
@@ -280,9 +285,12 @@ class ApiClient {
     },
 
     fetchSpecialities: (promotionId: number): Promise<Speciality[]> => {
-      return this.request<Speciality[]>(`promotion/${promotionId}/specialities`, {
-        method: "GET",
-      });
+      return this.request<Speciality[]>(
+        `promotion/${promotionId}/specialities`,
+        {
+          method: "GET",
+        },
+      );
     },
   };
 
@@ -380,33 +388,19 @@ class ApiClient {
       return this.request<User | Student | null>("user/me", { method: "GET" });
     },
 
-    fetchApplications: (userId: number, limit?: number, filters?: ApplicationFilters): Promise<Application[]> => {
-      const params = new URLSearchParams();
-
-      if (limit) {
-        params.append("limit", limit.toString());
-      };
-
-      if (filters?.statuses && filters?.statuses.length > 0) {
-        params.append("status", filters.statuses.join(","));
-      };
-
-      if (filters?.types && filters?.types.length > 0) {
-        params.append("type", filters.types.join(","));
-      };
-
-      if (filters?.resends && filters?.resends.length > 0) {
-        params.append("resend", filters.resends.join(","));
-      };
-
-      const query = params.toString() ? `?${params.toString()}` : "";
-      return this.request<Application[]>(`user/${userId}/applications${query}`, {
+    fetchApplications: (userId: number): Promise<Application[]> => {
+      return this.request<Application[]>(`user/${userId}/applications`, {
         method: "GET",
       });
     },
 
     fetchMedias: (userId: number): Promise<Media[]> => {
       return this.request<Media[]>(`user/${userId}/medias`, { method: "GET" });
+    },
+    fetchAppointments: (userId: number): Promise<Appointment[]> => {
+      return this.request<Appointment[]>(`user/${userId}/appointments`, {
+        method: "GET",
+      });
     },
   };
 
@@ -434,9 +428,12 @@ class ApiClient {
     },
 
     fetchAppointments: (applicationId: number): Promise<Appointment[]> => {
-      return this.request<Appointment[]>(`application/${applicationId}/appointments`, {
-        method: "GET",
-      });
+      return this.request<Appointment[]>(
+        `application/${applicationId}/appointments`,
+        {
+          method: "GET",
+        },
+      );
     },
   };
 

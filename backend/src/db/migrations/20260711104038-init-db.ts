@@ -73,6 +73,8 @@ export default {
           model: "Organization",
           key: "id",
         },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       createdAt: {
         allowNull: false,
@@ -100,6 +102,8 @@ export default {
           model: "Campus",
           key: "id",
         },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       createdAt: {
         allowNull: false,
@@ -127,6 +131,8 @@ export default {
           model: "Promotion",
           key: "id",
         },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       createdAt: {
         allowNull: false,
@@ -155,6 +161,8 @@ export default {
           model: "Speciality",
           key: "id",
         },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       createdAt: {
         allowNull: false,
@@ -215,6 +223,8 @@ export default {
           model: "Organization",
           key: "id",
         },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       campusId: {
         allowNull: true,
@@ -223,6 +233,8 @@ export default {
           model: "Campus",
           key: "id",
         },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       promotionId: {
         allowNull: true,
@@ -231,6 +243,8 @@ export default {
           model: "Promotion",
           key: "id",
         },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       specialityId: {
         allowNull: true,
@@ -239,6 +253,8 @@ export default {
           model: "Speciality",
           key: "id",
         },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       subSpecialityId: {
         allowNull: true,
@@ -247,6 +263,8 @@ export default {
           model: "SubSpeciality",
           key: "id",
         },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       createdAt: {
         allowNull: false,
@@ -298,6 +316,8 @@ export default {
           model: "User",
           key: "id",
         },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       createdAt: {
         allowNull: false,
@@ -328,6 +348,8 @@ export default {
           model: "User",
           key: "id",
         },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       createdAt: {
         allowNull: false,
