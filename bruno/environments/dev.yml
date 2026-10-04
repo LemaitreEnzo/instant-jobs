@@ -1,0 +1,11 @@
+name: dev
+variables:
+  - name: BASE_URL
+    value: "{{process.env.API_URL}}"
+    description: ""
+  - name: VERSION
+    value: "{{process.env.API_VERSION}}"
+    description: ""
+  - name: URL
+    value: "{{BASE_URL}}/{{VERSION}}"
+    description: ""

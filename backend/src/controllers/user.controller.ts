@@ -1,9 +1,10 @@
 import bcrypt from "bcryptjs";
 import type { Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { Attributes, FindOptions, Op } from "sequelize";
+import { Attributes } from "sequelize";
 import {
   Application,
+  Appointment,
   Campus,
   Media,
   Promotion,
@@ -33,6 +34,13 @@ const excludedApplicationData: (keyof Attributes<Application>)[] = [
   "updatedAt",
   "userId",
 ];
+
+const excludedAppointmentData: (keyof Attributes<Appointment>)[] = [
+  "createdAt",
+  "updatedAt",
+  "userId",
+];
+
 const excludedCampusData: (keyof Attributes<Campus>)[] = [
   "createdAt",
   "updatedAt",
@@ -72,6 +80,12 @@ export const login = async (req: Request, res: Response) => {
           as: "applications",
           required: false,
           attributes: { exclude: excludedApplicationData },
+        },
+        {
+          model: Appointment,
+          as: "appointments",
+          required: false,
+          attributes: { exclude: excludedAppointmentData },
         },
         {
           model: Campus,
@@ -132,6 +146,7 @@ export const login = async (req: Request, res: Response) => {
 
         if (rawUserData.role !== "student") {
           delete rawUserData.applications;
+          delete rawUserData.appointments;
           delete rawUserData.promotion;
           delete rawUserData.speciality;
           delete rawUserData.subSpeciality;
@@ -149,7 +164,7 @@ export const login = async (req: Request, res: Response) => {
       return res.status(401).json({ message: "Invalid email or password" });
     }
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -158,9 +173,9 @@ export const logout = async (req: Request, res: Response) => {
     const token = getEnv("TOKEN");
 
     res.clearCookie(token, { path: "/" });
-    res.status(200).json({ message: "Successfully logged out" });
+    return res.status(200).json({ message: "Successfully logged out" });
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -170,7 +185,7 @@ export const getAuth = async (req: Request, res: Response) => {
     const secret = getEnv("SECRET");
     const token = req.cookies?.[tokenName];
 
-    // Silent session check: if no token/session, return 200 with null cleanly without console errors
+    // Silent session check: if no token/session, 200 with null cleanly without console errors
     if (!token) {
       return res.status(200).json(null);
     }
@@ -190,7 +205,7 @@ export const getAuth = async (req: Request, res: Response) => {
         organizationId?: number;
       };
     } catch {
-      // Expired or invalid token: silently return 200 with null
+      // Expired or invalid token: silently 200 with null
       return res.status(200).json(null);
     }
 
@@ -220,6 +235,12 @@ export const getAuth = async (req: Request, res: Response) => {
             as: "applications",
             required: false,
             attributes: { exclude: excludedApplicationData },
+          },
+          {
+            model: Appointment,
+            as: "appointments",
+            required: false,
+            attributes: { exclude: excludedAppointmentData },
           },
           {
             model: Campus,
@@ -268,6 +289,12 @@ export const getAuth = async (req: Request, res: Response) => {
             attributes: { exclude: excludedApplicationData },
           },
           {
+            model: Appointment,
+            as: "appointments",
+            required: false,
+            attributes: { exclude: excludedAppointmentData },
+          },
+          {
             model: Campus,
             as: "campus",
             required: false,
@@ -310,6 +337,7 @@ export const getAuth = async (req: Request, res: Response) => {
 
     if (rawUserData.role !== "student") {
       delete rawUserData.applications;
+      delete rawUserData.appointments;
       delete rawUserData.campus;
       delete rawUserData.promotion;
       delete rawUserData.speciality;
@@ -342,6 +370,12 @@ export const getOneUser = async (req: Request, res: Response) => {
           as: "applications",
           required: false,
           attributes: { exclude: excludedApplicationData },
+        },
+        {
+          model: Appointment,
+          as: "appointments",
+          required: false,
+          attributes: { exclude: excludedAppointmentData },
         },
         {
           model: Campus,
@@ -378,6 +412,7 @@ export const getOneUser = async (req: Request, res: Response) => {
 
     if (rawUserData.role !== "student") {
       delete rawUserData.applications;
+      delete rawUserData.appointments;
       delete rawUserData.promotion;
       delete rawUserData.speciality;
       delete rawUserData.subSpeciality;
@@ -385,7 +420,7 @@ export const getOneUser = async (req: Request, res: Response) => {
 
     return res.status(200).json(rawUserData);
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -409,7 +444,7 @@ export const createUser = async (req: Request, res: Response) => {
 
     return res.status(201).json(rawUserData);
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -429,9 +464,9 @@ export const updateUser = async (req: Request, res: Response) => {
     }
 
     await user.update(data);
-    res.status(200).json(user);
+    return res.status(200).json(user);
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -450,53 +485,26 @@ export const deleteUser = async (req: Request, res: Response) => {
     }
 
     await user.destroy();
-    res.status(204).end();
+    return res.status(204).end();
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
 export const getApplications = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    const whereOptions: Record<string, any> = { userId };
 
-    if (req.query.status) {
-      const statuses = (req.query.status as string)
-        .split(",")
-        .map((s) => s.trim());
-      whereOptions.status = { [Op.in]: statuses };
-    }
-
-    if (req.query.type) {
-      const types = (req.query.type as string).split(",").map((t) => t.trim());
-      whereOptions.type = { [Op.in]: types };
-    }
-
-    if (req.query.resend) {
-      const resends = (req.query.resend as string)
-        .split(",")
-        .map((r) => r.trim());
-      whereOptions.resend = { [Op.in]: resends };
-    }
-
-    const queryOptions: FindOptions = {
-      where: whereOptions,
-      order: [["createdAt", "DESC"]],
+    const applications = await Application.findAll({
+      where: { userId },
       attributes: {
         exclude: excludedApplicationData,
       },
-    };
+    });
 
-    if (req.query.limit !== undefined && !isNaN(Number(req.query.limit))) {
-      queryOptions.limit = parseInt(req.query.limit as string);
-    }
-
-    const applications = await Application.findAll(queryOptions);
-
-    res.status(200).json(applications);
+    return res.status(200).json(applications);
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -511,8 +519,25 @@ export const getMedias = async (req: Request, res: Response) => {
       },
     });
 
-    res.status(200).json(medias);
+    return res.status(200).json(medias);
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const getAppointmentsByUser = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+
+    const appointments = await Appointment.findAll({
+      where: { userId },
+      attributes: {
+        exclude: excludedAppointmentData,
+      },
+    });
+
+    return res.status(200).json(appointments);
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error" });
   }
 };

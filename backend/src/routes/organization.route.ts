@@ -2,6 +2,7 @@
    RESSOURCE : ORGANIZATIONS
 ========================= */
 
+import { customRateLimiter } from "config/rate-limit";
 import express from "express";
 import {
   createOrganization,
@@ -14,7 +15,6 @@ import {
 } from "src/controllers/organization.controller";
 import { UserRole } from "src/models/enums/user.enum";
 import { checkRole } from "../../middlewares/role.middleware";
-import { customRateLimiter } from "config/rate-limit";
 
 const organizationsRoutes = express.Router({ mergeParams: true });
 
@@ -43,7 +43,7 @@ organizationsRoutes.delete(
   deleteOrganization,
 );
 
-organizationsRoutes.get("/:organizationId/campus", getCampuses);
+organizationsRoutes.get("/:organizationId/campuses", getCampuses);
 
 organizationsRoutes.get("/:organizationId/users", getUsers);
 

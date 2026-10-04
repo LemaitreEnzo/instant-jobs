@@ -31,7 +31,7 @@ export interface Application extends Model<
   description: string;
   createdAt: CreationOptional<Date>;
   updatedAt: CreationOptional<Date>;
-  userId: ForeignKey<User["id"]> | null;
+  userId: ForeignKey<User["id"]>;
 }
 
 export const Application = sequelize.define<Application>(
@@ -43,6 +43,7 @@ export const Application = sequelize.define<Application>(
       type: DataTypes.INTEGER,
     },
     title: {
+      allowNull: false,
       type: DataTypes.STRING,
     },
     type: {
@@ -50,6 +51,7 @@ export const Application = sequelize.define<Application>(
       type: DataTypes.ENUM(...Object.values(ApplicationType)),
     },
     logo: {
+      allowNull: false,
       type: DataTypes.TEXT("long"),
       validate: {
         validateSize(value: string) {
@@ -69,12 +71,15 @@ export const Application = sequelize.define<Application>(
       },
     },
     company: {
+      allowNull: false,
       type: DataTypes.STRING,
     },
     city: {
+      allowNull: false,
       type: DataTypes.STRING,
     },
     date: {
+      allowNull: false,
       type: DataTypes.DATEONLY,
     },
     status: {
@@ -91,7 +96,7 @@ export const Application = sequelize.define<Application>(
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,
     userId: {
-      allowNull: true,
+      allowNull: false,
       type: DataTypes.INTEGER,
       references: {
         model: User,

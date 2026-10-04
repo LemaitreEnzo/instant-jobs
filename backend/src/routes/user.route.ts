@@ -1,8 +1,10 @@
+import { customRateLimiter } from "config/rate-limit";
 import express from "express";
 import {
   createUser,
   deleteUser,
   getApplications,
+  getAppointmentsByUser,
   getAuth,
   getMedias,
   getOneUser,
@@ -11,23 +13,22 @@ import {
   updateUser,
 } from "src/controllers/user.controller";
 import { UserRole } from "src/models/enums/user.enum";
-import { customRateLimiter } from "config/rate-limit";
 import { authenticateUser, checkUser } from "../../middlewares/auth.middleware";
 import { checkRole } from "../../middlewares/role.middleware";
 
 const usersRoutes = express.Router({ mergeParams: true });
 
-usersRoutes.post("/login", customRateLimiter({ time: 5, limit: 10, skipSuccessfulRequests: true}), login);
+usersRoutes.post(
+  "/login",
+  customRateLimiter({ time: 5, limit: 10, skipSuccessfulRequests: true }),
+  login,
+);
 
 usersRoutes.post("/logout", logout);
 
 usersRoutes.get("/me", getAuth);
 
-usersRoutes.get(
-  "/:id",
-  authenticateUser,
-  getOneUser,
-);
+usersRoutes.get("/:id", authenticateUser, getOneUser);
 
 usersRoutes.post(
   "/",
@@ -53,16 +54,14 @@ usersRoutes.delete(
   deleteUser,
 );
 
-usersRoutes.get(
-  "/:userId/medias",
-  authenticateUser,
-  getMedias,
-);
+usersRoutes.get("/:userId/medias", authenticateUser, getMedias);
+
+usersRoutes.get("/:userId/applications", authenticateUser, getApplications);
 
 usersRoutes.get(
-  "/:userId/applications",
+  "/:userId/appointments",
   authenticateUser,
-  getApplications,
+  getAppointmentsByUser,
 );
 
 export default usersRoutes;

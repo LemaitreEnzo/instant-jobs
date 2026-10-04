@@ -211,3 +211,13 @@ export interface PropsFilterBar {
   onAddClick?: () => void;
   customClassName?: string;
 }
+
+export type PropsSchoolCard = {
+  name: string;
+  logo: string;
+  description: string;
+}  
+  
+export type PropsSoon = {
+  data: Appointment[];
+}

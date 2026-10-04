@@ -6,6 +6,7 @@ import {
   ApplicationStatus,
   ApplicationType,
 } from "../../models/enums/application.enum";
+import { AppointmentStatus } from "../../models/enums/appointment.enum";
 import { OrganizationRole } from "../../models/enums/organization.enum";
 import { StudentStatus, UserRole } from "../../models/enums/user.enum";
 
@@ -885,14 +886,21 @@ export default {
     await queryInterface.bulkInsert("Application", rawApplications);
 
     const insertedApplications = (await queryInterface.sequelize.query(
-      `SELECT id, status, date FROM "Application" ORDER BY id ASC;`,
+      `SELECT id, status, "userId", date FROM "Application" ORDER BY id ASC;`,
       { type: QueryTypes.SELECT },
-    )) as unknown as Array<{ id: number; status: string; date: string }>;
+    )) as unknown as Array<{
+      id: number;
+      userId: number;
+      status: string;
+      date: string;
+    }>;
 
     const rawAppointments: Array<{
       date: Date;
       reason: string;
+      status: AppointmentStatus;
       applicationId: number;
+      userId: number;
       createdAt: Date;
       updatedAt: Date;
     }> = [];
@@ -918,21 +926,27 @@ export default {
           {
             date: date1,
             reason: "Premier entretien téléphonique RH",
+            status: AppointmentStatus.CANCELED,
             applicationId: app.id,
+            userId: app.userId,
             createdAt: now,
             updatedAt: now,
           },
           {
             date: date2,
             reason: "Entretien technique et présentation des projets",
+            status: AppointmentStatus.FINISHED,
             applicationId: app.id,
+            userId: app.userId,
             createdAt: now,
             updatedAt: now,
           },
           {
             date: date3,
             reason: "Entretien final avec le tuteur d'entreprise & signature",
+            status: AppointmentStatus.FINISHED,
             applicationId: app.id,
+            userId: app.userId,
             createdAt: now,
             updatedAt: now,
           },
@@ -946,7 +960,9 @@ export default {
         rawAppointments.push({
           date: date1,
           reason: "Entretien RH préliminaire",
+          status: AppointmentStatus.INCOMING,
           applicationId: app.id,
+          userId: app.userId,
           createdAt: now,
           updatedAt: now,
         });
@@ -959,7 +975,9 @@ export default {
         rawAppointments.push({
           date: date1,
           reason: "Entretien de motivation et échange sur les compétences",
+          status: AppointmentStatus.CANCELED,
           applicationId: app.id,
+          userId: app.userId,
           createdAt: now,
           updatedAt: now,
         });

@@ -73,6 +73,8 @@ export default {
           model: "Organization",
           key: "id",
         },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       createdAt: {
         allowNull: false,
@@ -100,6 +102,8 @@ export default {
           model: "Campus",
           key: "id",
         },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       createdAt: {
         allowNull: false,
@@ -127,6 +131,8 @@ export default {
           model: "Promotion",
           key: "id",
         },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       createdAt: {
         allowNull: false,
@@ -155,6 +161,8 @@ export default {
           model: "Speciality",
           key: "id",
         },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       createdAt: {
         allowNull: false,
@@ -215,6 +223,8 @@ export default {
           model: "Organization",
           key: "id",
         },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       campusId: {
         allowNull: true,
@@ -223,6 +233,8 @@ export default {
           model: "Campus",
           key: "id",
         },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       promotionId: {
         allowNull: true,
@@ -231,6 +243,8 @@ export default {
           model: "Promotion",
           key: "id",
         },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       specialityId: {
         allowNull: true,
@@ -239,6 +253,8 @@ export default {
           model: "Speciality",
           key: "id",
         },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       subSpecialityId: {
         allowNull: true,
@@ -247,6 +263,8 @@ export default {
           model: "SubSpeciality",
           key: "id",
         },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       createdAt: {
         allowNull: false,
@@ -265,39 +283,49 @@ export default {
         type: DataTypes.INTEGER,
       },
       title: {
+        allowNull: false,
         type: DataTypes.STRING,
       },
       type: {
+        allowNull: false,
         type: DataTypes.STRING,
       },
       logo: {
+        allowNull: false,
         type: DataTypes.TEXT("long"),
       },
       company: {
+        allowNull: false,
         type: DataTypes.STRING,
       },
       city: {
+        allowNull: false,
         type: DataTypes.STRING,
       },
       date: {
+        allowNull: false,
         type: DataTypes.DATEONLY,
       },
       status: {
+        allowNull: false,
         type: DataTypes.STRING,
       },
       resend: {
+        allowNull: false,
         type: DataTypes.STRING,
       },
       description: {
         type: DataTypes.TEXT,
       },
       userId: {
-        allowNull: true,
+        allowNull: false,
         type: DataTypes.INTEGER,
         references: {
           model: "User",
           key: "id",
         },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       createdAt: {
         allowNull: false,
@@ -328,6 +356,8 @@ export default {
           model: "User",
           key: "id",
         },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       createdAt: {
         allowNull: false,
@@ -341,13 +371,13 @@ export default {
   },
 
   down: async (queryInterface: QueryInterface): Promise<void> => {
-    await queryInterface.dropTable("Media");
-    await queryInterface.dropTable("Application");
-    await queryInterface.dropTable("User");
-    await queryInterface.dropTable("SubSpeciality");
-    await queryInterface.dropTable("Speciality");
-    await queryInterface.dropTable("Promotion");
-    await queryInterface.dropTable("Campus");
-    await queryInterface.dropTable("Organization");
+    await queryInterface.dropTable("Media", { cascade: true });
+    await queryInterface.dropTable("Application", { cascade: true });
+    await queryInterface.dropTable("User", { cascade: true });
+    await queryInterface.dropTable("SubSpeciality", { cascade: true });
+    await queryInterface.dropTable("Speciality", { cascade: true });
+    await queryInterface.dropTable("Promotion", { cascade: true });
+    await queryInterface.dropTable("Campus", { cascade: true });
+    await queryInterface.dropTable("Organization", { cascade: true });
   },
 };
