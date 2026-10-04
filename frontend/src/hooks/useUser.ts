@@ -1,12 +1,16 @@
 import { useCallback, useState } from "react";
-import type { Application, Media } from "../interfaces/models.interface";
+import type {
+  Application,
+  Appointment,
+  Media,
+} from "../interfaces/models.interface";
 import type { Student, User } from "../interfaces/user.interface";
 import { api } from "../lib/api";
-import type { ApplicationFilters } from "../types/props.type";
 
 export const useUser = () => {
   const [user, setUser] = useState<User | Student | null>(null);
   const [applications, setApplications] = useState<Application[]>([]);
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [medias, setMedias] = useState<Media[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -19,10 +23,7 @@ export const useUser = () => {
       setUser(data);
       return data;
     } catch (err: unknown) {
-      const msg =
-        err instanceof Error
-          ? err.message
-          : "Error fetching user";
+      const msg = err instanceof Error ? err.message : "Error fetching user";
       setError(msg);
       throw err;
     } finally {
@@ -38,10 +39,7 @@ export const useUser = () => {
       setUser(created);
       return created;
     } catch (err: unknown) {
-      const msg =
-        err instanceof Error
-          ? err.message
-          : "Error creating user";
+      const msg = err instanceof Error ? err.message : "Error creating user";
       setError(msg);
       throw err;
     } finally {
@@ -55,13 +53,12 @@ export const useUser = () => {
       setError(null);
       try {
         const updated = await api.user.update(id, data);
-        setUser((prev) => (prev && prev.id === id ? { ...prev, ...updated } : prev));
+        setUser((prev) =>
+          prev && prev.id === id ? { ...prev, ...updated } : prev,
+        );
         return updated;
       } catch (err: unknown) {
-        const msg =
-          err instanceof Error
-            ? err.message
-            : "Error updating user";
+        const msg = err instanceof Error ? err.message : "Error updating user";
         setError(msg);
         throw err;
       } finally {
@@ -78,10 +75,7 @@ export const useUser = () => {
       await api.user.delete(id);
       setUser((prev) => (prev && prev.id === id ? null : prev));
     } catch (err: unknown) {
-      const msg =
-        err instanceof Error
-          ? err.message
-          : "Error deleting user";
+      const msg = err instanceof Error ? err.message : "Error deleting user";
       setError(msg);
       throw err;
     } finally {
@@ -100,8 +94,7 @@ export const useUser = () => {
         setUser(loggedUser);
         return loggedUser;
       } catch (err: unknown) {
-        const msg =
-          err instanceof Error ? err.message : "Error during login";
+        const msg = err instanceof Error ? err.message : "Error during login";
         setError(msg);
         throw err;
       } finally {
@@ -120,8 +113,7 @@ export const useUser = () => {
       setApplications([]);
       setMedias([]);
     } catch (err: unknown) {
-      const msg =
-        err instanceof Error ? err.message : "Error during logout";
+      const msg = err instanceof Error ? err.message : "Error during logout";
       setError(msg);
       throw err;
     } finally {
@@ -138,9 +130,7 @@ export const useUser = () => {
       return currentUser;
     } catch (err: unknown) {
       const msg =
-        err instanceof Error
-          ? err.message
-          : "Error fetching user profile";
+        err instanceof Error ? err.message : "Error fetching user's profile";
       setError(msg);
       throw err;
     } finally {
@@ -149,18 +139,18 @@ export const useUser = () => {
   }, []);
 
   const fetchApplications = useCallback(
-    async (userId: number, limit?: number, filters?: ApplicationFilters): Promise<Application[]> => {
+    async (userId: number): Promise<Application[]> => {
       setLoading(true);
       setError(null);
       try {
-        const data = await api.user.fetchApplications(userId, limit, filters);
+        const data = await api.user.fetchApplications(userId);
         setApplications(data);
         return data;
       } catch (err: unknown) {
         const msg =
           err instanceof Error
             ? err.message
-            : "Error fetching user applications";
+            : "Error fetching user's applications";
         setError(msg);
         throw err;
       } finally {
@@ -170,19 +160,19 @@ export const useUser = () => {
     [],
   );
 
-  const fetchMedias = useCallback(
-    async (userId: number): Promise<Media[]> => {
+  const fetchAppointments = useCallback(
+    async (userId: number): Promise<Appointment[]> => {
       setLoading(true);
       setError(null);
       try {
-        const data = await api.user.fetchMedias(userId);
-        setMedias(data);
+        const data = await api.user.fetchAppointments(userId);
+        setAppointments(data);
         return data;
       } catch (err: unknown) {
         const msg =
           err instanceof Error
             ? err.message
-            : "Error fetching user media";
+            : "Error fetching user's applications";
         setError(msg);
         throw err;
       } finally {
@@ -192,9 +182,27 @@ export const useUser = () => {
     [],
   );
 
+  const fetchMedias = useCallback(async (userId: number): Promise<Media[]> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await api.user.fetchMedias(userId);
+      setMedias(data);
+      return data;
+    } catch (err: unknown) {
+      const msg =
+        err instanceof Error ? err.message : "Error fetching user media";
+      setError(msg);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   return {
     user,
     applications,
+    appointments,
     medias,
     loading,
     error,
@@ -206,6 +214,7 @@ export const useUser = () => {
     logout,
     getMe,
     fetchApplications,
+    fetchAppointments,
     fetchMedias,
   };
 };

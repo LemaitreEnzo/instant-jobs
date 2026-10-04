@@ -9,6 +9,8 @@ import { DataTypes } from "sequelize";
 
 import { sequelize } from "../../config/db";
 import { Application } from "./application.model";
+import { AppointmentStatus } from "./enums/appointment.enum";
+import { User } from "./user.model";
 
 export interface Appointment extends Model<
   InferAttributes<Appointment>,
@@ -17,9 +19,11 @@ export interface Appointment extends Model<
   id: CreationOptional<number>;
   date: Date;
   reason: string;
+  status: AppointmentStatus;
   createdAt: CreationOptional<Date>;
   updatedAt: CreationOptional<Date>;
   applicationId: ForeignKey<Application["id"]>;
+  userId: ForeignKey<User["id"]>;
 }
 
 export const Appointment = sequelize.define<Appointment>(
@@ -38,6 +42,10 @@ export const Appointment = sequelize.define<Appointment>(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    status: {
+      allowNull: false,
+      type: DataTypes.ENUM(...Object.values(AppointmentStatus)),
+    },
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,
     applicationId: {
@@ -45,6 +53,14 @@ export const Appointment = sequelize.define<Appointment>(
       type: DataTypes.INTEGER,
       references: {
         model: Application,
+        key: "id",
+      },
+    },
+    userId: {
+      allowNull: false,
+      type: DataTypes.INTEGER,
+      references: {
+        model: User,
         key: "id",
       },
     },

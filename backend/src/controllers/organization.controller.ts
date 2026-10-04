@@ -60,9 +60,9 @@ export const getAllOrganizations = async (req: Request, res: Response) => {
       },
     });
 
-    res.status(200).json(organizations);
+    return res.status(200).json(organizations);
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -80,9 +80,9 @@ export const getOneOrganization = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Organization not found" });
     }
 
-    res.status(200).json(organization);
+    return res.status(200).json(organization);
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -91,9 +91,9 @@ export const createOrganization = async (req: Request, res: Response) => {
     const data = req.body;
     const organization = await Organization.create(data);
 
-    res.status(201).json(organization);
+    return res.status(201).json(organization);
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -113,9 +113,9 @@ export const updateOrganization = async (req: Request, res: Response) => {
     }
 
     await organization.update(data);
-    res.status(200).json(organization);
+    return res.status(200).json(organization);
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -133,9 +133,9 @@ export const deleteOrganization = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Organization not found" });
     }
     await organization.destroy();
-    res.status(204).end();
+    return res.status(204).end();
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -150,9 +150,9 @@ export const getCampuses = async (req: Request, res: Response) => {
       },
     });
 
-    res.status(200).json(campuses);
+    return res.status(200).json(campuses);
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -223,8 +223,8 @@ export const getUsers = async (req: Request, res: Response) => {
 
     const users: User[] = [...students, ...otherUsers];
 
-    res.status(200).json(users);
+    return res.status(200).json(users);
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };

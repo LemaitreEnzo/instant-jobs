@@ -83,11 +83,24 @@ export default {
         allowNull: false,
         type: DataTypes.STRING,
       },
+      status: {
+        type: DataTypes.STRING,
+      },
       applicationId: {
         allowNull: false,
         type: DataTypes.INTEGER,
         references: {
           model: "Application",
+          key: "id",
+        },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
+      },
+      userId: {
+        allowNull: false,
+        type: DataTypes.INTEGER,
+        references: {
+          model: "User",
           key: "id",
         },
         onDelete: "CASCADE",

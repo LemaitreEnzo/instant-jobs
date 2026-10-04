@@ -5,16 +5,16 @@
 import {
   createApplication,
   deleteApplication,
-  getAppointments,
+  getAppointmentsByApplication,
   getOneApplication,
   updateApplication,
 } from "controllers/application.controller";
 
+import { customRateLimiter } from "config/rate-limit";
 import express from "express";
 import { Application } from "src/models";
 import { UserRole } from "src/models/enums/user.enum";
 import { checkUser } from "../../middlewares/auth.middleware";
-import { customRateLimiter } from "config/rate-limit";
 
 const applicationsRoutes = express.Router({ mergeParams: true });
 
@@ -41,6 +41,9 @@ applicationsRoutes.delete(
   deleteApplication,
 );
 
-applicationsRoutes.get("/:applicationId/appointments", getAppointments);
+applicationsRoutes.get(
+  "/:applicationId/appointments",
+  getAppointmentsByApplication,
+);
 
 export default applicationsRoutes;
