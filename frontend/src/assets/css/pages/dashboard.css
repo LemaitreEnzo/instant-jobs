@@ -1,6 +1,8 @@
 .dashboard {
-    min-height: 100vh;
-    background-color: var(--body-color);
-    display: flex;
-    align-items: flex-start;
+  min-height: 100vh;
+  background-color: var(--body-color);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
 }

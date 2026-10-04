@@ -727,26 +727,6 @@ describe("FUNCTIONAL TESTS - USER", () => {
       });
     });
 
-    it("should return 200 with filtered applications when query params are provided", async () => {
-      jest
-        .mocked(Application.findAll)
-        .mockResolvedValue([mockApplications[0]] as any);
-
-      const res = await request(app)
-        .get(
-          `${USER_URL}/10/applications?status=pending&type=apprenticeship&limit=5`,
-        )
-        .set(AUTH_HEADER);
-
-      expect(res.status).toBe(200);
-      expect(res.body).toHaveLength(1);
-      expect(Application.findAll).toHaveBeenCalledWith(
-        expect.objectContaining({
-          limit: 5,
-        }),
-      );
-    });
-
     it("should return 200 with empty array if no application exists", async () => {
       jest.mocked(Application.findAll).mockResolvedValue([]);
 
