@@ -1,0 +1,21 @@
+.page-calendar{
+    background-color: var(--body-color);
+    display: flex;
+    flex-direction: column;
+    row-gap: 25px;
+}
+
+.page-calendar-header{
+    display: flex;
+    justify-content: space-between;
+    column-gap: 25px;
+}
+
+.page-calendar-container{
+    display: flex;
+    column-gap: 25px;
+}
+
+.page-calendar-appointments{
+    flex: 1;
+}

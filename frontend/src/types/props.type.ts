@@ -152,3 +152,7 @@ export type PropsApplicationHeader = {
 export type PropsPageTilte = {
   title: string;
 }
+
+export type PropsSoon = {
+  data: Appointment[]
+}

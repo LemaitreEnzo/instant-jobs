@@ -27,3 +27,9 @@ export enum StudentStatus {
   PENDING = "pending",
   FOUND = "found",
 }
+
+export enum CalendarView {
+  MONTH = "month",
+  WEEK = "week",
+  DAY = "day",
+}
