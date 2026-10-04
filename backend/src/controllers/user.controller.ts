@@ -82,6 +82,12 @@ export const login = async (req: Request, res: Response) => {
           attributes: { exclude: excludedApplicationData },
         },
         {
+          model: Appointment,
+          as: "appointments",
+          required: false,
+          attributes: { exclude: excludedAppointmentData },
+        },
+        {
           model: Campus,
           as: "campus",
           required: false,
@@ -140,6 +146,7 @@ export const login = async (req: Request, res: Response) => {
 
         if (rawUserData.role !== "student") {
           delete rawUserData.applications;
+          delete rawUserData.appointments;
           delete rawUserData.promotion;
           delete rawUserData.speciality;
           delete rawUserData.subSpeciality;
