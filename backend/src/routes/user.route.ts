@@ -54,13 +54,19 @@ usersRoutes.delete(
   deleteUser,
 );
 
-usersRoutes.get("/:userId/medias", authenticateUser, getMedias);
+usersRoutes.get("/:userId/medias", authenticateUser, checkUser(), getMedias);
 
-usersRoutes.get("/:userId/applications", authenticateUser, getApplications);
+usersRoutes.get(
+  "/:userId/applications",
+  authenticateUser,
+  checkUser(),
+  getApplications,
+);
 
 usersRoutes.get(
   "/:userId/appointments",
   authenticateUser,
+  checkUser(),
   getAppointmentsByUser,
 );
 

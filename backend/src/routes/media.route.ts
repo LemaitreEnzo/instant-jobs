@@ -1,3 +1,4 @@
+import { customRateLimiter } from "config/rate-limit";
 import express from "express";
 import {
   createMedia,
@@ -8,12 +9,15 @@ import {
 import { Media } from "src/models";
 import { UserRole } from "src/models/enums/user.enum";
 import { checkUser } from "../../middlewares/auth.middleware";
-import { customRateLimiter } from "config/rate-limit";
 
 const mediasRoutes = express.Router({ mergeParams: true });
 
 // GET
-mediasRoutes.get("/:id", getOneMedia);
+mediasRoutes.get(
+  "/:id",
+  checkUser(Object.values(UserRole), Media),
+  getOneMedia,
+);
 
 // CREATE
 mediasRoutes.post(
