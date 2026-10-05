@@ -23,7 +23,6 @@ const Button = ({
     .join(" ")
     .trim();
   const navigate = useNavigate();
-  const { navigateBack, ...buttonProps } = props;
 
   const handleBack = () => {
     if (window.history.length > 1) {
