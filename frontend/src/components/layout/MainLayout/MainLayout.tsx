@@ -13,9 +13,9 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   return (
     <div className="main-layout">
       <Header />
-      <main className="main_layout_body">
+      <main className="layout-body">
         <SideBar />
-        <div className="main_layout_children">{children || <Outlet />}</div>
+        <div className="layout-children">{children || <Outlet />}</div>
       </main>
     </div>
   );

@@ -1,19 +1,26 @@
 import { useState } from "react";
-import type { PropsApplicationFormModal } from "../../types/props.type";
-import type { dataApplication } from "../../types/form.type";
-import type { Application } from "../../interfaces/models.interface";
 import { useFormValidation, validators } from "../../hooks/useFormValidation";
+import type { Application } from "../../interfaces/models.interface";
+import type { dataApplication } from "../../types/form.type";
+import type { PropsApplicationFormModal } from "../../types/props.type";
 
 import { useAuth } from "../../context/AuthContext";
 import { useApplication } from "../../hooks/useApplication";
-import { ApplicationResend, ApplicationStatus, ApplicationStatusLabel, ApplicationType, ApplicationTypeLabel } from "../../types/enum.type";
+import {
+  ApplicationResend,
+  ApplicationResendLabel,
+  ApplicationStatus,
+  ApplicationStatusLabel,
+  ApplicationType,
+  ApplicationTypeLabel,
+} from "../../types/enum.type";
 
-import Modal from "../ui/Modal/Modal";
-import FormField from "../ui/FormField/FormField";
-import Select from "../ui/Select/Select";
-import FileInput from "../ui/FileInput/FileInput";
-import Input from "../ui/Input/Input";
 import Button from "../ui/Button/Button";
+import FileInput from "../ui/FileInput/FileInput";
+import FormField from "../ui/FormField/FormField";
+import Input from "../ui/Input/Input";
+import Modal from "../ui/Modal/Modal";
+import Select from "../ui/Select/Select";
 
 import "./ApplicationFormModal.css";
 
@@ -44,18 +51,20 @@ const ApplicationFormModal = (props: PropsApplicationFormModal) => {
     title: "",
     logo: "",
     company: "",
+    status: undefined,
+    type: undefined,
     city: "",
-    status: null,
-    type: null,
     description: "",
-    date: null,
-    resend: null,
+    date: undefined,
+    resend: undefined,
   };
 
   const [formData, setFormData] = useState<dataApplication>(() =>
-    props.application ? { ...props.application } : initData
+    props.application ? { ...props.application } : initData,
   );
-  const [preview, setPreview] = useState<string | undefined>(() => props.application?.logo);
+  const [preview, setPreview] = useState<string | undefined>(
+    () => props.application?.logo,
+  );
 
   const [prevApp, setPrevApp] = useState(props.application);
   const [prevOpen, setPrevOpen] = useState(open);
@@ -83,7 +92,9 @@ const ApplicationFormModal = (props: PropsApplicationFormModal) => {
     }
   }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     const { name, value } = e.target;
     setFormData((prev: dataApplication) => ({ ...prev, [name]: value }));
   };
@@ -128,7 +139,10 @@ const ApplicationFormModal = (props: PropsApplicationFormModal) => {
 
     try {
       if (props.application?.id) {
-        await update(props.application.id, formData as unknown as Partial<Application>);
+        await update(
+          props.application.id,
+          formData as unknown as Partial<Application>,
+        );
       } else {
         await create({
           ...formData,
@@ -149,7 +163,9 @@ const ApplicationFormModal = (props: PropsApplicationFormModal) => {
       return;
     }
 
-    if (!window.confirm("Êtes-vous sûr de vouloir supprimer cette candidature ?")) {
+    if (
+      !window.confirm("Êtes-vous sûr de vouloir supprimer cette candidature ?")
+    ) {
       return;
     }
 
@@ -166,7 +182,11 @@ const ApplicationFormModal = (props: PropsApplicationFormModal) => {
     <Modal
       open={open}
       onOpenChange={onOpenChange}
-      title={props.application ? "Modifier une candidature" : "Ajouter une candidature"}
+      title={
+        props.application
+          ? "Modifier une candidature"
+          : "Ajouter une candidature"
+      }
       description="Remplissez les informations ci-dessous pour enregistrer et suivre une nouvelle candidature."
       size="md"
       customClassName="application-form-modal"
@@ -182,7 +202,11 @@ const ApplicationFormModal = (props: PropsApplicationFormModal) => {
           {preview ? (
             <div className="preview-container" onClick={handleTrash}>
               <div className="preview-image-wrapper">
-                <img className="preview-image" src={preview} alt="Aperçu du logo" />
+                <img
+                  className="preview-image"
+                  src={preview}
+                  alt="Aperçu du logo"
+                />
                 <div className="preview-overlay">
                   <svg
                     width="24"
@@ -282,7 +306,7 @@ const ApplicationFormModal = (props: PropsApplicationFormModal) => {
               onChange={handleChange}
               options={Object.values(ApplicationStatus).map((status) => ({
                 label: ApplicationStatusLabel[status],
-                value: status
+                value: status,
               }))}
             />
           </FormField>
@@ -301,16 +325,13 @@ const ApplicationFormModal = (props: PropsApplicationFormModal) => {
               onChange={handleChange}
               options={Object.values(ApplicationType).map((type) => ({
                 label: ApplicationTypeLabel[type],
-                value: type
+                value: type,
               }))}
             />
           </FormField>
         </div>
 
-        <FormField
-          label="Description de la candidature"
-          name="description"
-        >
+        <FormField label="Description de la candidature" name="description">
           <Input
             type="text"
             name="description"
@@ -350,8 +371,8 @@ const ApplicationFormModal = (props: PropsApplicationFormModal) => {
             value={formData.resend}
             onChange={handleChange}
             options={Object.values(ApplicationResend).map((resend) => ({
-              label: ApplicationStatusLabel[resend],
-              value: resend
+              label: ApplicationResendLabel[resend],
+              value: resend,
             }))}
           />
         </FormField>
@@ -359,7 +380,11 @@ const ApplicationFormModal = (props: PropsApplicationFormModal) => {
         <div className="application-form-footer">
           <Button type="submit" className="btn-primary">
             <span>
-              {loading ? "Enregistrement..." : props.application ? "Modifier" : "Enregistrer"}
+              {loading
+                ? "Enregistrement..."
+                : props.application
+                  ? "Modifier"
+                  : "Enregistrer"}
             </span>
           </Button>
 
