@@ -7,6 +7,7 @@ import {
   ApplicationStatus,
   ApplicationType,
 } from "../../models/enums/application.enum";
+import { AppointmentStatus } from "../../models/enums/appointment.enum";
 import { UserRole } from "../../models/enums/user.enum";
 
 import app from "../../../app";
@@ -47,24 +48,48 @@ jest.mock("../../../middlewares/auth.middleware", () => ({
   checkUser: jest.fn(
     (allowedRoles: UserRole[] = Object.values(UserRole), model: any = null) =>
       async (req: any, res: any, next: any) => {
-        if (!req.user) {
+        const user = req.user;
+        if (!user) {
           return res.status(401).json({ message: "Not authenticated" });
         }
-        if (!allowedRoles.includes(req.user.role)) {
+        if (!allowedRoles.includes(user.role)) {
           return res
             .status(403)
             .json({ message: "Access denied: unauthorized role" });
         }
 
-        if (req.user.role === UserRole.STUDENT) {
-          if (model && req.params.id) {
-            const targetId = Number(req.params.id);
+        if (req.method === "POST" && user.role === UserRole.STUDENT && model) {
+          if (req.body?.userId && Number(req.body.userId) !== user.id) {
+            return res.status(403).json({
+              message:
+                "Access denied: you cannot create resources for another user.",
+            });
+          }
+          if (req.body) {
+            req.body.userId = user.id;
+          }
+          return next();
+        }
+
+        const rawTargetId = req.params.id ?? req.params.userId;
+        if (rawTargetId) {
+          const targetId = Number(rawTargetId);
+          if (Number.isNaN(targetId) || targetId <= 0) {
+            return res
+              .status(400)
+              .json({ message: "Invalid resource identifier" });
+          }
+
+          if (model) {
             try {
-              const modelData = await model.findByPk(targetId);
-              if (!modelData) {
+              const resource = await model.findByPk(targetId);
+              if (!resource) {
                 return res.status(404).json({ message: "Resource not found" });
               }
-              if (modelData.userId !== req.user.id) {
+              if (
+                user.role === UserRole.STUDENT &&
+                resource.userId !== user.id
+              ) {
                 return res.status(403).json({
                   message:
                     "Access denied: you can only access your own resources.",
@@ -75,14 +100,11 @@ jest.mock("../../../middlewares/auth.middleware", () => ({
                 .status(500)
                 .json({ message: "Database verification failed" });
             }
-          } else if (req.params.id) {
-            const targetId = Number(req.params.id);
-            if (req.user.id !== targetId) {
-              return res.status(403).json({
-                message:
-                  "Access denied: a student can only modify their own account.",
-              });
-            }
+          } else if (user.role === UserRole.STUDENT && user.id !== targetId) {
+            return res.status(403).json({
+              message:
+                "Access denied: a student can only modify their own account.",
+            });
           }
         }
 
@@ -236,11 +258,15 @@ const mockAppointments = [
     id: 1,
     date: new Date("2026-09-06T10:00:00.000Z"),
     reason: "Premier entretien téléphonique RH",
+    status: AppointmentStatus.INCOMING,
+    userId: 10,
   },
   {
     id: 2,
     date: new Date("2026-09-13T14:30:00.000Z"),
     reason: "Entretien technique et présentation des projets",
+    status: AppointmentStatus.INCOMING,
+    userId: 10,
   },
 ];
 
@@ -380,6 +406,38 @@ describe("FUNCTIONAL TESTS - APPLICATION", () => {
       expect(res.body).toEqual(createdApp);
     });
 
+    it("should return 403 when student attempts to create application for another user", async () => {
+      currentUser = {
+        id: 10,
+        uuid: "00000000-0000-0000-0000-000000000010",
+        role: UserRole.STUDENT,
+      };
+      const payloadForOtherUser = {
+        title: "Stage Frontend",
+        type: ApplicationType.INTERNSHIP,
+        logo: "logo.png",
+        company: "Other Company",
+        city: "Paris",
+        date: "2026-09-10",
+        status: ApplicationStatus.PENDING,
+        resend: ApplicationResend.NO,
+        description: "Description",
+        userId: 99,
+      };
+
+      const res = await request(app)
+        .post(APPLICATION_URL)
+        .set(AUTH_HEADER)
+        .send(payloadForOtherUser);
+
+      expect(res.status).toBe(403);
+      expect(res.body).toEqual({
+        message:
+          "Access denied: you cannot create resources for another user.",
+      });
+      expect(Application.create).not.toHaveBeenCalled();
+    });
+
     it("should return 401 if not authenticated", async () => {
       const res = await request(app)
         .post(APPLICATION_URL)
@@ -409,6 +467,7 @@ describe("FUNCTIONAL TESTS - APPLICATION", () => {
   describe("PATCH /application/:id", () => {
     it("should return 200 and update application as admin", async () => {
       const mockInstance = createMockApplicationInstance();
+      jest.mocked(Application.findByPk).mockResolvedValue(mockInstance as any);
       jest.mocked(Application.findOne).mockResolvedValue(mockInstance as any);
 
       const updateData = {
@@ -436,6 +495,7 @@ describe("FUNCTIONAL TESTS - APPLICATION", () => {
         organizationId: 1,
       };
       const mockInstance = createMockApplicationInstance();
+      jest.mocked(Application.findByPk).mockResolvedValue(mockInstance as any);
       jest.mocked(Application.findOne).mockResolvedValue(mockInstance as any);
 
       const updateData = { city: "Lyon" };
@@ -477,7 +537,7 @@ describe("FUNCTIONAL TESTS - APPLICATION", () => {
         role: UserRole.STUDENT,
       };
       const mockInstance = createMockApplicationInstance();
-      jest.mocked(Application.findOne).mockResolvedValue(mockInstance as any);
+      jest.mocked(Application.findByPk).mockResolvedValue(mockInstance as any);
 
       const res = await request(app)
         .patch(`${APPLICATION_URL}/1`)
@@ -491,8 +551,18 @@ describe("FUNCTIONAL TESTS - APPLICATION", () => {
       expect(mockInstance.update).not.toHaveBeenCalled();
     });
 
+    it("should return 400 if application identifier is invalid on PATCH", async () => {
+      const res = await request(app)
+        .patch(`${APPLICATION_URL}/invalid-id`)
+        .set(AUTH_HEADER)
+        .send({ title: "Test" });
+
+      expect(res.status).toBe(400);
+      expect(res.body).toEqual({ message: "Invalid resource identifier" });
+    });
+
     it("should return 404 if application is not found", async () => {
-      jest.mocked(Application.findOne).mockResolvedValue(null);
+      jest.mocked(Application.findByPk).mockResolvedValue(null);
 
       const res = await request(app)
         .patch(`${APPLICATION_URL}/999`)
@@ -500,7 +570,7 @@ describe("FUNCTIONAL TESTS - APPLICATION", () => {
         .send({ title: "Non-existent" });
 
       expect(res.status).toBe(404);
-      expect(res.body).toEqual({ message: "Application not found" });
+      expect(res.body).toEqual({ message: "Resource not found" });
     });
 
     it("should return 401 if not authenticated", async () => {
@@ -516,7 +586,7 @@ describe("FUNCTIONAL TESTS - APPLICATION", () => {
 
     it("should return 500 on database error", async () => {
       jest
-        .mocked(Application.findOne)
+        .mocked(Application.findByPk)
         .mockRejectedValue(new Error("Database failure"));
 
       const res = await request(app)
@@ -525,13 +595,14 @@ describe("FUNCTIONAL TESTS - APPLICATION", () => {
         .send({ title: "Updated" });
 
       expect(res.status).toBe(500);
-      expect(res.body).toEqual({ message: "Internal server error" });
+      expect(res.body).toEqual({ message: "Database verification failed" });
     });
   });
 
   describe("DELETE /application/:id", () => {
     it("should return 204 and delete application as admin", async () => {
       const mockInstance = createMockApplicationInstance();
+      jest.mocked(Application.findByPk).mockResolvedValue(mockInstance as any);
       jest.mocked(Application.findOne).mockResolvedValue(mockInstance as any);
 
       const res = await request(app)
@@ -550,6 +621,7 @@ describe("FUNCTIONAL TESTS - APPLICATION", () => {
         organizationId: 1,
       };
       const mockInstance = createMockApplicationInstance();
+      jest.mocked(Application.findByPk).mockResolvedValue(mockInstance as any);
       jest.mocked(Application.findOne).mockResolvedValue(mockInstance as any);
 
       const res = await request(app)
@@ -586,7 +658,7 @@ describe("FUNCTIONAL TESTS - APPLICATION", () => {
         role: UserRole.STUDENT,
       };
       const mockInstance = createMockApplicationInstance();
-      jest.mocked(Application.findOne).mockResolvedValue(mockInstance as any);
+      jest.mocked(Application.findByPk).mockResolvedValue(mockInstance as any);
 
       const res = await request(app)
         .delete(`${APPLICATION_URL}/1`)
@@ -599,15 +671,24 @@ describe("FUNCTIONAL TESTS - APPLICATION", () => {
       expect(mockInstance.destroy).not.toHaveBeenCalled();
     });
 
+    it("should return 400 if application identifier is invalid on DELETE", async () => {
+      const res = await request(app)
+        .delete(`${APPLICATION_URL}/invalid-id`)
+        .set(AUTH_HEADER);
+
+      expect(res.status).toBe(400);
+      expect(res.body).toEqual({ message: "Invalid resource identifier" });
+    });
+
     it("should return 404 if application is not found", async () => {
-      jest.mocked(Application.findOne).mockResolvedValue(null);
+      jest.mocked(Application.findByPk).mockResolvedValue(null);
 
       const res = await request(app)
         .delete(`${APPLICATION_URL}/999`)
         .set(AUTH_HEADER);
 
       expect(res.status).toBe(404);
-      expect(res.body).toEqual({ message: "Application not found" });
+      expect(res.body).toEqual({ message: "Resource not found" });
     });
 
     it("should return 401 if not authenticated", async () => {
@@ -621,7 +702,7 @@ describe("FUNCTIONAL TESTS - APPLICATION", () => {
 
     it("should return 500 on database error", async () => {
       jest
-        .mocked(Application.findOne)
+        .mocked(Application.findByPk)
         .mockRejectedValue(new Error("Database failure"));
 
       const res = await request(app)
@@ -629,7 +710,7 @@ describe("FUNCTIONAL TESTS - APPLICATION", () => {
         .set(AUTH_HEADER);
 
       expect(res.status).toBe(500);
-      expect(res.body).toEqual({ message: "Internal server error" });
+      expect(res.body).toEqual({ message: "Database verification failed" });
     });
   });
 
@@ -649,11 +730,15 @@ describe("FUNCTIONAL TESTS - APPLICATION", () => {
           id: 1,
           date: "2026-09-06T10:00:00.000Z",
           reason: "Premier entretien téléphonique RH",
+          status: AppointmentStatus.INCOMING,
+          userId: 10,
         },
         {
           id: 2,
           date: "2026-09-13T14:30:00.000Z",
           reason: "Entretien technique et présentation des projets",
+          status: AppointmentStatus.INCOMING,
+          userId: 10,
         },
       ]);
       expect(Appointment.findAll).toHaveBeenCalledWith({

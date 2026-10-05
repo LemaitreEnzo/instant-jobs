@@ -29,6 +29,7 @@ export const getOneApplication = async (req: Request, res: Response) => {
 
     return res.status(200).json(application);
   } catch (error) {
+    console.error("[getOneApplication] Error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -38,6 +39,7 @@ export const createApplication = async (req: Request, res: Response) => {
     const application = await Application.create(req.body);
     return res.status(201).json(application);
   } catch (error) {
+    console.error("[createApplication] Error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -60,6 +62,7 @@ export const updateApplication = async (req: Request, res: Response) => {
     await application.update(data);
     return res.status(200).json(application);
   } catch (error) {
+    console.error("[updateApplication] Error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -81,6 +84,7 @@ export const deleteApplication = async (req: Request, res: Response) => {
     await application.destroy();
     return res.status(204).end();
   } catch (error) {
+    console.error("[deleteApplication] Error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -101,6 +105,7 @@ export const getAppointmentsByApplication = async (
 
     return res.status(200).json(appointments);
   } catch (error) {
+    console.error("[getAppointmentsByApplication] Error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
