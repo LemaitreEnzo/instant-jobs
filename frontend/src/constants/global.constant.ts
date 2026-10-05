@@ -1,1 +1,3 @@
-export const BASE_URL: string = `${import.meta.env.VITE_BASE_API_URL}/${import.meta.env.VITE_API_VERSION}`;
+import getEnv from "../utils/env.util";
+
+export const BASE_URL: string = `${getEnv("VITE_BASE_API_URL")}/${getEnv("VITE_API_VERSION")}`;

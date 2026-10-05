@@ -8,5 +8,5 @@ export const sequelize = new Sequelize({
   database: getEnv("DB_NAME"),
   username: getEnv("DB_USER"),
   password: getEnv("DB_PASSWORD"),
-  logging: false,
+  logging: process.env.NODE_ENV === "dev" ? console.log : false,
 });
