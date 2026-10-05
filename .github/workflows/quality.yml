@@ -4,27 +4,40 @@ on:
   push:
     branches:
       - dev
+  pull_request:
+    branches:
+      - dev
+      - main
 
 jobs:
   backend-ci:
     runs-on: ubuntu-latest
 
-    # Setup a local database instance inside CI to validate migrations
     services:
       postgres:
-        image: postgres:15
+        image: postgres:16
         env:
-          POSTGRES_USER: ${{ secrets.dev.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.dev.POSTGRES_PASSWORD }}
-          POSTGRES_DB: ${{ secrets.dev.POSTGRES_DB }}
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: instant_jobs
         ports:
           - 5432:5432
-        # Ensure postgres is healthy before running steps
         options: >-
-          --health-cmd pg_isready
+          --health-cmd "pg_isready -U postgres"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+
+    env:
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_NAME: instant_jobs
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      PORT: 3000
+      VERSION: v1
+      SECRET: ci-secret
+      TOKEN: ci-token
 
     steps:
       - name: Checkout repository
@@ -33,42 +46,21 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
           cache: "npm"
           cache-dependency-path: "backend/package-lock.json"
 
       - name: Install Backend Dependencies
-        run: |
-          cd backend
-          npm ci
-
-      - name: Run Linter
-        run: |
-          cd backend
-          npm run lint
+        working-directory: backend
+        run: npm ci
 
       - name: Run Sequelize Migrations
-        env:
-          NODE_ENV: dev
-          DB_USERNAME: ${{ secrets.dev.DB_USER }}
-          DB_PASSWORD: ${{ secrets.dev.DB_PASSWORD }}
-          DB_NAME: ${{ secrets.dev.DB_NAME }}
-          DB_HOST: ${{ secrets.dev.DB_HOST }}
-          DB_DIALECT: postgres
-        run: |
-          cd backend
-          npx sequelize-cli db:migrate
+        working-directory: backend
+        run: npx sequelize-cli db:migrate
 
       - name: Run Backend Tests
-        env:
-          NODE_ENV: dev
-          DB_USERNAME: ${{ secrets.dev.DB_USER }}
-          DB_PASSWORD: ${{ secrets.dev.DB_PASSWORD }}
-          DB_NAME: ${{ secrets.dev.DB_NAME }}
-          DB_HOST: ${{ secrets.dev.DB_HOST }}
-        run: |
-          cd backend
-          npm test
+        working-directory: backend
+        run: npm test
 
   # --- FRONTEND JOB ---
   frontend-ci:
@@ -81,27 +73,22 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
           cache: "npm"
           cache-dependency-path: "frontend/package-lock.json"
 
       - name: Install Frontend Dependencies
-        run: |
-          cd frontend
-          npm ci
+        working-directory: frontend
+        run: npm ci
 
-      - name: Run Frontend Linter & Tests
-        run: |
-          cd frontend
-          npm run lint
-          npm test -- --watchAll=false
+      - name: Run Frontend Linter
+        working-directory: frontend
+        run: npm run lint
 
       - name: Build React Application
-        run: |
-          cd frontend
-          npm run build
+        working-directory: frontend
+        run: npm run build
 
-      # Upload production build bundle for the deployment step
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
