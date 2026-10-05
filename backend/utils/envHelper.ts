@@ -1,4 +1,13 @@
-import "dotenv/config";
+import dotenv from "dotenv";
+import path from "path";
+
+const env = process.env.NODE_ENV;
+
+const envFile = env ? `.env.${env}` : ".env";
+
+dotenv.config({
+  path: path.resolve(process.cwd(), envFile),
+});
 
 /**
  * Retrieves the value of an environment variable or throws an error if undefined.

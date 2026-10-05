@@ -6,6 +6,7 @@
   "scripts": {
     "test:watch": "jest --watch --verbose",
     "test:cov": "jest --coverage --verbose",
+    "test": "jest",
     "dev": "npx tsx watch ./server.ts",
     "prod": "NODE_ENV=prod node dist/server.js",
     "build": "tsc && tsc-alias",
