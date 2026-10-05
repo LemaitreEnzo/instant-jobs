@@ -3,7 +3,8 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import request from "supertest";
 
-import { Application, Media, User } from "src/models";
+import { Application, Appointment, Media, User } from "src/models";
+import { AppointmentStatus } from "../../models/enums/appointment.enum";
 import { StudentStatus, UserRole } from "../../models/enums/user.enum";
 
 import app from "../../../app";
@@ -40,26 +41,70 @@ jest.mock("../../../middlewares/auth.middleware", () => ({
     next();
   }),
   checkUser: jest.fn(
-    (allowedRoles: UserRole[] = Object.values(UserRole)) => (req: any, res: any, next: any) => {
-      if (!req.user) {
-        return res.status(401).json({ message: "Not authenticated" });
-      }
-      if (!allowedRoles.includes(req.user.role)) {
-        return res
-          .status(403)
-          .json({ message: "Access denied: unauthorized role" });
-      }
-
-      if (req.params.id) {
-        const targetId = Number(req.params.id);
-        if (req.user.role === UserRole.STUDENT && req.user.id !== targetId) {
-          return res.status(403).json({
-            message: "Access denied: a student can only modify their own account.",
-          });
+    (allowedRoles: UserRole[] = Object.values(UserRole), model: any = null) =>
+      async (req: any, res: any, next: any) => {
+        const user = req.user;
+        if (!user) {
+          return res.status(401).json({ message: "Not authenticated" });
         }
-      }
-      next();
-    },
+        if (!allowedRoles.includes(user.role)) {
+          return res
+            .status(403)
+            .json({ message: "Access denied: unauthorized role" });
+        }
+
+        if (req.method === "POST" && user.role === UserRole.STUDENT && model) {
+          if (req.body?.userId && Number(req.body.userId) !== user.id) {
+            return res.status(403).json({
+              message:
+                "Access denied: you cannot create resources for another user.",
+            });
+          }
+          if (req.body) {
+            req.body.userId = user.id;
+          }
+          return next();
+        }
+
+        const rawTargetId = req.params.id ?? req.params.userId;
+        if (rawTargetId) {
+          const targetId = Number(rawTargetId);
+          if (Number.isNaN(targetId) || targetId <= 0) {
+            return res
+              .status(400)
+              .json({ message: "Invalid resource identifier" });
+          }
+
+          if (model) {
+            try {
+              const resource = await model.findByPk(targetId);
+              if (!resource) {
+                return res.status(404).json({ message: "Resource not found" });
+              }
+              if (
+                user.role === UserRole.STUDENT &&
+                resource.userId !== user.id
+              ) {
+                return res.status(403).json({
+                  message:
+                    "Access denied: you can only access your own resources.",
+                });
+              }
+            } catch (error) {
+              return res
+                .status(500)
+                .json({ message: "Database verification failed" });
+            }
+          } else if (user.role === UserRole.STUDENT && user.id !== targetId) {
+            return res.status(403).json({
+              message:
+                "Access denied: a student can only modify their own account.",
+            });
+          }
+        }
+
+        next();
+      },
   ),
 }));
 
@@ -160,7 +205,16 @@ jest.mock("src/models", () => ({
     hasMany: jest.fn(),
     belongsTo: jest.fn(),
   },
-  Appointment: { hasMany: jest.fn(), belongsTo: jest.fn() },
+  Appointment: {
+    findAll: jest.fn(),
+    findOne: jest.fn(),
+    findByPk: jest.fn(),
+    create: jest.fn(),
+    update: jest.fn(),
+    destroy: jest.fn(),
+    hasMany: jest.fn(),
+    belongsTo: jest.fn(),
+  },
 }));
 
 const AUTH_HEADER = { Authorization: "Bearer test-valid-token" };
@@ -194,6 +248,14 @@ const mockStudentUser = {
   password_hash: hashedTestPassword,
   medias: [{ id: 1, name: "CV - Développeur Web", path: "/uploads/cv.pdf" }],
   applications: [{ id: 1, title: "Alternance Développeur", status: "pending" }],
+  appointments: [
+    {
+      id: 1,
+      date: "2026-09-06T10:00:00.000Z",
+      reason: "Premier entretien téléphonique RH",
+      status: AppointmentStatus.INCOMING,
+    },
+  ],
   campus: { id: 1, name: "Campus Compiègne" },
 };
 
@@ -215,6 +277,17 @@ const mockApplications = [
     title: "Stage Frontend React",
     status: "accepted",
     type: "internship",
+    userId: 10,
+  },
+];
+
+const mockAppointments = [
+  {
+    id: 1,
+    date: "2026-09-06T10:00:00.000Z",
+    reason: "Premier entretien téléphonique RH",
+    status: AppointmentStatus.INCOMING,
+    applicationId: 1,
     userId: 10,
   },
 ];
@@ -685,6 +758,24 @@ describe("FUNCTIONAL TESTS - USER", () => {
       expect(res.body).toEqual([]);
     });
 
+    it("should return 403 when student attempts to access another user's medias", async () => {
+      currentUser = {
+        id: 99,
+        uuid: "00000000-0000-0000-0000-000000000099",
+        role: UserRole.STUDENT,
+      };
+
+      const res = await request(app)
+        .get(`${USER_URL}/10/medias`)
+        .set(AUTH_HEADER);
+
+      expect(res.status).toBe(403);
+      expect(res.body).toEqual({
+        message: "Access denied: a student can only modify their own account.",
+      });
+      expect(Media.findAll).not.toHaveBeenCalled();
+    });
+
     it("should return 401 if the user isn't authenticated", async () => {
       const res = await request(app).get(`${USER_URL}/10/medias`);
 
@@ -738,6 +829,24 @@ describe("FUNCTIONAL TESTS - USER", () => {
       expect(res.body).toEqual([]);
     });
 
+    it("should return 403 when student attempts to access another user's applications", async () => {
+      currentUser = {
+        id: 99,
+        uuid: "00000000-0000-0000-0000-000000000099",
+        role: UserRole.STUDENT,
+      };
+
+      const res = await request(app)
+        .get(`${USER_URL}/10/applications`)
+        .set(AUTH_HEADER);
+
+      expect(res.status).toBe(403);
+      expect(res.body).toEqual({
+        message: "Access denied: a student can only modify their own account.",
+      });
+      expect(Application.findAll).not.toHaveBeenCalled();
+    });
+
     it("should return 401 if the user isn't authenticated", async () => {
       const res = await request(app).get(`${USER_URL}/10/applications`);
 
@@ -754,6 +863,83 @@ describe("FUNCTIONAL TESTS - USER", () => {
 
       const res = await request(app)
         .get(`${USER_URL}/10/applications`)
+        .set(AUTH_HEADER);
+
+      expect(res.status).toBe(500);
+      expect(res.body).toEqual({ message: "Internal server error" });
+    });
+  });
+
+  describe("GET /user/:userId/appointments", () => {
+    it("should return 200 with all appointments of the user", async () => {
+      jest
+        .mocked(Appointment.findAll)
+        .mockResolvedValue(mockAppointments as any);
+
+      const res = await request(app)
+        .get(`${USER_URL}/10/appointments`)
+        .set(AUTH_HEADER);
+
+      expect(res.status).toBe(200);
+      expect(Array.isArray(res.body)).toBe(true);
+      expect(res.body).toHaveLength(1);
+      expect(res.body[0]).toMatchObject({
+        id: 1,
+        reason: "Premier entretien téléphonique RH",
+        status: AppointmentStatus.INCOMING,
+      });
+      expect(Appointment.findAll).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { userId: "10" },
+        }),
+      );
+    });
+
+    it("should return 200 with empty array if no appointment exists", async () => {
+      jest.mocked(Appointment.findAll).mockResolvedValue([]);
+
+      const res = await request(app)
+        .get(`${USER_URL}/10/appointments`)
+        .set(AUTH_HEADER);
+
+      expect(res.status).toBe(200);
+      expect(res.body).toEqual([]);
+    });
+
+    it("should return 403 when student attempts to access another user's appointments", async () => {
+      currentUser = {
+        id: 99,
+        uuid: "00000000-0000-0000-0000-000000000099",
+        role: UserRole.STUDENT,
+      };
+
+      const res = await request(app)
+        .get(`${USER_URL}/10/appointments`)
+        .set(AUTH_HEADER);
+
+      expect(res.status).toBe(403);
+      expect(res.body).toEqual({
+        message: "Access denied: a student can only modify their own account.",
+      });
+      expect(Appointment.findAll).not.toHaveBeenCalled();
+    });
+
+    it("should return 401 if the user isn't authenticated", async () => {
+      const res = await request(app).get(`${USER_URL}/10/appointments`);
+
+      expect(res.status).toBe(401);
+      expect(res.body).toEqual({
+        message: "Unauthorized: Missing authentication token",
+      });
+    });
+
+    it("should return 500 if the appointments search fails", async () => {
+      jest
+        .mocked(Appointment.findAll)
+        .mockRejectedValue(new Error("Database failure"));
+
+      const res = await request(app)
+        .get(`${USER_URL}/10/appointments`)
         .set(AUTH_HEADER);
 
       expect(res.status).toBe(500);

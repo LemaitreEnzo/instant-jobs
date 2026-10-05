@@ -628,12 +628,12 @@ describe("FUNCTIONAL TESTS - ORGANIZATION", () => {
     });
   });
 
-  describe("GET /organization/:organizationId/campus", () => {
+  describe("GET /organization/:organizationId/campuses", () => {
     it("should return 200 with all campuses of the organization", async () => {
       jest.mocked(Campus.findAll).mockResolvedValue(mockCampuses as any);
 
       const res = await request(app)
-        .get(`${ORGANIZATION_URL}/1/campus`)
+        .get(`${ORGANIZATION_URL}/1/campuses`)
         .set(AUTH_HEADER);
 
       expect(res.status).toBe(200);
@@ -655,7 +655,7 @@ describe("FUNCTIONAL TESTS - ORGANIZATION", () => {
       jest.mocked(Campus.findAll).mockResolvedValue([]);
 
       const res = await request(app)
-        .get(`${ORGANIZATION_URL}/1/campus`)
+        .get(`${ORGANIZATION_URL}/1/campuses`)
         .set(AUTH_HEADER);
 
       expect(res.status).toBe(200);
@@ -668,7 +668,7 @@ describe("FUNCTIONAL TESTS - ORGANIZATION", () => {
         .mockRejectedValue(new Error("Database failure"));
 
       const res = await request(app)
-        .get(`${ORGANIZATION_URL}/1/campus`)
+        .get(`${ORGANIZATION_URL}/1/campuses`)
         .set(AUTH_HEADER);
 
       expect(res.status).toBe(500);

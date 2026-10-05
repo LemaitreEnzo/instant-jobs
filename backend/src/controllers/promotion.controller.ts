@@ -28,6 +28,7 @@ export const getOnePromotion = async (req: Request, res: Response) => {
 
     return res.status(200).json(promotion);
   } catch (error) {
+    console.error("[getOnePromotion] Error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -39,6 +40,7 @@ export const createPromotion = async (req: Request, res: Response) => {
 
     return res.status(201).json(promotion);
   } catch (error) {
+    console.error("[createPromotion] Error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -61,6 +63,7 @@ export const updatePromotion = async (req: Request, res: Response) => {
     await promotion.update(data);
     return res.status(200).json(promotion);
   } catch (error) {
+    console.error("[updatePromotion] Error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -79,6 +82,7 @@ export const deletePromotion = async (req: Request, res: Response) => {
     await promotion.destroy();
     return res.status(204).end();
   } catch (error) {
+    console.error("[deletePromotion] Error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -96,6 +100,7 @@ export const getSpecialities = async (req: Request, res: Response) => {
 
     return res.status(200).json(specialities);
   } catch (error) {
+    console.error("[getSpecialities] Error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };

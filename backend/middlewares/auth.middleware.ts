@@ -109,8 +109,9 @@ export const checkUser = <M extends OwnableModelInstance>(
       return next();
     }
 
-    if (req.params.id) {
-      const targetId = Number(req.params.id);
+    const rawTargetId = req.params.id ?? req.params.userId;
+    if (rawTargetId) {
+      const targetId = Number(rawTargetId);
       if (Number.isNaN(targetId) || targetId <= 0) {
         return res.status(400).json({ message: "Invalid resource identifier" });
       }

@@ -42,24 +42,48 @@ jest.mock("../../../middlewares/auth.middleware", () => ({
   checkUser: jest.fn(
     (allowedRoles: UserRole[] = Object.values(UserRole), model: any = null) =>
       async (req: any, res: any, next: any) => {
-        if (!req.user) {
+        const user = req.user;
+        if (!user) {
           return res.status(401).json({ message: "Not authenticated" });
         }
-        if (!allowedRoles.includes(req.user.role)) {
+        if (!allowedRoles.includes(user.role)) {
           return res
             .status(403)
             .json({ message: "Access denied: unauthorized role" });
         }
 
-        if (req.user.role === UserRole.STUDENT) {
-          if (model && req.params.id) {
-            const targetId = Number(req.params.id);
+        if (req.method === "POST" && user.role === UserRole.STUDENT && model) {
+          if (req.body?.userId && Number(req.body.userId) !== user.id) {
+            return res.status(403).json({
+              message:
+                "Access denied: you cannot create resources for another user.",
+            });
+          }
+          if (req.body) {
+            req.body.userId = user.id;
+          }
+          return next();
+        }
+
+        const rawTargetId = req.params.id ?? req.params.userId;
+        if (rawTargetId) {
+          const targetId = Number(rawTargetId);
+          if (Number.isNaN(targetId) || targetId <= 0) {
+            return res
+              .status(400)
+              .json({ message: "Invalid resource identifier" });
+          }
+
+          if (model) {
             try {
-              const modelData = await model.findByPk(targetId);
-              if (!modelData) {
+              const resource = await model.findByPk(targetId);
+              if (!resource) {
                 return res.status(404).json({ message: "Resource not found" });
               }
-              if (modelData.userId !== req.user.id) {
+              if (
+                user.role === UserRole.STUDENT &&
+                resource.userId !== user.id
+              ) {
                 return res.status(403).json({
                   message:
                     "Access denied: you can only access your own resources.",
@@ -70,14 +94,11 @@ jest.mock("../../../middlewares/auth.middleware", () => ({
                 .status(500)
                 .json({ message: "Database verification failed" });
             }
-          } else if (req.params.id) {
-            const targetId = Number(req.params.id);
-            if (req.user.id !== targetId) {
-              return res.status(403).json({
-                message:
-                  "Access denied: a student can only modify their own account.",
-              });
-            }
+          } else if (user.role === UserRole.STUDENT && user.id !== targetId) {
+            return res.status(403).json({
+              message:
+                "Access denied: a student can only modify their own account.",
+            });
           }
         }
 
@@ -217,8 +238,9 @@ describe("FUNCTIONAL TESTS - MEDIA", () => {
   });
 
   describe("GET /media/:id", () => {
-    it("should return 200 and the media when it exists", async () => {
+    it("should return 200 and the media when it exists as admin", async () => {
       const mockInstance = createMockMediaInstance();
+      jest.mocked(Media.findByPk).mockResolvedValue(mockInstance as any);
       jest.mocked(Media.findOne).mockResolvedValue(mockInstance as any);
 
       const res = await request(app).get(`${MEDIA_URL}/1`).set(AUTH_HEADER);
@@ -230,20 +252,75 @@ describe("FUNCTIONAL TESTS - MEDIA", () => {
         path: baseMediaData.path,
         userId: 10,
       });
-      expect(Media.findOne).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: { id: "1" },
-        }),
-      );
+      expect(Media.findByPk).toHaveBeenCalledWith(1);
+      expect(Media.findOne).toHaveBeenCalledWith({
+        where: { id: "1" },
+        attributes: {
+          exclude: ["createdAt", "updatedAt"],
+        },
+      });
+    });
+
+    it("should return 200 when student requests their own media", async () => {
+      currentUser = {
+        id: 10,
+        uuid: "00000000-0000-0000-0000-000000000010",
+        role: UserRole.STUDENT,
+      };
+      const mockInstance = createMockMediaInstance();
+      jest.mocked(Media.findByPk).mockResolvedValue(mockInstance as any);
+      jest.mocked(Media.findOne).mockResolvedValue(mockInstance as any);
+
+      const res = await request(app).get(`${MEDIA_URL}/1`).set(AUTH_HEADER);
+
+      expect(res.status).toBe(200);
+      expect(res.body).toMatchObject({
+        id: 1,
+        userId: 10,
+      });
+    });
+
+    it("should return 403 when student attempts to access another user's media", async () => {
+      currentUser = {
+        id: 99,
+        uuid: "00000000-0000-0000-0000-000000000099",
+        role: UserRole.STUDENT,
+      };
+      const mockInstance = createMockMediaInstance();
+      jest.mocked(Media.findByPk).mockResolvedValue(mockInstance as any);
+
+      const res = await request(app).get(`${MEDIA_URL}/1`).set(AUTH_HEADER);
+
+      expect(res.status).toBe(403);
+      expect(res.body).toEqual({
+        message: "Access denied: you can only access your own resources.",
+      });
+      expect(Media.findOne).not.toHaveBeenCalled();
+    });
+
+    it("should return 400 if media identifier is invalid", async () => {
+      const res = await request(app)
+        .get(`${MEDIA_URL}/invalid-id`)
+        .set(AUTH_HEADER);
+
+      expect(res.status).toBe(400);
+      expect(res.body).toEqual({ message: "Invalid resource identifier" });
+    });
+
+    it("should return 400 if media identifier is zero or negative", async () => {
+      const res = await request(app).get(`${MEDIA_URL}/0`).set(AUTH_HEADER);
+
+      expect(res.status).toBe(400);
+      expect(res.body).toEqual({ message: "Invalid resource identifier" });
     });
 
     it("should return 404 if media is not found", async () => {
-      jest.mocked(Media.findOne).mockResolvedValue(null);
+      jest.mocked(Media.findByPk).mockResolvedValue(null);
 
       const res = await request(app).get(`${MEDIA_URL}/999`).set(AUTH_HEADER);
 
       expect(res.status).toBe(404);
-      expect(res.body).toEqual({ message: "Media not found" });
+      expect(res.body).toEqual({ message: "Resource not found" });
     });
 
     it("should return 401 if not authenticated", async () => {
@@ -257,13 +334,13 @@ describe("FUNCTIONAL TESTS - MEDIA", () => {
 
     it("should return 500 on database error", async () => {
       jest
-        .mocked(Media.findOne)
+        .mocked(Media.findByPk)
         .mockRejectedValue(new Error("Database failure"));
 
       const res = await request(app).get(`${MEDIA_URL}/1`).set(AUTH_HEADER);
 
       expect(res.status).toBe(500);
-      expect(res.body).toEqual({ message: "Internal server error" });
+      expect(res.body).toEqual({ message: "Database verification failed" });
     });
   });
 
@@ -310,6 +387,31 @@ describe("FUNCTIONAL TESTS - MEDIA", () => {
       expect(res.body).toEqual(createdMedia);
     });
 
+    it("should return 403 when student attempts to create media for another user", async () => {
+      currentUser = {
+        id: 10,
+        uuid: "00000000-0000-0000-0000-000000000010",
+        role: UserRole.STUDENT,
+      };
+      const payloadForOtherUser = {
+        name: "Document tiers",
+        path: "data:application/pdf;base64,...",
+        userId: 99,
+      };
+
+      const res = await request(app)
+        .post(MEDIA_URL)
+        .set(AUTH_HEADER)
+        .send(payloadForOtherUser);
+
+      expect(res.status).toBe(403);
+      expect(res.body).toEqual({
+        message:
+          "Access denied: you cannot create resources for another user.",
+      });
+      expect(Media.create).not.toHaveBeenCalled();
+    });
+
     it("should return 401 if not authenticated", async () => {
       const res = await request(app)
         .post(MEDIA_URL)
@@ -339,6 +441,7 @@ describe("FUNCTIONAL TESTS - MEDIA", () => {
   describe("PATCH /media/:id", () => {
     it("should return 200 and update media as admin", async () => {
       const mockInstance = createMockMediaInstance();
+      jest.mocked(Media.findByPk).mockResolvedValue(mockInstance as any);
       jest.mocked(Media.findOne).mockResolvedValue(mockInstance as any);
 
       const updateData = { name: "CV - Développeur Fullstack" };
@@ -360,6 +463,7 @@ describe("FUNCTIONAL TESTS - MEDIA", () => {
         organizationId: 1,
       };
       const mockInstance = createMockMediaInstance();
+      jest.mocked(Media.findByPk).mockResolvedValue(mockInstance as any);
       jest.mocked(Media.findOne).mockResolvedValue(mockInstance as any);
 
       const updateData = { name: "CV - Développeur Fullstack" };
@@ -416,8 +520,18 @@ describe("FUNCTIONAL TESTS - MEDIA", () => {
       expect(mockInstance.update).not.toHaveBeenCalled();
     });
 
+    it("should return 400 if media identifier is invalid on PATCH", async () => {
+      const res = await request(app)
+        .patch(`${MEDIA_URL}/invalid-id`)
+        .set(AUTH_HEADER)
+        .send({ name: "Test" });
+
+      expect(res.status).toBe(400);
+      expect(res.body).toEqual({ message: "Invalid resource identifier" });
+    });
+
     it("should return 404 if media is not found", async () => {
-      jest.mocked(Media.findOne).mockResolvedValue(null);
+      jest.mocked(Media.findByPk).mockResolvedValue(null);
 
       const res = await request(app)
         .patch(`${MEDIA_URL}/999`)
@@ -425,7 +539,7 @@ describe("FUNCTIONAL TESTS - MEDIA", () => {
         .send({ name: "Non-existent" });
 
       expect(res.status).toBe(404);
-      expect(res.body).toEqual({ message: "Media not found" });
+      expect(res.body).toEqual({ message: "Resource not found" });
     });
 
     it("should return 401 if not authenticated", async () => {
@@ -441,7 +555,7 @@ describe("FUNCTIONAL TESTS - MEDIA", () => {
 
     it("should return 500 on database error", async () => {
       jest
-        .mocked(Media.findOne)
+        .mocked(Media.findByPk)
         .mockRejectedValue(new Error("Database failure"));
 
       const res = await request(app)
@@ -450,13 +564,14 @@ describe("FUNCTIONAL TESTS - MEDIA", () => {
         .send({ name: "Updated" });
 
       expect(res.status).toBe(500);
-      expect(res.body).toEqual({ message: "Internal server error" });
+      expect(res.body).toEqual({ message: "Database verification failed" });
     });
   });
 
   describe("DELETE /media/:id", () => {
     it("should return 204 and delete media as admin", async () => {
       const mockInstance = createMockMediaInstance();
+      jest.mocked(Media.findByPk).mockResolvedValue(mockInstance as any);
       jest.mocked(Media.findOne).mockResolvedValue(mockInstance as any);
 
       const res = await request(app).delete(`${MEDIA_URL}/1`).set(AUTH_HEADER);
@@ -473,6 +588,7 @@ describe("FUNCTIONAL TESTS - MEDIA", () => {
         organizationId: 1,
       };
       const mockInstance = createMockMediaInstance();
+      jest.mocked(Media.findByPk).mockResolvedValue(mockInstance as any);
       jest.mocked(Media.findOne).mockResolvedValue(mockInstance as any);
 
       const res = await request(app).delete(`${MEDIA_URL}/1`).set(AUTH_HEADER);
@@ -513,18 +629,27 @@ describe("FUNCTIONAL TESTS - MEDIA", () => {
       expect(res.body).toEqual({
         message: "Access denied: you can only access your own resources.",
       });
-      expect(mockInstance.update).not.toHaveBeenCalled();
+      expect(mockInstance.destroy).not.toHaveBeenCalled();
+    });
+
+    it("should return 400 if media identifier is invalid on DELETE", async () => {
+      const res = await request(app)
+        .delete(`${MEDIA_URL}/invalid-id`)
+        .set(AUTH_HEADER);
+
+      expect(res.status).toBe(400);
+      expect(res.body).toEqual({ message: "Invalid resource identifier" });
     });
 
     it("should return 404 if media is not found", async () => {
-      jest.mocked(Media.findOne).mockResolvedValue(null);
+      jest.mocked(Media.findByPk).mockResolvedValue(null);
 
       const res = await request(app)
         .delete(`${MEDIA_URL}/999`)
         .set(AUTH_HEADER);
 
       expect(res.status).toBe(404);
-      expect(res.body).toEqual({ message: "Media not found" });
+      expect(res.body).toEqual({ message: "Resource not found" });
     });
 
     it("should return 401 if not authenticated", async () => {
@@ -538,13 +663,13 @@ describe("FUNCTIONAL TESTS - MEDIA", () => {
 
     it("should return 500 on database error", async () => {
       jest
-        .mocked(Media.findOne)
+        .mocked(Media.findByPk)
         .mockRejectedValue(new Error("Database failure"));
 
       const res = await request(app).delete(`${MEDIA_URL}/1`).set(AUTH_HEADER);
 
       expect(res.status).toBe(500);
-      expect(res.body).toEqual({ message: "Internal server error" });
+      expect(res.body).toEqual({ message: "Database verification failed" });
     });
   });
 
