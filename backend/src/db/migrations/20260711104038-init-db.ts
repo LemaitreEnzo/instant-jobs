@@ -283,34 +283,42 @@ export default {
         type: DataTypes.INTEGER,
       },
       title: {
+        allowNull: false,
         type: DataTypes.STRING,
       },
       type: {
+        allowNull: false,
         type: DataTypes.STRING,
       },
       logo: {
+        allowNull: false,
         type: DataTypes.TEXT("long"),
       },
       company: {
+        allowNull: false,
         type: DataTypes.STRING,
       },
       city: {
+        allowNull: false,
         type: DataTypes.STRING,
       },
       date: {
+        allowNull: false,
         type: DataTypes.DATEONLY,
       },
       status: {
+        allowNull: false,
         type: DataTypes.STRING,
       },
       resend: {
+        allowNull: false,
         type: DataTypes.STRING,
       },
       description: {
         type: DataTypes.TEXT,
       },
       userId: {
-        allowNull: true,
+        allowNull: false,
         type: DataTypes.INTEGER,
         references: {
           model: "User",
@@ -363,13 +371,13 @@ export default {
   },
 
   down: async (queryInterface: QueryInterface): Promise<void> => {
-    await queryInterface.dropTable("Media");
-    await queryInterface.dropTable("Application");
-    await queryInterface.dropTable("User");
-    await queryInterface.dropTable("SubSpeciality");
-    await queryInterface.dropTable("Speciality");
-    await queryInterface.dropTable("Promotion");
-    await queryInterface.dropTable("Campus");
-    await queryInterface.dropTable("Organization");
+    await queryInterface.dropTable("Media", { cascade: true });
+    await queryInterface.dropTable("Application", { cascade: true });
+    await queryInterface.dropTable("User", { cascade: true });
+    await queryInterface.dropTable("SubSpeciality", { cascade: true });
+    await queryInterface.dropTable("Speciality", { cascade: true });
+    await queryInterface.dropTable("Promotion", { cascade: true });
+    await queryInterface.dropTable("Campus", { cascade: true });
+    await queryInterface.dropTable("Organization", { cascade: true });
   },
 };

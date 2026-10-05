@@ -1,0 +1,30 @@
+info:
+  name: create
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: "{{URL}}/application"
+  body:
+    type: json
+    data: |-
+      {
+        "title": "Développeur JAVA",
+        "type": "apprenticeship",
+        "logo": "logo-technova.png",
+        "company": "TechNova Solutions",
+        "city": "Paris",
+        "date": "2026-09-01",
+        "status": "pending",
+        "resend": "no follow up",
+        "userId": 34
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

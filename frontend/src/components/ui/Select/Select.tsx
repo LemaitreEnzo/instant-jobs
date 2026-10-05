@@ -5,7 +5,6 @@ const Select = ({
   options,
   error,
   customClassName,
-  children,
   ...props
 }: PropsSelect) => {
   const finalClassName = ["select", customClassName].join(" ").trim();
@@ -16,6 +15,7 @@ const Select = ({
       aria-invalid={error ? "true" : undefined}
       {...props}
     >
+      <option defaultChecked>Sélectionner une valeur</option>
       {options.map((opt) => (
         <option key={opt.value} value={opt.value}>
           {opt.label}

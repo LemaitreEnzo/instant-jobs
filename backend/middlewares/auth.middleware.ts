@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
+import type { Model, ModelStatic } from "sequelize";
 import { UserRole } from "src/models/enums/user.enum";
 import getEnv from "../utils/envHelper";
 
@@ -74,15 +75,20 @@ export const authenticateUser = async (
   }
 };
 
-export const checkUser = (
+interface OwnableModelInstance extends Model {
+  id: number;
+  userId?: number | null;
+}
+
+export const checkUser = <M extends OwnableModelInstance>(
   allowedRoles: UserRole[] = Object.values(UserRole),
-  model: any = null,
+  model?: ModelStatic<M> | null,
 ) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     const user = req.user;
-    const targetId = Number(req.params.id);
-
-    if (!user) return res.status(401).json({ message: "Not authenticated" });
+    if (!user) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
 
     if (!allowedRoles.includes(user.role)) {
       return res
@@ -90,26 +96,44 @@ export const checkUser = (
         .json({ message: "Access denied: unauthorized role" });
     }
 
-    if (user.role === UserRole.STUDENT) {
+    if (req.method === "POST" && user.role === UserRole.STUDENT && model) {
+      if (req.body?.userId && Number(req.body.userId) !== user.id) {
+        return res.status(403).json({
+          message:
+            "Access denied: you cannot create resources for another user.",
+        });
+      }
+      if (req.body) {
+        req.body.userId = user.id;
+      }
+      return next();
+    }
+
+    if (req.params.id) {
+      const targetId = Number(req.params.id);
+      if (Number.isNaN(targetId) || targetId <= 0) {
+        return res.status(400).json({ message: "Invalid resource identifier" });
+      }
+
       if (model) {
         try {
-          const modelData = await model.findByPk(targetId);
-
-          if (!modelData) {
+          const resource = await model.findByPk(targetId);
+          if (!resource) {
             return res.status(404).json({ message: "Resource not found" });
           }
 
-          if (modelData.userId !== user.id) {
+          if (user.role === UserRole.STUDENT && resource.userId !== user.id) {
             return res.status(403).json({
               message: "Access denied: you can only access your own resources.",
             });
           }
         } catch (error) {
+          console.error("[checkUser] Database error:", error);
           return res
             .status(500)
             .json({ message: "Database verification failed" });
         }
-      } else if (user.id !== targetId) {
+      } else if (user.role === UserRole.STUDENT && user.id !== targetId) {
         return res.status(403).json({
           message:
             "Access denied: a student can only modify their own account.",
@@ -117,6 +141,6 @@ export const checkUser = (
       }
     }
 
-    next();
+    return next();
   };
 };

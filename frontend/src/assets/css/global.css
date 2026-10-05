@@ -6,11 +6,11 @@
   --primary-color: #580bff;
   --secondary-color: #34c759;
   --terciary-color: #e8f1fc;
-  --fourth-color: #F1F3F5;
+  --fourth-color: #f1f3f5;
   --success-color: #34c759;
   --warning-color: #ffae00;
   --error-color: #ff4638;
-  --stroke-color: #E6E9ED;
+  --stroke-color: #e6e9ed;
 }
 
 * {
@@ -87,7 +87,6 @@ body {
 
 #root {
   min-height: 100vh;
-  display: flex;
 }
 
 input,
@@ -232,14 +231,14 @@ svg {
   }
 }
 
-.search{
+.search {
   background-color: var(--error-color);
 }
 
-.pending{
+.pending {
   background-color: var(--warning-color);
 }
 
-.found{
+.found {
   background-color: var(--success-color);
 }
