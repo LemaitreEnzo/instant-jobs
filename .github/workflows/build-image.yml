@@ -4,9 +4,15 @@ on:
     branches:
       - main
       - dev
+
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'dev' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -15,7 +21,7 @@ jobs:
         id: meta-back
         uses: docker/metadata-action@v5
         with:
-          images: ${{ secrets.DOCKERHUB_USERNAME }}/instant-jobs-backend
+          images: ghcr.io/lemaitreenzo/instant-jobs-backend
           tags: |
             type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
             type=raw,value=dev,enable=${{ github.ref == 'refs/heads/dev' }}
@@ -25,23 +31,24 @@ jobs:
         id: meta-front
         uses: docker/metadata-action@v5
         with:
-          images: ${{ secrets.DOCKERHUB_USERNAME }}/instant-jobs-frontend
+          images: ghcr.io/lemaitreenzo/instant-jobs-frontend
           tags: |
             type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
             type=raw,value=dev,enable=${{ github.ref == 'refs/heads/dev' }}
             type=sha,prefix=
 
-      - name: Login to Docker Hub
+      - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.TOKEN }}
 
       - name: Build and push backend
         uses: docker/build-push-action@v6
         with:
           context: ./backend
-          file: ./.docker/node/Dockerfile.base
+          file: ${{ github.ref == 'refs/heads/main' && './.docker/node/Dockerfile.prod' || './.docker/node/Dockerfile.base' }}
           push: true
           tags: ${{ steps.meta-back.outputs.tags }}
           labels: ${{ steps.meta-back.outputs.labels }}
@@ -50,7 +57,10 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ./frontend
-          file: ./.docker/frontend/Dockerfile.base
+          file: ${{ github.ref == 'refs/heads/main' && './.docker/frontend/Dockerfile.prod' || './.docker/frontend/Dockerfile.base' }}
           push: true
+          build-args: |
+            VITE_BASE_API_URL=${{ secrets.VITE_BASE_API_URL }}
+            VITE_API_VERSION=${{ secrets.VITE_API_VERSION }}
           tags: ${{ steps.meta-front.outputs.tags }}
           labels: ${{ steps.meta-front.outputs.labels }}

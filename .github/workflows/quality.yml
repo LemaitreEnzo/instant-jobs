@@ -56,6 +56,8 @@ jobs:
 
       - name: Run Sequelize Migrations
         working-directory: backend
+        env:
+          NODE_OPTIONS: --no-experimental-strip-types
         run: npx sequelize-cli db:migrate
 
       - name: Run Backend Tests
