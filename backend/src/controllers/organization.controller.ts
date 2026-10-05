@@ -62,7 +62,6 @@ export const getAllOrganizations = async (req: Request, res: Response) => {
 
     return res.status(200).json(organizations);
   } catch (error) {
-    console.error("[getAllOrganizations] Error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -83,7 +82,6 @@ export const getOneOrganization = async (req: Request, res: Response) => {
 
     return res.status(200).json(organization);
   } catch (error) {
-    console.error("[getOneOrganization] Error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -95,7 +93,6 @@ export const createOrganization = async (req: Request, res: Response) => {
 
     return res.status(201).json(organization);
   } catch (error) {
-    console.error("[createOrganization] Error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -118,7 +115,6 @@ export const updateOrganization = async (req: Request, res: Response) => {
     await organization.update(data);
     return res.status(200).json(organization);
   } catch (error) {
-    console.error("[updateOrganization] Error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -139,7 +135,6 @@ export const deleteOrganization = async (req: Request, res: Response) => {
     await organization.destroy();
     return res.status(204).end();
   } catch (error) {
-    console.error("[deleteOrganization] Error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -157,7 +152,6 @@ export const getCampuses = async (req: Request, res: Response) => {
 
     return res.status(200).json(campuses);
   } catch (error) {
-    console.error("[getCampuses] Error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -231,7 +225,6 @@ export const getUsers = async (req: Request, res: Response) => {
 
     return res.status(200).json(users);
   } catch (error) {
-    console.error("[getUsers] Error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };

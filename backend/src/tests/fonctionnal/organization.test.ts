@@ -120,6 +120,7 @@ const validBase64Logo =
 const baseSchoolData = {
   id: 1,
   name: "La Manu",
+  slug: "la-manu",
   email: "contact@lamanu.fr",
   phone: "0344000001",
   logo: validBase64Logo,
@@ -135,6 +136,7 @@ const baseSchoolData = {
 const baseCompanyData = {
   id: 2,
   name: "TechNova Solutions",
+  slug: "technova-solutions",
   email: "contact@technova.fr",
   phone: "0140000001",
   logo: validBase64Logo,
@@ -233,11 +235,13 @@ describe("FUNCTIONAL TESTS - ORGANIZATION", () => {
       expect(res.body[0]).toMatchObject({
         id: 1,
         name: "La Manu",
+        slug: "la-manu",
         role: OrganizationRole.SCHOOL,
       });
       expect(res.body[1]).toMatchObject({
         id: 2,
         name: "TechNova Solutions",
+        slug: "technova-solutions",
         role: OrganizationRole.COMPANY,
       });
     });
@@ -289,6 +293,7 @@ describe("FUNCTIONAL TESTS - ORGANIZATION", () => {
       expect(res.body).toMatchObject({
         id: 1,
         name: "La Manu",
+        slug: "la-manu",
         city: "Compiègne",
         role: OrganizationRole.SCHOOL,
       });
@@ -336,6 +341,7 @@ describe("FUNCTIONAL TESTS - ORGANIZATION", () => {
   describe("POST /organization", () => {
     const newOrganizationPayload = {
       name: "InnoWave Digital",
+      slug: "innowave-digital",
       email: "contact@innowave.io",
       phone: "0140000002",
       logo: validBase64Logo,
@@ -363,6 +369,7 @@ describe("FUNCTIONAL TESTS - ORGANIZATION", () => {
       expect(res.body).toMatchObject({
         id: 3,
         name: "InnoWave Digital",
+        slug: "innowave-digital",
         role: OrganizationRole.COMPANY,
       });
       expect(Organization.create).toHaveBeenCalledWith(newOrganizationPayload);
@@ -437,6 +444,7 @@ describe("FUNCTIONAL TESTS - ORGANIZATION", () => {
   describe("PATCH /organization/:id", () => {
     const updatePayload = {
       name: "La Manu - Pôle Compiègne",
+      slug: "la-manu-pole-compiegne",
       city: "Compiègne Cedex",
     };
 
@@ -453,6 +461,7 @@ describe("FUNCTIONAL TESTS - ORGANIZATION", () => {
       expect(res.body).toMatchObject({
         id: 1,
         name: "La Manu - Pôle Compiègne",
+        slug: "la-manu-pole-compiegne",
         city: "Compiègne Cedex",
       });
       expect(mockInstance.update).toHaveBeenCalledWith(updatePayload);

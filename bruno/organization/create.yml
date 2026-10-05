@@ -11,6 +11,7 @@ http:
     data: |-
       {
         "name": "UTC",
+        "slug": "utc",
         "email": "contact@utc.fr",
         "logo": "/upload/logo/utc.png",
         "role": "school"

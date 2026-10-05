@@ -8,6 +8,7 @@ import type {
 export interface Organization {
   id: number;
   name: string;
+  slug: string;
   email: string;
   phone: string;
   logo: string;
