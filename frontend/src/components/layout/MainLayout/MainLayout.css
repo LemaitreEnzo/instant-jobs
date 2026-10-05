@@ -1,16 +1,16 @@
 .main-layout {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  .layout-body {
     display: flex;
-    flex-direction: column;
     flex: 1;
-    .main_layout_body {
-        display: flex;
-        flex: 1;
-        flex-wrap: wrap;
-        background-color: var(--body-color);
+    flex-wrap: wrap;
+    background-color: var(--body-color);
 
-        .main_layout_children {
-            flex: 1;
-            padding: 1.5em;
-        }
+    .layout-children {
+      flex: 1;
+      padding: 1.5em;
     }
+  }
 }

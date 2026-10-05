@@ -1,7 +1,15 @@
 import type { SetStateAction } from "react";
-import type { Application, Appointment, Campus, Organization, Promotion, Speciality, SubSpeciality } from "../interfaces/models.interface";
+import type {
+  Application,
+  Appointment,
+  Campus,
+  Organization,
+  Promotion,
+  Speciality,
+  SubSpeciality,
+} from "../interfaces/models.interface";
 import type { Student, User } from "../interfaces/user.interface";
-import type { PropsBase, AppointmentCalendar } from "../types/global.type";
+import type { AppointmentCalendar, PropsBase } from "../types/global.type";
 import type { ApplicationStatus } from "./enum.type";
 
 export interface PropsButton extends PropsBase {
@@ -11,26 +19,30 @@ export interface PropsButton extends PropsBase {
   type?: "button" | "submit" | "reset";
   href?: string;
   navigateBack?: boolean;
-  onClick?: (event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => void;
-  onMouseDown?: (event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => void;
+  onClick?: (
+    event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>,
+  ) => void;
+  onMouseDown?: (
+    event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>,
+  ) => void;
 }
 
 export interface PropsFormField extends PropsBase {
   label: string;
   name: string;
-  error?: string;
+  error?: string | null;
   required?: boolean;
   customClassName?: string;
 }
 
 export interface PropsTag extends PropsBase {
   className?:
-  | "tag-success"
-  | "tag-warn"
-  | "tag-error"
-  | "tag-none"
-  | "tag-primary"
-  | "tag-terciary";
+    | "tag-success"
+    | "tag-warn"
+    | "tag-error"
+    | "tag-none"
+    | "tag-primary"
+    | "tag-terciary";
   customClassName?: string;
   round?: boolean;
 }
@@ -39,7 +51,7 @@ export type PropsProfile = {
   className?: string;
   user: User | Student;
   organization: Organization;
-  campus: Campus ;
+  campus: Campus;
   promotion: Promotion;
   speciality: Speciality;
   subSpeciality: SubSpeciality;
@@ -104,15 +116,15 @@ export type PropsApplications = {
 export type PropsRecentApplications = {
   header: boolean;
   limit?: number;
-}
+};
 
 export type PropsPersonalInformation = {
   data: User | Student;
-}
+};
 
 export type PropsSmallProfile = {
   data: Student;
-}
+};
 
 export interface SelectOption {
   label: string;
@@ -156,12 +168,12 @@ export type PropsApplicationHeader = {
   open: boolean;
   onOpenChange: React.Dispatch<React.SetStateAction<boolean>>;
   filters: ApplicationFilters;
-  onFilterChange : (filters: ApplicationFilters) => void;
+  onFilterChange: (filters: ApplicationFilters) => void;
 };
 
 export type PropsPageTilte = {
   title: string;
-}
+};
 
 export interface PropsCheckbox {
   id?: string;
@@ -216,8 +228,8 @@ export type PropsSchoolCard = {
   name: string;
   logo: string;
   description: string;
-}  
-  
+};
+
 export type PropsSoon = {
   data: Appointment[];
-}
+};

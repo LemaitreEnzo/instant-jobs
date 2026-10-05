@@ -19,21 +19,23 @@ const Button = ({
   className = "btn-primary",
   ...props
 }: PropsButton) => {
-  const finalClassName = [`btn-${shape}`, className, props.customClassName].join(" ").trim();
+  const finalClassName = [`btn btn-${shape}`, className, props.customClassName]
+    .join(" ")
+    .trim();
   const navigate = useNavigate();
 
   const handleBack = () => {
-  if (window.history.length > 1) {
-    navigate(-1);
-  } else {
-    navigate("/");
-  }
-};
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate("/");
+    }
+  };
 
   if (props.navigateBack) {
     return (
       <button {...props} className={finalClassName} onClick={handleBack}>
-        {props.children} 
+        {props.children}
       </button>
     );
   }
@@ -41,7 +43,7 @@ const Button = ({
   if (props.href) {
     return (
       <a {...props} href={props.href} className={finalClassName}>
-        {props.children} 
+        {props.children}
       </a>
     );
   }
