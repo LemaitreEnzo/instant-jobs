@@ -16,6 +16,7 @@ export interface Organization extends Model<
 > {
   id: CreationOptional<number>;
   name: string;
+  slug: string;
   email: string;
   phone: string;
   logo: string;
@@ -38,10 +39,17 @@ export const Organization = sequelize.define<Organization>(
       type: DataTypes.INTEGER,
     },
     name: {
+      allowNull: false,
+      unique: true,
+      type: DataTypes.STRING,
+    },
+    slug: {
+      allowNull: false,
       unique: true,
       type: DataTypes.STRING,
     },
     email: {
+      allowNull: false,
       unique: true,
       type: DataTypes.STRING,
     },

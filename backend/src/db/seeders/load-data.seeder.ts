@@ -22,6 +22,7 @@ export default {
       // --- 3 Entreprises ("company") ---
       {
         name: "TechNova Solutions",
+        slug: "technova-solutions",
         email: "contact@technova.fr",
         phone: "0140000001",
         logo: "/upload/logo/technova.png",
@@ -37,6 +38,7 @@ export default {
       },
       {
         name: "InnoWave Digital",
+        slug: "innowave-digital",
         email: "contact@innowave.io",
         phone: "0140000002",
         logo: "/upload/logo/innowave.png",
@@ -52,6 +54,7 @@ export default {
       },
       {
         name: "Nexora Conseil",
+        slug: "nexora-conseil",
         email: "contact@nexora.fr",
         logo: "/upload/logo/nexora.png",
         phone: "0140000003",
@@ -68,6 +71,7 @@ export default {
       // --- 7 Écoles ("school") ---
       {
         name: "La Manu",
+        slug: "la-manu",
         email: "contact@lamanu.fr",
         logo: "/upload/logo/lamanu.png",
         phone: "0344000001",
@@ -83,6 +87,7 @@ export default {
       },
       {
         name: "École Supérieure du Numérique (ESN)",
+        slug: "esn",
         email: "admission@esn-tech.fr",
         logo: "/upload/logo/esn-tech.png",
         phone: "0140000004",
@@ -98,6 +103,7 @@ export default {
       },
       {
         name: "Institut Digital de France (IDF)",
+        slug: "idf",
         email: "contact@idf-digital.fr",
         logo: "/upload/logo/idf-digital.png",
         phone: "0140000005",
@@ -113,6 +119,7 @@ export default {
       },
       {
         name: "Polytech Web & Data",
+        slug: "polytech-web-data",
         email: "info@polytech-webdata.fr",
         logo: "/upload/logo/polytech-webdata.png",
         phone: "0472000001",
@@ -128,6 +135,7 @@ export default {
       },
       {
         name: "Aquitaine Tech Academy",
+        slug: "aquitaine-tech-academy",
         email: "contact@aquitaine-tech.fr",
         logo: "/upload/logo/aquitaine-tech.png",
         phone: "0556000001",
@@ -143,6 +151,7 @@ export default {
       },
       {
         name: "Grand Ouest Coding School",
+        slug: "grand-ouest-coding-school",
         email: "hello@grand-ouest-code.fr",
         logo: "/upload/logo/grand-ouest-code.png",
         phone: "0240000001",
@@ -158,6 +167,7 @@ export default {
       },
       {
         name: "Méditerranée Tech Campus",
+        slug: "med-tech-campus",
         email: "contact@med-tech-campus.fr",
         logo: "/upload/logo/med-tech-campus.png",
         phone: "0491000001",

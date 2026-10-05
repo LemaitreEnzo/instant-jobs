@@ -129,7 +129,6 @@ export const checkUser = <M extends OwnableModelInstance>(
             });
           }
         } catch (error) {
-          console.error("[checkUser] Database error:", error);
           return res
             .status(500)
             .json({ message: "Database verification failed" });

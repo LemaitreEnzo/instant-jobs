@@ -20,7 +20,6 @@ export const getOneMedia = async (req: Request, res: Response) => {
 
     return res.status(200).json(media);
   } catch (error) {
-    console.error("[getOneMedia] Error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -32,7 +31,6 @@ export const createMedia = async (req: Request, res: Response) => {
 
     return res.status(201).json(media);
   } catch (error) {
-    console.error("[createMedia] Error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -55,7 +53,6 @@ export const updateMedia = async (req: Request, res: Response) => {
     await media.update(data);
     return res.status(200).json(media);
   } catch (error) {
-    console.error("[updateMedia] Error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -72,7 +69,6 @@ export const deleteMedia = async (req: Request, res: Response) => {
     await media.destroy();
     return res.status(204).end();
   } catch (error) {
-    console.error("[deleteMedia] Error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };

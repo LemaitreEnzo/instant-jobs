@@ -14,6 +14,11 @@ export default {
         unique: true,
         type: DataTypes.STRING,
       },
+      slug: {
+        allowNull: false,
+        unique: true,
+        type: DataTypes.STRING,
+      },
       email: {
         allowNull: false,
         unique: true,

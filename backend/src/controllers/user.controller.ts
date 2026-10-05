@@ -164,7 +164,6 @@ export const login = async (req: Request, res: Response) => {
       return res.status(401).json({ message: "Invalid email or password" });
     }
   } catch (error) {
-    console.error("[login] Error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -176,7 +175,6 @@ export const logout = async (req: Request, res: Response) => {
     res.clearCookie(token, { path: "/" });
     return res.status(200).json({ message: "Successfully logged out" });
   } catch (error) {
-    console.error("[logout] Error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -348,7 +346,6 @@ export const getAuth = async (req: Request, res: Response) => {
 
     return res.status(200).json(rawUserData);
   } catch (error) {
-    console.error("[getAuth] Error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -423,7 +420,6 @@ export const getOneUser = async (req: Request, res: Response) => {
 
     return res.status(200).json(rawUserData);
   } catch (error) {
-    console.error("[getOneUser] Error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -448,7 +444,6 @@ export const createUser = async (req: Request, res: Response) => {
 
     return res.status(201).json(rawUserData);
   } catch (error) {
-    console.error("[createUser] Error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -471,7 +466,6 @@ export const updateUser = async (req: Request, res: Response) => {
     await user.update(data);
     return res.status(200).json(user);
   } catch (error) {
-    console.error("[updateUser] Error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -493,7 +487,6 @@ export const deleteUser = async (req: Request, res: Response) => {
     await user.destroy();
     return res.status(204).end();
   } catch (error) {
-    console.error("[deleteUser] Error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -511,7 +504,6 @@ export const getApplications = async (req: Request, res: Response) => {
 
     return res.status(200).json(applications);
   } catch (error) {
-    console.error("[getApplications] Error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -529,7 +521,6 @@ export const getMedias = async (req: Request, res: Response) => {
 
     return res.status(200).json(medias);
   } catch (error) {
-    console.error("[getMedias] Error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -547,7 +538,6 @@ export const getAppointmentsByUser = async (req: Request, res: Response) => {
 
     return res.status(200).json(appointments);
   } catch (error) {
-    console.error("[getAppointmentsByUser] Error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
