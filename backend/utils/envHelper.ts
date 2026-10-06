@@ -1,13 +1,4 @@
-import dotenv from "dotenv";
-import path from "path";
-
-const env = process.env.NODE_ENV;
-
-const envFile = env ? `.env.${env}` : ".env";
-
-dotenv.config({
-  path: path.resolve(process.cwd(), envFile),
-});
+import "dotenv/config";
 
 /**
  * Retrieves the value of an environment variable or throws an error if undefined.
@@ -22,6 +13,7 @@ dotenv.config({
 const getEnv = (key: string): string => {
   const value = process.env[key];
   if (!value) throw new Error(`Missing environment variable: ${key}`);
+
   return value;
 };
 

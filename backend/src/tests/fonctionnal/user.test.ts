@@ -63,6 +63,7 @@ jest.mock("../../../middlewares/auth.middleware", () => ({
           if (req.body) {
             req.body.userId = user.id;
           }
+
           return next();
         }
 
@@ -91,6 +92,8 @@ jest.mock("../../../middlewares/auth.middleware", () => ({
                 });
               }
             } catch (error) {
+              console.error(error);
+
               return res
                 .status(500)
                 .json({ message: "Database verification failed" });
@@ -117,6 +120,7 @@ jest.mock("../../../middlewares/role.middleware", () => ({
       if (allowedRoles.includes(req.user.role)) {
         return next();
       }
+
       return res
         .status(403)
         .json({ message: "Access denied: Insufficient privileges" });
@@ -296,17 +300,20 @@ const createMockUserInstance = (data: any) => {
   const instance: any = {
     ...data,
     dataValues: { ...data },
-    get: jest.fn((options?: { plain?: boolean }) => {
+    get: jest.fn(() => {
       const copy = { ...data };
+
       return copy;
     }),
     update: jest.fn().mockImplementation(async (updateData: any) => {
       Object.assign(instance, updateData);
       Object.assign(instance.dataValues, updateData);
+
       return instance;
     }),
     destroy: jest.fn(),
   };
+
   return instance;
 };
 
@@ -327,9 +334,7 @@ describe("FUNCTIONAL TESTS - USER", () => {
       const mockInstance = createMockUserInstance(mockStudentUser);
       jest.mocked(User.findOne).mockResolvedValue(mockInstance as any);
 
-      const res = await request(app)
-        .get(`${USER_URL}/10`)
-        .set(AUTH_HEADER);
+      const res = await request(app).get(`${USER_URL}/10`).set(AUTH_HEADER);
 
       expect(res.status).toBe(200);
       expect(res.body).toMatchObject({
@@ -354,9 +359,7 @@ describe("FUNCTIONAL TESTS - USER", () => {
       const mockInstance = createMockUserInstance(staffWithExtraRelations);
       jest.mocked(User.findOne).mockResolvedValue(mockInstance as any);
 
-      const res = await request(app)
-        .get(`${USER_URL}/1`)
-        .set(AUTH_HEADER);
+      const res = await request(app).get(`${USER_URL}/1`).set(AUTH_HEADER);
 
       expect(res.status).toBe(200);
       expect(res.body.applications).toBeUndefined();
@@ -366,9 +369,7 @@ describe("FUNCTIONAL TESTS - USER", () => {
     it("should return 404 if the user doesn't exist", async () => {
       jest.mocked(User.findOne).mockResolvedValue(null);
 
-      const res = await request(app)
-        .get(`${USER_URL}/999`)
-        .set(AUTH_HEADER);
+      const res = await request(app).get(`${USER_URL}/999`).set(AUTH_HEADER);
 
       expect(res.status).toBe(404);
       expect(res.body).toEqual({ message: "User not found" });
@@ -388,9 +389,7 @@ describe("FUNCTIONAL TESTS - USER", () => {
         .mocked(User.findOne)
         .mockRejectedValue(new Error("Database connection failure"));
 
-      const res = await request(app)
-        .get(`${USER_URL}/10`)
-        .set(AUTH_HEADER);
+      const res = await request(app).get(`${USER_URL}/10`).set(AUTH_HEADER);
 
       expect(res.status).toBe(500);
       expect(res.body).toEqual({ message: "Internal server error" });
@@ -482,9 +481,7 @@ describe("FUNCTIONAL TESTS - USER", () => {
     });
 
     it("should return 401 if the user isn't authenticated", async () => {
-      const res = await request(app)
-        .post(USER_URL)
-        .send(newUserPayload);
+      const res = await request(app).post(USER_URL).send(newUserPayload);
 
       expect(res.status).toBe(401);
       expect(res.body).toEqual({
@@ -640,9 +637,7 @@ describe("FUNCTIONAL TESTS - USER", () => {
       const mockInstance = createMockUserInstance(mockStudentUser);
       jest.mocked(User.findOne).mockResolvedValue(mockInstance as any);
 
-      const res = await request(app)
-        .delete(`${USER_URL}/10`)
-        .set(AUTH_HEADER);
+      const res = await request(app).delete(`${USER_URL}/10`).set(AUTH_HEADER);
 
       expect(res.status).toBe(204);
       expect(res.text).toBe("");
@@ -660,9 +655,7 @@ describe("FUNCTIONAL TESTS - USER", () => {
       const mockInstance = createMockUserInstance(mockStudentUser);
       jest.mocked(User.findOne).mockResolvedValue(mockInstance as any);
 
-      const res = await request(app)
-        .delete(`${USER_URL}/10`)
-        .set(AUTH_HEADER);
+      const res = await request(app).delete(`${USER_URL}/10`).set(AUTH_HEADER);
 
       expect(res.status).toBe(204);
       expect(mockInstance.destroy).toHaveBeenCalled();
@@ -676,9 +669,7 @@ describe("FUNCTIONAL TESTS - USER", () => {
         organizationId: 1,
       };
 
-      const res = await request(app)
-        .delete(`${USER_URL}/10`)
-        .set(AUTH_HEADER);
+      const res = await request(app).delete(`${USER_URL}/10`).set(AUTH_HEADER);
 
       expect(res.status).toBe(403);
       expect(res.body).toEqual({
@@ -690,9 +681,7 @@ describe("FUNCTIONAL TESTS - USER", () => {
     it("should return 404 if the user doesn't exist", async () => {
       jest.mocked(User.findOne).mockResolvedValue(null);
 
-      const res = await request(app)
-        .delete(`${USER_URL}/999`)
-        .set(AUTH_HEADER);
+      const res = await request(app).delete(`${USER_URL}/999`).set(AUTH_HEADER);
 
       expect(res.status).toBe(404);
       expect(res.body).toEqual({ message: "User not found" });
@@ -716,9 +705,7 @@ describe("FUNCTIONAL TESTS - USER", () => {
       };
       jest.mocked(User.findOne).mockResolvedValue(mockInstance as any);
 
-      const res = await request(app)
-        .delete(`${USER_URL}/10`)
-        .set(AUTH_HEADER);
+      const res = await request(app).delete(`${USER_URL}/10`).set(AUTH_HEADER);
 
       expect(res.status).toBe(500);
       expect(res.body).toEqual({ message: "Internal server error" });
@@ -1067,9 +1054,7 @@ describe("FUNCTIONAL TESTS - USER", () => {
     it("should return 429 if the user exceeded the rate limit", async () => {
       triggerRateLimit = true;
 
-      const res = await request(app)
-        .get(`${USER_URL}/10`)
-        .set(AUTH_HEADER);
+      const res = await request(app).get(`${USER_URL}/10`).set(AUTH_HEADER);
 
       expect(res.status).toBe(429);
       expect(res.body).toMatchObject({

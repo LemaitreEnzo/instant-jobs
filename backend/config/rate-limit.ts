@@ -13,7 +13,7 @@ export const customRateLimiter = ({
   limit = 60,
   error = "Too many requests",
   message = "You have exceeded the rate limit",
-  skipSuccessfulRequests = false
+  skipSuccessfulRequests = false,
 }: RateLimiter) =>
   rateLimit({
     windowMs: time * 60 * 1000,
@@ -27,7 +27,7 @@ export const customRateLimiter = ({
       res.status(429).json({
         error: error,
         message: `${message}. Try again in ${retryAfter} seconds.`,
-        retryAfter
+        retryAfter,
       });
     },
   });

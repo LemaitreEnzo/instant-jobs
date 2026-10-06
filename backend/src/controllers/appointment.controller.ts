@@ -23,6 +23,8 @@ export const getOneAppointment = async (req: Request, res: Response) => {
 
     return res.status(200).json(appointment);
   } catch (error) {
+    console.error(error);
+
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -30,8 +32,11 @@ export const getOneAppointment = async (req: Request, res: Response) => {
 export const createAppointment = async (req: Request, res: Response) => {
   try {
     const appointment = await Appointment.create(req.body);
+
     return res.status(201).json(appointment);
   } catch (error) {
+    console.error(error);
+
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -52,8 +57,11 @@ export const updateAppointment = async (req: Request, res: Response) => {
     }
 
     await appointment.update(data);
+
     return res.status(200).json(appointment);
   } catch (error) {
+    console.error(error);
+
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -73,8 +81,11 @@ export const deleteAppointment = async (req: Request, res: Response) => {
     }
 
     await appointment.destroy();
+
     return res.status(204).end();
   } catch (error) {
+    console.error(error);
+
     return res.status(500).json({ message: "Internal server error" });
   }
 };

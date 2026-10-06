@@ -49,6 +49,7 @@ jest.mock("../../../middlewares/role.middleware", () => ({
       if (allowedRoles.includes(req.user.role)) {
         return next();
       }
+
       return res
         .status(403)
         .json({ message: "Access denied: Insufficient privileges" });
@@ -144,14 +145,16 @@ const createMockSpecialityInstance = (data: any = baseSpecialityData) => {
   const instance: any = {
     ...data,
     dataValues: { ...data },
-    get: jest.fn((options?: { plain?: boolean }) => ({ ...instance })),
+    get: jest.fn(() => ({ ...instance })),
     update: jest.fn().mockImplementation(async (updateData: any) => {
       Object.assign(instance, updateData);
       Object.assign(instance.dataValues, updateData);
+
       return instance;
     }),
     destroy: jest.fn(),
   };
+
   return instance;
 };
 
@@ -603,7 +606,9 @@ describe("FUNCTIONAL TESTS - SPECIALITY", () => {
     });
 
     it("should return 401 if the user isn't authenticated", async () => {
-      const res = await request(app).get(`${SPECIALITY_URL}/1/sub-specialities`);
+      const res = await request(app).get(
+        `${SPECIALITY_URL}/1/sub-specialities`,
+      );
 
       expect(res.status).toBe(401);
       expect(res.body).toEqual({

@@ -55,6 +55,10 @@ jobs:
         working-directory: backend
         run: npm ci
 
+      - name: Run Backend Linter
+        working-directory: backend
+        run: npm run lint
+
       - name: Build backend
         working-directory: backend
         run: npx tsc -p . && npx tsc-alias
@@ -68,7 +72,7 @@ jobs:
 
       - name: Run Backend Tests
         working-directory: backend
-        run: npm test
+        run: npm run test
 
   frontend-ci:
     needs: backend-ci

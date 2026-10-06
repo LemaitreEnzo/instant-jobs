@@ -49,6 +49,7 @@ jest.mock("../../../middlewares/role.middleware", () => ({
       if (allowedRoles.includes(req.user.role)) {
         return next();
       }
+
       return res
         .status(403)
         .json({ message: "Access denied: Insufficient privileges" });
@@ -144,14 +145,16 @@ const createMockSubSpecialityInstance = (data: any = baseSubSpecialityData) => {
   const instance: any = {
     ...data,
     dataValues: { ...data },
-    get: jest.fn((options?: { plain?: boolean }) => ({ ...instance })),
+    get: jest.fn(() => ({ ...instance })),
     update: jest.fn().mockImplementation(async (updateData: any) => {
       Object.assign(instance, updateData);
       Object.assign(instance.dataValues, updateData);
+
       return instance;
     }),
     destroy: jest.fn(),
   };
+
   return instance;
 };
 
@@ -236,7 +239,9 @@ describe("FUNCTIONAL TESTS - SUB-SPECIALITY", () => {
         id: 1,
         ...newSubSpecialityPayload,
       });
-      jest.mocked(SubSpeciality.create).mockResolvedValue(createdInstance as any);
+      jest
+        .mocked(SubSpeciality.create)
+        .mockResolvedValue(createdInstance as any);
 
       const res = await request(app)
         .post(SUB_SPECIALITY_URL)
@@ -249,7 +254,9 @@ describe("FUNCTIONAL TESTS - SUB-SPECIALITY", () => {
         name: "Frontend React & Next.js",
         specialityId: 1,
       });
-      expect(SubSpeciality.create).toHaveBeenCalledWith(newSubSpecialityPayload);
+      expect(SubSpeciality.create).toHaveBeenCalledWith(
+        newSubSpecialityPayload,
+      );
     });
 
     it("should return 201 with the new sub-speciality when a staff creates it", async () => {
@@ -264,7 +271,9 @@ describe("FUNCTIONAL TESTS - SUB-SPECIALITY", () => {
         id: 1,
         ...newSubSpecialityPayload,
       });
-      jest.mocked(SubSpeciality.create).mockResolvedValue(createdInstance as any);
+      jest
+        .mocked(SubSpeciality.create)
+        .mockResolvedValue(createdInstance as any);
 
       const res = await request(app)
         .post(SUB_SPECIALITY_URL)
@@ -277,7 +286,9 @@ describe("FUNCTIONAL TESTS - SUB-SPECIALITY", () => {
         name: "Frontend React & Next.js",
         specialityId: 1,
       });
-      expect(SubSpeciality.create).toHaveBeenCalledWith(newSubSpecialityPayload);
+      expect(SubSpeciality.create).toHaveBeenCalledWith(
+        newSubSpecialityPayload,
+      );
     });
 
     it("should return 403 if user role is “STUDENT“", async () => {

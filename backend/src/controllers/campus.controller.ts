@@ -25,6 +25,8 @@ export const getOneCampus = async (req: Request, res: Response) => {
 
     return res.status(200).json(campus);
   } catch (error) {
+    console.error(error);
+
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -33,8 +35,11 @@ export const createCampus = async (req: Request, res: Response) => {
   try {
     const data = req.body;
     const campus = await Campus.create(data);
+
     return res.status(201).json(campus);
   } catch (error) {
+    console.error(error);
+
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -55,8 +60,11 @@ export const updateCampus = async (req: Request, res: Response) => {
     }
 
     await campus.update(data);
+
     return res.status(200).json(campus);
   } catch (error) {
+    console.error(error);
+
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -76,8 +84,11 @@ export const deleteCampus = async (req: Request, res: Response) => {
     }
 
     await campus.destroy();
+
     return res.status(204).end();
   } catch (error) {
+    console.error(error);
+
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -95,6 +106,8 @@ export const getPromotions = async (req: Request, res: Response) => {
 
     return res.status(200).json(promotions);
   } catch (error) {
+    console.error(error);
+
     return res.status(500).json({ message: "Internal server error" });
   }
 };
