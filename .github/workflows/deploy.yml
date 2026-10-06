@@ -2,9 +2,10 @@ name: Déploiement en Production
 
 # 1. Le déclencheur : Uniquement lors d'un push sur la branche "production"
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: ["Build Docker Image"]
+    types: [completed]
+    branches: [main]
 
 jobs:
   deploy:
