@@ -62,6 +62,7 @@ jest.mock("../../../middlewares/auth.middleware", () => ({
           if (req.body) {
             req.body.userId = user.id;
           }
+
           return next();
         }
 
@@ -90,6 +91,8 @@ jest.mock("../../../middlewares/auth.middleware", () => ({
                 });
               }
             } catch (error) {
+              console.error(error);
+
               return res
                 .status(500)
                 .json({ message: "Database verification failed" });
@@ -116,6 +119,7 @@ jest.mock("../../../middlewares/role.middleware", () => ({
       if (allowedRoles.includes(req.user.role)) {
         return next();
       }
+
       return res
         .status(403)
         .json({ message: "Access denied: Insufficient privileges" });
@@ -218,10 +222,12 @@ const createMockMediaInstance = (data: any = baseMediaData) => {
     update: jest.fn().mockImplementation(async (updateData: any) => {
       Object.assign(instance, updateData);
       Object.assign(instance.dataValues, updateData);
+
       return instance;
     }),
     destroy: jest.fn(),
   };
+
   return instance;
 };
 
@@ -406,8 +412,7 @@ describe("FUNCTIONAL TESTS - MEDIA", () => {
 
       expect(res.status).toBe(403);
       expect(res.body).toEqual({
-        message:
-          "Access denied: you cannot create resources for another user.",
+        message: "Access denied: you cannot create resources for another user.",
       });
       expect(Media.create).not.toHaveBeenCalled();
     });

@@ -57,6 +57,7 @@ const ENUM_COLUMNS_BY_TABLE = ENUM_CONFIGS.reduce<
   Record<string, typeof ENUM_CONFIGS>
 >((acc, config) => {
   (acc[config.table] ??= []).push(config);
+
   return acc;
 }, {});
 

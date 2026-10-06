@@ -17,10 +17,6 @@ declare global {
   }
 }
 
-/**
- * Authentication middleware for protected routes.
- * Returns 401 if token is missing, expired, or invalid.
- */
 export const authenticateUser = async (
   req: Request,
   res: Response,
@@ -52,6 +48,7 @@ export const authenticateUser = async (
       }
 
       req.user = decoded;
+
       return next();
     } catch (jwtError: unknown) {
       if (
@@ -71,6 +68,8 @@ export const authenticateUser = async (
         .json({ message: "Unauthorized: Invalid or malformed token" });
     }
   } catch (error) {
+    console.error(error);
+
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -106,6 +105,7 @@ export const checkUser = <M extends OwnableModelInstance>(
       if (req.body) {
         req.body.userId = user.id;
       }
+
       return next();
     }
 
@@ -131,7 +131,7 @@ export const checkUser = <M extends OwnableModelInstance>(
         } catch (error) {
           return res
             .status(500)
-            .json({ message: "Database verification failed" });
+            .json({ error: error, message: "Database verification failed" });
         }
       } else if (user.role === UserRole.STUDENT && user.id !== targetId) {
         return res.status(403).json({

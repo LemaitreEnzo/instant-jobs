@@ -49,6 +49,7 @@ jest.mock("../../../middlewares/role.middleware", () => ({
       if (allowedRoles.includes(req.user.role)) {
         return next();
       }
+
       return res
         .status(403)
         .json({ message: "Access denied: Insufficient privileges" });
@@ -137,14 +138,16 @@ const createMockPromotionInstance = (data: any = basePromotionData) => {
   const instance: any = {
     ...data,
     dataValues: { ...data },
-    get: jest.fn((options?: { plain?: boolean }) => ({ ...instance })),
+    get: jest.fn(() => ({ ...instance })),
     update: jest.fn().mockImplementation(async (updateData: any) => {
       Object.assign(instance, updateData);
       Object.assign(instance.dataValues, updateData);
+
       return instance;
     }),
     destroy: jest.fn(),
   };
+
   return instance;
 };
 
@@ -180,9 +183,7 @@ describe("FUNCTIONAL TESTS - PROMOTION", () => {
       const mockInstance = createMockPromotionInstance();
       jest.mocked(Promotion.findOne).mockResolvedValue(mockInstance as any);
 
-      const res = await request(app)
-        .get(`${PROMOTION_URL}/1`)
-        .set(AUTH_HEADER);
+      const res = await request(app).get(`${PROMOTION_URL}/1`).set(AUTH_HEADER);
 
       expect(res.status).toBe(200);
       expect(res.body).toMatchObject({
@@ -222,9 +223,7 @@ describe("FUNCTIONAL TESTS - PROMOTION", () => {
         .mocked(Promotion.findOne)
         .mockRejectedValue(new Error("Database connection failure"));
 
-      const res = await request(app)
-        .get(`${PROMOTION_URL}/1`)
-        .set(AUTH_HEADER);
+      const res = await request(app).get(`${PROMOTION_URL}/1`).set(AUTH_HEADER);
 
       expect(res.status).toBe(500);
       expect(res.body).toEqual({ message: "Internal server error" });
@@ -594,9 +593,7 @@ describe("FUNCTIONAL TESTS - PROMOTION", () => {
     it("should return 429 if the user exceeded the rate limit", async () => {
       triggerRateLimit = true;
 
-      const res = await request(app)
-        .get(`${PROMOTION_URL}/1`)
-        .set(AUTH_HEADER);
+      const res = await request(app).get(`${PROMOTION_URL}/1`).set(AUTH_HEADER);
 
       expect(res.status).toBe(429);
       expect(res.body).toMatchObject({

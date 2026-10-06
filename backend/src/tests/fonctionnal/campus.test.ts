@@ -49,6 +49,7 @@ jest.mock("../../../middlewares/role.middleware", () => ({
       if (allowedRoles.includes(req.user.role)) {
         return next();
       }
+
       return res
         .status(403)
         .json({ message: "Access denied: Insufficient privileges" });
@@ -126,14 +127,16 @@ const createMockCampusInstance = (data: any = baseCampusData) => {
   const instance: any = {
     ...data,
     dataValues: { ...data },
-    get: jest.fn((options?: { plain?: boolean }) => ({ ...instance })),
+    get: jest.fn(() => ({ ...instance })),
     update: jest.fn().mockImplementation(async (updateData: any) => {
       Object.assign(instance, updateData);
       Object.assign(instance.dataValues, updateData);
+
       return instance;
     }),
     destroy: jest.fn(),
   };
+
   return instance;
 };
 
@@ -396,7 +399,9 @@ describe("FUNCTIONAL TESTS - CAMPUS", () => {
     });
 
     it("should return 500 if the update fails", async () => {
-      jest.mocked(Campus.findOne).mockRejectedValue(new Error("Database failure"));
+      jest
+        .mocked(Campus.findOne)
+        .mockRejectedValue(new Error("Database failure"));
 
       const res = await request(app)
         .patch(`${CAMPUS_URL}/1`)
@@ -475,7 +480,9 @@ describe("FUNCTIONAL TESTS - CAMPUS", () => {
     });
 
     it("should return 500 if the delete fails", async () => {
-      jest.mocked(Campus.findOne).mockRejectedValue(new Error("Database failure"));
+      jest
+        .mocked(Campus.findOne)
+        .mockRejectedValue(new Error("Database failure"));
 
       const res = await request(app).delete(`${CAMPUS_URL}/1`).set(AUTH_HEADER);
 

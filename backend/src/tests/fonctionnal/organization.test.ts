@@ -50,6 +50,7 @@ jest.mock("../../../middlewares/role.middleware", () => ({
       if (allowedRoles.includes(req.user.role)) {
         return next();
       }
+
       return res
         .status(403)
         .json({ message: "Access denied: Insufficient privileges" });
@@ -153,14 +154,16 @@ const createMockOrganizationInstance = (data: any = baseSchoolData) => {
   const instance: any = {
     ...data,
     dataValues: { ...data },
-    get: jest.fn((options?: { plain?: boolean }) => ({ ...instance })),
+    get: jest.fn(() => ({ ...instance })),
     update: jest.fn().mockImplementation(async (updateData: any) => {
       Object.assign(instance, updateData);
       Object.assign(instance.dataValues, updateData);
+
       return instance;
     }),
     destroy: jest.fn(),
   };
+
   return instance;
 };
 
@@ -225,9 +228,7 @@ describe("FUNCTIONAL TESTS - ORGANIZATION", () => {
         .mocked(Organization.findAll)
         .mockResolvedValue([schoolInstance, companyInstance] as any);
 
-      const res = await request(app)
-        .get(ORGANIZATION_URL)
-        .set(AUTH_HEADER);
+      const res = await request(app).get(ORGANIZATION_URL).set(AUTH_HEADER);
 
       expect(res.status).toBe(200);
       expect(Array.isArray(res.body)).toBe(true);
@@ -249,9 +250,7 @@ describe("FUNCTIONAL TESTS - ORGANIZATION", () => {
     it("should return 200 with empty array if doesn't have any organization", async () => {
       jest.mocked(Organization.findAll).mockResolvedValue([] as any);
 
-      const res = await request(app)
-        .get(ORGANIZATION_URL)
-        .set(AUTH_HEADER);
+      const res = await request(app).get(ORGANIZATION_URL).set(AUTH_HEADER);
 
       expect(res.status).toBe(200);
       expect(res.body).toEqual([]);
@@ -262,9 +261,7 @@ describe("FUNCTIONAL TESTS - ORGANIZATION", () => {
         .mocked(Organization.findAll)
         .mockRejectedValue(new Error("Database connection failure"));
 
-      const res = await request(app)
-        .get(ORGANIZATION_URL)
-        .set(AUTH_HEADER);
+      const res = await request(app).get(ORGANIZATION_URL).set(AUTH_HEADER);
 
       expect(res.status).toBe(500);
       expect(res.body).toEqual({ message: "Internal server error" });
@@ -358,7 +355,9 @@ describe("FUNCTIONAL TESTS - ORGANIZATION", () => {
         id: 3,
         ...newOrganizationPayload,
       });
-      jest.mocked(Organization.create).mockResolvedValue(createdInstance as any);
+      jest
+        .mocked(Organization.create)
+        .mockResolvedValue(createdInstance as any);
 
       const res = await request(app)
         .post(ORGANIZATION_URL)
@@ -745,9 +744,7 @@ describe("FUNCTIONAL TESTS - ORGANIZATION", () => {
     it("should return 429 if the user exceeded the rate limit", async () => {
       triggerRateLimit = true;
 
-      const res = await request(app)
-        .get(ORGANIZATION_URL)
-        .set(AUTH_HEADER);
+      const res = await request(app).get(ORGANIZATION_URL).set(AUTH_HEADER);
 
       expect(res.status).toBe(429);
       expect(res.body).toMatchObject({
