@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - main
-      - dev
 
 permissions:
   contents: read
@@ -12,7 +11,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'dev' }}
+    environment: prod
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -23,8 +22,7 @@ jobs:
         with:
           images: ghcr.io/lemaitreenzo/instant-jobs-backend
           tags: |
-            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
-            type=raw,value=dev,enable=${{ github.ref == 'refs/heads/dev' }}
+            type=raw,value=latest
             type=sha,prefix=
 
       - name: Extract frontend metadata
@@ -33,8 +31,7 @@ jobs:
         with:
           images: ghcr.io/lemaitreenzo/instant-jobs-frontend
           tags: |
-            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
-            type=raw,value=dev,enable=${{ github.ref == 'refs/heads/dev' }}
+            type=raw,value=latest
             type=sha,prefix=
 
       - name: Login to GitHub Container Registry
@@ -48,7 +45,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ./backend
-          file: ${{ github.ref == 'refs/heads/main' && './.docker/node/Dockerfile.prod' || './.docker/node/Dockerfile.base' }}
+          file: ./.docker/node/Dockerfile.prod
           push: true
           tags: ${{ steps.meta-back.outputs.tags }}
           labels: ${{ steps.meta-back.outputs.labels }}
@@ -57,10 +54,10 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ./frontend
-          file: ${{ github.ref == 'refs/heads/main' && './.docker/frontend/Dockerfile.prod' || './.docker/frontend/Dockerfile.base' }}
+          file: ./.docker/frontend/Dockerfile.prod
           push: true
           build-args: |
-            VITE_BASE_API_URL=${{ secrets.VITE_BASE_API_URL }}
-            VITE_API_VERSION=${{ secrets.VITE_API_VERSION }}
+            VITE_BASE_API_URL=${{ secrets.API_URL }}
+            VITE_API_VERSION=${{ secrets.API_VERSION }}
           tags: ${{ steps.meta-front.outputs.tags }}
           labels: ${{ steps.meta-front.outputs.labels }}
