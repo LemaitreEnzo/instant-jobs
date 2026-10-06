@@ -6,7 +6,6 @@
   "scripts": {
     "test:watch": "jest --watch --verbose",
     "test:cov": "jest --coverage --verbose",
-    "test": "jest",
     "dev": "npx tsx watch ./server.ts",
     "prod": "NODE_ENV=prod node dist/server.js",
     "build": "tsc && tsc-alias",
@@ -56,6 +55,7 @@
     "ts-jest": "^29.4.9",
     "ts-node": "^10.9.2",
     "tsc-alias": "^1.8.16",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "5.4"
   }
 }

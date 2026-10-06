@@ -1,9 +1,10 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import type { UserRole } from "../types/enum.type";
 
 interface RoleBasedRouteProps {
-  allowedRoles: string[];
+  allowedRoles: UserRole[];
   children: React.ReactElement;
 }
 
@@ -11,12 +12,11 @@ const RoleBasedRoute: React.FC<RoleBasedRouteProps> = ({
   allowedRoles,
   children,
 }) => {
-  const { isLoggedIn, role, loading } = useAuth();
+  const { role, loading } = useAuth();
 
   if (loading) return <div>Loading...</div>;
-  if (!isLoggedIn) return <Navigate to="/login" replace />;
-  if (!allowedRoles.includes(role))
-    return <Navigate to="/unauthorized" replace />;
+  if (!role) return <Navigate to="/login" replace />;
+  if (!allowedRoles.includes(role)) return <Navigate to="/login" replace />;
 
   return children;
 };

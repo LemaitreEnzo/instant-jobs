@@ -3,17 +3,10 @@ import Calendar from "../pages/Calendar";
 import Dashboard from "../pages/Dashboard";
 import MySchool from "../pages/student/MySchool";
 import Profile from "../pages/student/Profile";
+import type { UserRole } from "../types/enum.type";
 import type { Route } from "../types/global.type";
 
-export const routes: Array<Route> = [
-  {
-    path: "applications",
-    element: (
-      <ProtectedRoute>
-        <Dashboard />
-      </ProtectedRoute>
-    ),
-  },
+const sharedRoutes: Route[] = [
   {
     path: "documents",
     element: (
@@ -55,3 +48,19 @@ export const routes: Array<Route> = [
     ),
   },
 ];
+
+export const routes: Record<UserRole, Route[]> = {
+  admin: sharedRoutes,
+  staff: sharedRoutes,
+  student: [
+    ...sharedRoutes,
+    {
+      path: "applications",
+      element: (
+        <ProtectedRoute>
+          <Dashboard />
+        </ProtectedRoute>
+      ),
+    },
+  ],
+};

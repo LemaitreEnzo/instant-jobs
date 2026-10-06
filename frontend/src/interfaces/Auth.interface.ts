@@ -1,10 +1,12 @@
 import type React from "react";
-import type { Role } from "../types/global.type";
+import type { UserRole } from "../types/enum.type";
+import type { Organization } from "./models.interface";
 import type { Student, User } from "./user.interface";
 
 export interface AuthContextType {
   user: User | Student | null;
-  role: Role | null;
+  role: UserRole | null;
+  organization: Organization | null;
   loading: boolean;
   isAuthenticated: boolean;
   login: (
@@ -16,5 +18,5 @@ export interface AuthContextType {
 
 export interface ProtectedRouteProps {
   children: React.ReactElement;
-  allowedRoles?: Role[];
+  allowedRoles?: UserRole[];
 }

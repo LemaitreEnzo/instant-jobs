@@ -1,8 +1,6 @@
 import getEnv from "../../utils/envHelper";
 
-require("dotenv").config();
-
-module.exports = {
+const config = {
   development: {
     host: getEnv("DB_HOST"),
     port: Number(getEnv("DB_PORT")),
@@ -29,3 +27,5 @@ module.exports = {
     logging: false,
   },
 };
+
+export default config;

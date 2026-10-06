@@ -12,13 +12,13 @@ const UserModal = (props: PropsUserModal) => {
     if (open && modalRef.current && !modalRef.current.contains(e.target)) {
       onOpenChange(false);
     }
-  }
+  };
 
   useEffect(() => {
     document.addEventListener("mousedown", checkClickOutside);
 
     return () => document.removeEventListener("mousedown", checkClickOutside);
-  }, [open])
+  }, [open]);
 
   return (
     open && (

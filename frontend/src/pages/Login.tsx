@@ -3,7 +3,7 @@ import Logo from "../assets/img/Logo.webp";
 import Button from "../components/ui/Button/Button";
 
 import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "../context/AuthContext";
 import { useFormValidation, validators } from "../hooks/useFormValidation";
@@ -11,15 +11,14 @@ import { useFormValidation, validators } from "../hooks/useFormValidation";
 import type { Student, User } from "../interfaces/user.interface";
 import type { dataLogin } from "../types/form.type";
 
-import Input from "../components/ui/Input/Input";
 import FormField from "../components/ui/FormField/FormField";
+import Input from "../components/ui/Input/Input";
 
 import "../assets/css/pages/login.css";
 
 const Login = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const { login } = useAuth();
+  const { login, organization } = useAuth();
 
   const { validate, hasError, getError } = useFormValidation({
     email: [validators.required("L'email est obligatoire"), validators.email()],
@@ -47,9 +46,9 @@ const Login = () => {
 
       if (!user) return;
 
-      const from =
-        (location.state as { from?: { pathname: string } })?.from?.pathname ||
-        "/dashboard";
+      if (!organization) return;
+
+      const from = `${organization.slug}`;
       navigate(from, { replace: true });
     } catch (error) {
       console.error(error);
