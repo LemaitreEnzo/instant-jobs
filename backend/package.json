@@ -9,7 +9,7 @@
     "test": "jest",
     "dev": "npx tsx watch ./server.ts",
     "prod": "NODE_ENV=prod node dist/server.js",
-    "build": "tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json",
+    "build": "tsc && tsc-alias",
     "migrate:generate": "npx ts-node src/db/templates/generateMigration.ts",
     "migrate": "tsc -p . && npx sequelize-cli db:migrate ",
     "migrate:undo": "npx sequelize-cli db:migrate:undo ",
