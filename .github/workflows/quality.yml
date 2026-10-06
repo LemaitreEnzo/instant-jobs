@@ -54,11 +54,16 @@ jobs:
         working-directory: backend
         run: npm ci
 
+      - name: Build backend
+        working-directory: backend
+        run: npx tsc -p . && npx tsc-alias
+
       - name: Run Sequelize Migrations
         working-directory: backend
-        env:
-          NODE_OPTIONS: --no-experimental-strip-types
-        run: npx sequelize-cli db:migrate
+        run: >
+          npx sequelize-cli db:migrate
+          --config dist/src/db/config.js
+          --migrations-path dist/src/db/migrations
 
       - name: Run Backend Tests
         working-directory: backend
