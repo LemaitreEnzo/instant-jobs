@@ -3,6 +3,8 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 1em;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .filter-bar .filter-bar-search {
@@ -86,7 +88,7 @@
   flex-direction: column;
   gap: 0.75rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid var(--stroke-color, #E6E9ED);
+  border-bottom: 1px solid var(--stroke-color, #e6e9ed);
 }
 
 .filter-group:last-of-type {
@@ -133,7 +135,7 @@
   justify-content: space-between;
   padding: 0.75rem 1rem;
   border-radius: 10px;
-  border: 1.5px solid var(--stroke-color, #E6E9ED);
+  border: 1.5px solid var(--stroke-color, #e6e9ed);
   background-color: var(--background-color, #ffffff);
   color: var(--font-color, #000000);
   font-size: 15px;
@@ -157,7 +159,7 @@
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  border: 1.5px solid var(--stroke-color, #E6E9ED);
+  border: 1.5px solid var(--stroke-color, #e6e9ed);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -185,7 +187,7 @@
 .sort-direction-btn {
   padding: 0.65rem 0.75rem;
   border-radius: 8px;
-  border: 1.5px solid var(--stroke-color, #E6E9ED);
+  border: 1.5px solid var(--stroke-color, #e6e9ed);
   background-color: var(--background-color, #ffffff);
   color: var(--font-color, #000000);
   font-size: 13px;
@@ -216,7 +218,7 @@
   gap: 0.75rem;
   margin-top: 1rem;
   padding-top: 1rem;
-  border-top: 1px solid var(--stroke-color, #E6E9ED);
+  border-top: 1px solid var(--stroke-color, #e6e9ed);
 }
 
 .filterbar-modal-actions button {

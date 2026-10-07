@@ -1,0 +1,14 @@
+.application-page {
+  .top {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-between;
+    row-gap: 40px;
+
+    .page-title,
+    .filter-bar {
+      width: fit-content;
+    }
+  }
+}

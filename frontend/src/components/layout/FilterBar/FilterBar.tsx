@@ -24,16 +24,21 @@ const FilterBar = ({
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
   const [isSortOpen, setIsSortOpen] = useState<boolean>(false);
 
-  const getInitialFilters = (): string[] => {
-    return filterGroups.flatMap((group: FilterGroup) =>
-      group.options.filter((opt) => Boolean(opt.checked)).map((opt) => opt.id),
+  const getInitialFilters = (): Record<string, string[]> => {
+    const initial: Record<string, string[]> = {};
+    filterGroups.forEach(
+      (group: FilterGroup) =>
+        (initial[group.id] = group.options
+          .filter((opt) => Boolean(opt.checked))
+          .map((opt) => opt.id)),
     );
+    return initial;
   };
 
   const [committedFilters, setCommittedFilters] =
-    useState<string[]>(getInitialFilters);
+    useState<Record<string, string[]>>(getInitialFilters);
   const [tempFilters, setTempFilters] =
-    useState<string[]>(getInitialFilters);
+    useState<Record<string, string[]>>(getInitialFilters);
 
   const [committedSort, setCommittedSort] = useState<SortState>(defaultSort);
   const [tempSort, setTempSort] = useState<SortState>(defaultSort);
@@ -54,16 +59,24 @@ const FilterBar = ({
   };
 
   const handleToggleFilterOption = (
+    groupId: string,
     optionId: string,
     checked: boolean,
   ) => {
-    setTempFilters((prev) =>
-      checked ? [...prev, optionId] : prev.filter((id) => id !== optionId),
-    );
+    setTempFilters((prev) => {
+      const currentGroupOptions = prev[groupId] || [];
+      const updatedGroupOptions = checked
+        ? [...currentGroupOptions, optionId]
+        : currentGroupOptions.filter((id: string) => id !== optionId);
+      return {
+        ...prev,
+        [groupId]: updatedGroupOptions,
+      };
+    });
   };
 
   const handleResetFilters = () => {
-    setTempFilters([]);
+    setTempFilters({});
   };
 
   const handleApplyFilters = () => {
@@ -185,24 +198,27 @@ const FilterBar = ({
               Aucun filtre disponible pour cette section.
             </p>
           ) : (
-            filterGroups.map((group) => (
-              <div key={group.id} className="filter-group">
-                <h4 className="filter-group-title">{group.title}</h4>
-                <div className="filter-options-list">
-                  {group.options.map((opt) => (
-                    <Checkbox
-                      key={opt.id}
-                      id={`filter-${group.id}-${opt.id}`}
-                      label={opt.label}
-                      checked={tempFilters.includes(opt.id)}
-                      onChange={(checked) =>
-                        handleToggleFilterOption(opt.id, checked)
-                      }
-                    />
-                  ))}
+            filterGroups.map((group) => {
+              const selectedInGroup = tempFilters[group.id] || [];
+              return (
+                <div key={group.id} className="filter-group">
+                  <h4 className="filter-group-title">{group.title}</h4>
+                  <div className="filter-options-list">
+                    {group.options.map((opt) => (
+                      <Checkbox
+                        key={opt.id}
+                        id={`filter-${group.id}-${opt.id}`}
+                        label={opt.label}
+                        checked={selectedInGroup.includes(opt.id)}
+                        onChange={(checked) =>
+                          handleToggleFilterOption(group.id, opt.id, checked)
+                        }
+                      />
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))
+              );
+            })
           )}
 
           <div className="filterbar-modal-actions">

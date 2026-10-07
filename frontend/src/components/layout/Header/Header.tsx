@@ -51,8 +51,8 @@ const Header = () => {
             <path
               d="M10 21.25H14"
               stroke="black"
-              stroke-width="1.5"
-              stroke-linecap="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
             />
           </svg>
         </Button>

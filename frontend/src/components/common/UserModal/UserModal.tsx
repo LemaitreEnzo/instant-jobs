@@ -1,15 +1,21 @@
 import { useEffect, useRef } from "react";
+import { useAuth } from "../../../context/AuthContext";
 import type { PropsUserModal } from "../../../types/props.type";
 import Button from "../../ui/Button/Button";
 import "./UserModal.css";
 
 const UserModal = (props: PropsUserModal) => {
-  const { open, onOpenChange } = props;
+  const { user, open, onOpenChange } = props;
+  const { organization } = useAuth();
 
   const modalRef = useRef<HTMLInputElement>(null);
 
-  const checkClickOutside = (e) => {
-    if (open && modalRef.current && !modalRef.current.contains(e.target)) {
+  const checkClickOutside = (e: MouseEvent) => {
+    if (
+      open &&
+      modalRef.current &&
+      !modalRef.current.contains(e.target as Node)
+    ) {
       onOpenChange(false);
     }
   };
@@ -24,14 +30,22 @@ const UserModal = (props: PropsUserModal) => {
     open && (
       <div className="user-modal" ref={modalRef}>
         <div className="user-modal_header">
-          <span className="user-modal_header_avatar">F</span>
+          <span className="user-modal_header_avatar">
+            {user?.firstname.charAt(0).toUpperCase()}
+          </span>
           <div className="user-modal_header_info">
-            <span>Florian Lavigne</span>
-            <span>email@test.fr</span>
+            <span>
+              {user?.firstname} {user?.lastname}
+            </span>
+            <span>{user?.email}</span>
           </div>
         </div>
         <div className="user-modal-actions">
-          <Button href="/profile" className="btn-secondary" shape="rectangle">
+          <Button
+            href={`/${organization?.slug}/profile`}
+            className="btn-secondary"
+            shape="rectangle"
+          >
             <svg
               width="24"
               height="24"
@@ -46,7 +60,13 @@ const UserModal = (props: PropsUserModal) => {
             </svg>
             <span>Profil</span>
           </Button>
-          <Button href="/settings" className="btn-secondary" shape="rectangle">
+
+          {/* Ajout dynamique de l'organisation dans la route des paramètres */}
+          <Button
+            href={`/${organization?.slug}/settings`}
+            className="btn-secondary"
+            shape="rectangle"
+          >
             <svg
               width="25"
               height="25"
@@ -74,9 +94,9 @@ const UserModal = (props: PropsUserModal) => {
             <path
               d="M10 17L15 12L10 7"
               stroke="#121212"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
           </svg>
           <span>Déconnexion</span>
@@ -85,4 +105,5 @@ const UserModal = (props: PropsUserModal) => {
     )
   );
 };
+
 export default UserModal;

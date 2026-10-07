@@ -3,9 +3,9 @@ import "./assets/css/default.css";
 import "./assets/css/global.css";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
+import MainLayout from "./components/layout/MainLayout/MainLayout";
 import { routes } from "./constants/routes.constant";
 import { useAuth } from "./context/AuthContext";
-import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import type { Route as AppRoute } from "./types/global.type";
@@ -44,7 +44,7 @@ function App() {
         path="/:organizationSlug"
         element={
           <ProtectedRoute>
-            <Dashboard />
+            <MainLayout />
           </ProtectedRoute>
         }
       >

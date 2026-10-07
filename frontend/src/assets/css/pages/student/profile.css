@@ -1,8 +1,14 @@
 .page-profile {
-    min-height: 100vh;
-    background-color: var(--body-color);
+  min-height: 100vh;
+  background-color: var(--body-color);
+  display: flex;
+  flex-direction: column;
+  row-gap: 25px;
+
+  .page-profile-container {
     display: flex;
     align-items: flex-start;
     display: flex;
     column-gap: 25px;
+  }
 }

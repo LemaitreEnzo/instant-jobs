@@ -5,6 +5,7 @@ import type { Student, User } from "./user.interface";
 
 export interface AuthContextType {
   user: User | Student | null;
+  setUser: React.Dispatch<React.SetStateAction<User | Student | null>>;
   role: UserRole | null;
   organization: Organization | null;
   loading: boolean;

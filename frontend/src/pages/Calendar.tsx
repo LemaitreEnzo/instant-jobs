@@ -1,20 +1,18 @@
-import MainLayout from '../components/layout/MainLayout/MainLayout';
-import PageTitle from '../components/layout/PageTitle/PageTitle';
-import BigCalendar from '../components/ui/BigCalendar/BigCalendar';
-import '../assets/css/pages/calendar.css';
-import Soon from '../components/ui/Soon/Soon';
-import useApplication from '../hooks/useApplication';
-import useUser from '../hooks/useUser';
-import { useAuth } from '../context/AuthContext';
-import { useEffect, useState } from 'react';
-import type { Appointment } from '../interfaces/models.interface';
+import { useEffect, useState } from "react";
+import "../assets/css/pages/calendar.css";
+import PageTitle from "../components/layout/PageTitle/PageTitle";
+import BigCalendar from "../components/ui/BigCalendar/BigCalendar";
+import Soon from "../components/ui/Soon/Soon";
+import { useAuth } from "../context/AuthContext";
+import useApplication from "../hooks/useApplication";
+import useUser from "../hooks/useUser";
+import type { Appointment } from "../interfaces/models.interface";
 
 function Calendar() {
   const [appointments, setAppointments] = useState<Appointment[] | null>(null);
-  const {user} = useAuth();
-  const {fetchApplications} = useUser();
-  const {fetchAppointments} = useApplication();
-
+  const { user } = useAuth();
+  const { fetchApplications } = useUser();
+  const { fetchAppointments } = useApplication();
 
   useEffect(() => {
     const loadData = async () => {
@@ -24,14 +22,13 @@ function Calendar() {
           const applications = await fetchApplications(userId);
 
           const appointmentsPromises = applications.map((application) =>
-            fetchAppointments(application.id)
+            fetchAppointments(application.id),
           );
 
           const appointmentsNested = await Promise.all(appointmentsPromises);
           const appointmentsList = appointmentsNested.flat();
 
           setAppointments(appointmentsList);
-
         }
       } catch (error) {
         console.error("Erreur lors du chargement des données :", error);
@@ -39,33 +36,25 @@ function Calendar() {
     };
 
     loadData();
-  }, [])
-  
+  }, []);
+
   if (appointments) {
     return (
-      <MainLayout >
-        <div className='page-calendar'>
-          <div className='page-calendar-header'>
-            <PageTitle title='Calendrier' />
-          </div>
-          <div className='page-calendar-container'>
-            <BigCalendar />
-            <div className='page-calendar-appointments'>
-              <Soon data={appointments} />
-            </div>
+      <div className="page-calendar">
+        <div className="page-calendar-header">
+          <PageTitle title="Calendrier" />
+        </div>
+        <div className="page-calendar-container">
+          <BigCalendar />
+          <div className="page-calendar-appointments">
+            <Soon data={appointments} />
           </div>
         </div>
-      </MainLayout>
-    )
-  }else{
-    return (
-      <MainLayout >
-        <div className='page-calendar'>
-          test
-        </div>
-      </MainLayout>
-    )
+      </div>
+    );
+  } else {
+    return <div className="page-calendar">test</div>;
   }
 }
 
-export default Calendar
+export default Calendar;

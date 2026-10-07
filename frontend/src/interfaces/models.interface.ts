@@ -48,6 +48,9 @@ export interface Appointment {
   applicationId: number;
   userId: number;
 }
+export interface AppointmentWithApplication extends Appointment {
+  application: Application | undefined;
+}
 
 export interface Media {
   id: number;
