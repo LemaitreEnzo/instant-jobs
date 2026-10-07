@@ -1,18 +1,26 @@
 import { useEffect, useState } from "react";
-import type { Application } from "../../interfaces/models.interface";
-import type { PropsApplicationsList } from "../../types/props.type";
 import { useAuth } from "../../context/AuthContext";
 import { useUser } from "../../hooks/useUser";
+import type { Application } from "../../interfaces/models.interface";
 import {
-  ApplicationResend, ApplicationResendLabel,
-  ApplicationStatus, ApplicationStatusLabel,
-  ApplicationType, ApplicationTypeLabel,
+  ApplicationResend,
+  ApplicationResendLabel,
+  ApplicationStatus,
+  ApplicationStatusLabel,
+  ApplicationType,
+  ApplicationTypeLabel,
 } from "../../types/enum.type";
+import type { PropsApplicationsList } from "../../types/props.type";
 import Tag from "../ui/Tag/Tag";
 import ApplicationFormModal from "./ApplicationFormModal";
 import "./Applications.css";
 
-const Applications = ({ data, loading: externalLoading, onSuccess }: PropsApplicationsList = {}) => {
+const Applications = ({
+  data,
+  loading: externalLoading,
+  onSuccess,
+  limit = data?.length,
+}: PropsApplicationsList = {}) => {
   const { user } = useAuth();
   const { loading: userLoading, applications, fetchApplications } = useUser();
 
@@ -109,7 +117,7 @@ const Applications = ({ data, loading: externalLoading, onSuccess }: PropsApplic
           </thead>
 
           <tbody>
-            {displayApplications.map((app) => (
+            {displayApplications.slice(0, limit).map((app) => (
               <tr key={app.id} className="applications-row">
                 <td className="applications-company">
                   <img src={app.logo} alt={app.company} />
@@ -117,7 +125,7 @@ const Applications = ({ data, loading: externalLoading, onSuccess }: PropsApplic
                 </td>
                 <td>{formatDate(app.date)}</td>
                 <td>{app.city}</td>
-                <td>{app.title}</td>
+                <td>{app.title.slice(0, 50) + "..."}</td>
                 {/*<td>{app.description}</td>*/}
                 <td>
                   <Tag className={getType(app.type)}>

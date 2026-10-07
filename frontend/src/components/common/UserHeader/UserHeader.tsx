@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { useAuth } from "../../../context/AuthContext";
 import UserModal from "../UserModal/UserModal";
 import "./UserHeader.css";
 
 const UserHeader = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const { user } = useAuth();
 
   return (
     <div className="user-header">
@@ -12,9 +14,9 @@ const UserHeader = () => {
         onClick={() => setIsModalOpen((isOpen) => !isOpen)}
         className="user-header_avatar"
       >
-        F
+        {user?.firstname.charAt(0)}
       </span>
-      <UserModal open={isModalOpen} onOpenChange={setIsModalOpen} />
+      <UserModal user={user} open={isModalOpen} onOpenChange={setIsModalOpen} />
     </div>
   );
 };

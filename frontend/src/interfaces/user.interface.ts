@@ -1,5 +1,7 @@
 import type { StudentStatus, UserRole } from "../types/enum.type";
 import type {
+  Application,
+  Appointment,
   Campus,
   Media,
   Promotion,
@@ -19,6 +21,8 @@ export interface User {
 }
 
 export interface Student extends User {
+  applications: Application[] | null;
+  appointments: Appointment[] | null;
   promotion: Promotion | null;
   speciality: Speciality | null;
   subSpeciality: SubSpeciality | null;

@@ -5,4 +5,20 @@
   flex-direction: column;
   gap: 1.5rem;
   width: 100%;
+
+  .top {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    gap: 20px;
+
+    .stats-cards,
+    .small-calendar {
+      flex: 1;
+    }
+
+    .small-calendar {
+      justify-content: center;
+    }
+  }
 }

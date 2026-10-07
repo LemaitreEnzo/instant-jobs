@@ -1,6 +1,6 @@
-import ProtectedRoute from "../components/ProtectedRoute";
 import Calendar from "../pages/Calendar";
 import Dashboard from "../pages/Dashboard";
+import ApplicationsPage from "../pages/student/ApplicationsPage";
 import MySchool from "../pages/student/MySchool";
 import Profile from "../pages/student/Profile";
 import type { UserRole } from "../types/enum.type";
@@ -8,44 +8,28 @@ import type { Route } from "../types/global.type";
 
 const sharedRoutes: Route[] = [
   {
+    path: "dashboard",
+    element: <Dashboard />,
+  },
+  {
     path: "documents",
-    element: (
-      <ProtectedRoute>
-        <Dashboard />
-      </ProtectedRoute>
-    ),
+    element: <Dashboard />,
   },
   {
     path: "calendar",
-    element: (
-      <ProtectedRoute>
-        <Calendar />
-      </ProtectedRoute>
-    ),
+    element: <Calendar />,
   },
   {
     path: "school",
-    element: (
-      <ProtectedRoute>
-        <MySchool />
-      </ProtectedRoute>
-    ),
+    element: <MySchool />,
   },
   {
     path: "profile",
-    element: (
-      <ProtectedRoute>
-        <Profile />
-      </ProtectedRoute>
-    ),
+    element: <Profile />,
   },
   {
     path: "settings",
-    element: (
-      <ProtectedRoute>
-        <Dashboard />
-      </ProtectedRoute>
-    ),
+    element: <Dashboard />,
   },
 ];
 
@@ -56,11 +40,7 @@ export const routes: Record<UserRole, Route[]> = {
     ...sharedRoutes,
     {
       path: "applications",
-      element: (
-        <ProtectedRoute>
-          <Dashboard />
-        </ProtectedRoute>
-      ),
+      element: <ApplicationsPage />,
     },
   ],
 };

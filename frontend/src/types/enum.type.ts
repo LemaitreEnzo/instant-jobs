@@ -6,7 +6,7 @@ export enum ApplicationType {
 export const ApplicationTypeLabel = {
   [ApplicationType.INTERNSHIP]: "Stage",
   [ApplicationType.APPRENTICESHIP]: "Alternance",
-}
+};
 
 export enum ApplicationStatus {
   PENDING = "pending",
@@ -18,7 +18,7 @@ export const ApplicationStatusLabel = {
   [ApplicationStatus.PENDING]: "En attente",
   [ApplicationStatus.REFUSED]: "Refusée",
   [ApplicationStatus.ACCEPTED]: "Acceptée",
-}
+};
 
 export enum ApplicationResend {
   FOLLOW_UP = "follow up",
@@ -32,7 +32,7 @@ export const ApplicationResendLabel = {
   [ApplicationResend.INTERVIEW_COMPLETED]: "Entretien passé",
   [ApplicationResend.NO]: "Pas de relance",
   [ApplicationResend.NOT_NECESSARY]: "Non nécessaire",
-}
+};
 
 export enum AppointmentStatus {
   INCOMING = "incoming",
@@ -44,7 +44,7 @@ export const AppointmentStatusLabel = {
   [AppointmentStatus.INCOMING]: "À venir",
   [AppointmentStatus.CANCELED]: "Annulé",
   [AppointmentStatus.FINISHED]: "Passé",
-}
+};
 
 export enum UserRole {
   STUDENT = "student",
@@ -52,11 +52,23 @@ export enum UserRole {
   STAFF = "staff",
 }
 
+export const UserRoleLabel = {
+  [UserRole.STUDENT]: "Élève",
+  [UserRole.ADMIN]: "Administrateur",
+  [UserRole.STAFF]: "Employé",
+};
+
 export enum StudentStatus {
   SEARCH = "search",
   PENDING = "pending",
   FOUND = "found",
 }
+
+export const StudentStatusLabel = {
+  [StudentStatus.FOUND]: "Accepté",
+  [StudentStatus.PENDING]: "En attente",
+  [StudentStatus.SEARCH]: "Recherche",
+};
 
 export enum CalendarView {
   MONTH = "month",

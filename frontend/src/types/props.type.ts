@@ -2,14 +2,11 @@ import type { SetStateAction } from "react";
 import type {
   Application,
   Appointment,
-  Campus,
+  AppointmentWithApplication,
   Organization,
-  Promotion,
-  Speciality,
-  SubSpeciality,
 } from "../interfaces/models.interface";
 import type { Student, User } from "../interfaces/user.interface";
-import type { AppointmentCalendar, PropsBase } from "../types/global.type";
+import type { PropsBase } from "../types/global.type";
 import type { ApplicationStatus } from "./enum.type";
 
 export interface PropsButton extends PropsBase {
@@ -51,10 +48,6 @@ export type PropsProfile = {
   className?: string;
   user: User | Student;
   organization: Organization;
-  campus: Campus;
-  promotion: Promotion;
-  speciality: Speciality;
-  subSpeciality: SubSpeciality;
 };
 
 export type PropsStatsCards = {
@@ -69,6 +62,7 @@ export type PropsCardStudent = {
 };
 
 export type PropsUserModal = {
+  user: User | Student | null;
   open: boolean;
   onOpenChange: React.Dispatch<SetStateAction<boolean>>;
 };
@@ -92,11 +86,11 @@ export type PropsCardDocument = {
 };
 
 export type PropsSmallCalendar = {
-  data: AppointmentCalendar[];
+  data: AppointmentWithApplication[];
 };
 
 export type PropsEventCard = {
-  data: AppointmentCalendar[];
+  data: AppointmentWithApplication[];
 };
 
 export type PropsApplications = {
@@ -119,7 +113,7 @@ export type PropsRecentApplications = {
 };
 
 export type PropsPersonalInformation = {
-  data: User | Student;
+  user: User | Student;
 };
 
 export type PropsSmallProfile = {
@@ -210,12 +204,13 @@ export interface SortState {
 export interface PropsApplicationsList {
   data?: Application[];
   loading?: boolean;
+  limit?: number;
   onSuccess?: () => void;
 }
 
 export interface PropsFilterBar {
   filterGroups?: FilterGroup[];
-  onFilterChange?: (activeFilters: string[]) => void;
+  onFilterChange?: (activeFilters: Record<string, string[]>) => void;
   sortOptions?: SortOption[];
   defaultSort?: SortState;
   onSortChange?: (sort: SortState) => void;
