@@ -48,7 +48,9 @@ const Login = () => {
 
       if (!organization) return;
 
-      const from = `${organization.slug}`;
+      console.log(organization);
+
+      const from = `${organization.slug}/dashboard`;
       navigate(from, { replace: true });
     } catch (error) {
       console.error(error);

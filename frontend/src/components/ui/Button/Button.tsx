@@ -17,6 +17,7 @@ const Button = ({
   type = "button",
   shape = "oval",
   className = "btn-primary",
+  navigateBack = false,
   ...props
 }: PropsButton) => {
   const finalClassName = [`btn btn-${shape}`, className, props.customClassName]
@@ -32,7 +33,7 @@ const Button = ({
     }
   };
 
-  if (props.navigateBack) {
+  if (navigateBack) {
     return (
       <button {...props} className={finalClassName} onClick={handleBack}>
         {props.children}

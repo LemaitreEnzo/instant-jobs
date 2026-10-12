@@ -64,6 +64,7 @@ const ENUM_COLUMNS_BY_TABLE = ENUM_CONFIGS.reduce<
 /** @type {import("sequelize-cli").Migration} */
 export default {
   up: async (queryInterface: QueryInterface): Promise<void> => {
+    // Creation of ENUMs
     for (const config of ENUM_CONFIGS) {
       const formattedValues = config.values
         .map((v) => `'${v.replace(/'/g, "''")}'`)

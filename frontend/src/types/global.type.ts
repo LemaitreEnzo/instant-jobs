@@ -24,7 +24,7 @@ export type DayInformations = {
 
 export type Route = {
   path: string;
-  element: React.ReactNode;
+  element: React.ReactElement;
 };
 
 export type AppointmentCalendar = {
@@ -32,5 +32,5 @@ export type AppointmentCalendar = {
   date: Date;
   reason: string;
   type: ApplicationType;
-  companyName: string
-}
+  companyName: string;
+};

@@ -1,14 +1,20 @@
 import { useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import type { PropsUserModal } from "../../../types/props.type";
 import Button from "../../ui/Button/Button";
 import "./UserModal.css";
-
 const UserModal = (props: PropsUserModal) => {
   const { user, open, onOpenChange } = props;
-  const { organization } = useAuth();
-
+  const { organization, logout } = useAuth();
   const modalRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
+
+  const logoutUser = async () => {
+    await logout();
+    onOpenChange(false);
+    navigate("/login", { replace: true });
+  };
 
   const checkClickOutside = (e: MouseEvent) => {
     if (
@@ -83,7 +89,11 @@ const UserModal = (props: PropsUserModal) => {
           </Button>
         </div>
 
-        <Button href="/logout" className="btn-secondary" shape="rectangle">
+        <Button
+          onClick={logoutUser}
+          className="btn-secondary"
+          shape="rectangle"
+        >
           <svg
             width="24"
             height="24"

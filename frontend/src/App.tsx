@@ -52,7 +52,7 @@ function App() {
           <Route
             key={`${role}-${route.path}-${index}`}
             path={route.path}
-            element={route.element}
+            element={<ProtectedRoute>{route.element}</ProtectedRoute>}
           />
         ))}
       </Route>

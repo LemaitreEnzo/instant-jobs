@@ -13,7 +13,7 @@ export const PublicRoute: React.FC<{ children: React.ReactElement }> = ({
 
   if (isAuthenticated) {
     const orgSlug = organization?.slug || "dashboard";
-    return <Navigate to={`/${orgSlug}`} replace />;
+    return <Navigate to={`/${orgSlug}/dashboard`} replace />;
   }
 
   return children;
