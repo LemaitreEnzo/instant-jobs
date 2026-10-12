@@ -135,10 +135,10 @@ export const login = async (req: Request, res: Response) => {
         };
         const jwtToken = jwt.sign(payload, secret);
         res.cookie(getEnv("TOKEN"), jwtToken, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
-          sameSite: "strict",
-          maxAge: 24 * 60 * 60 * 1000,
+          httpOnly: true, // inaccessible to JavaScript
+          secure: process.env.NODE_ENV === "production", // HTTPS only in production
+          sameSite: "strict", // protects against CSRF
+          maxAge: 24 * 60 * 60 * 1000, // 24h
           path: "/",
         });
 
