@@ -1,5 +1,6 @@
 import Calendar from "../pages/Calendar";
 import Dashboard from "../pages/Dashboard";
+import Documents from "../pages/Documents";
 import ApplicationsPage from "../pages/student/ApplicationsPage";
 import MySchool from "../pages/student/MySchool";
 import Profile from "../pages/student/Profile";
@@ -13,7 +14,7 @@ const sharedRoutes: Route[] = [
   },
   {
     path: "documents",
-    element: <Dashboard />,
+    element: <Documents />,
   },
   {
     path: "calendar",

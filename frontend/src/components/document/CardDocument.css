@@ -1,0 +1,65 @@
+.card-document {
+  display: flex;
+  flex-direction: column;
+  width: calc((100% - 20px * 3) / 4);
+  border: 1px #afafaf solid;
+  border-radius: 10px;
+}
+
+.card-document-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1em;
+  background-color: #e8e8e8;
+  border-bottom: 1px #afafaf solid;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  height: calc(200px + 2em);
+
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .pdf-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    overflow: hidden;
+    pointer-events: none;
+    border: 0;
+    height: 100%;
+
+    .file-preview {
+      height: 100%;
+    }
+  }
+}
+
+.card-document-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1rem;
+}
+
+.card-document-content h4 {
+  margin-bottom: 0;
+  font-size: 22px;
+}
+
+.card-document-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-document-footer-icons {
+  display: flex;
+  gap: 0.5rem;
+}

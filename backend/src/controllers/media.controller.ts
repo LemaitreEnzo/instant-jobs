@@ -2,7 +2,7 @@ import type { Request, Response } from "express";
 import { Attributes } from "sequelize";
 import { Media } from "src/models";
 
-const excludedData: (keyof Attributes<Media>)[] = ["createdAt", "updatedAt"];
+const excludedData: (keyof Attributes<Media>)[] = ["updatedAt"];
 
 export const getOneMedia = async (req: Request, res: Response) => {
   try {

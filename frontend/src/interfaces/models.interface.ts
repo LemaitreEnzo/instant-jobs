@@ -57,6 +57,7 @@ export interface Media {
   name: string;
   path: string;
   userId: number;
+  createdAt: Date;
 }
 
 export interface Promotion {

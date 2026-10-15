@@ -1,0 +1,35 @@
+.file-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.file-preview-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+}
+
+.file-preview-pdf {
+  overflow: hidden;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.file-preview-fallback {
+  padding: 16px;
+  border: 1px dashed #ccc;
+  border-radius: 8px;
+  text-align: center;
+  width: 100%;
+}
+
+.file-preview-fallback a {
+  color: #007bff;
+  text-decoration: underline;
+}
