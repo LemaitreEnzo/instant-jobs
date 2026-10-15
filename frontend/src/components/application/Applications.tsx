@@ -128,7 +128,7 @@ const Applications = ({
                 <td>{app.title.slice(0, 50) + "..."}</td>
                 {/*<td>{app.description}</td>*/}
                 <td>
-                  <Tag className={getType(app.type)}>
+                  <Tag className={getType(app.type)} round>
                     <span>{ApplicationTypeLabel[app.type]}</span>
                   </Tag>
                 </td>

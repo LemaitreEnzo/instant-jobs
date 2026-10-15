@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import type { Organization } from "../interfaces/models.interface";
-import type { Student, User } from "../interfaces/user.interface";
+import type { Staff, Student, User } from "../interfaces/user.interface";
 import { api } from "../lib/api";
 import type { UserRole } from "../types/enum.type";
 import { AuthContext } from "./AuthContext";
@@ -8,12 +8,12 @@ import { AuthContext } from "./AuthContext";
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [user, setUser] = useState<User | Student | null>(null);
+  const [user, setUser] = useState<User | Staff | Student | null>(null);
   const [role, setRole] = useState<UserRole | null>(null);
   const [organization, setOrganization] = useState<Organization | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const refreshUser = useCallback(async (): Promise<User | Student | null> => {
+  const refreshUser = useCallback(async (): Promise<User | Staff | Student | null> => {
     try {
       const currentUser = await api.user.getMe();
       if (currentUser) {
@@ -54,12 +54,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [refreshUser]);
 
   const login = useCallback(
     async (
       credentials: { email: string; password: string } | Partial<User>,
-    ): Promise<User | Student> => {
+    ): Promise<User | Staff | Student> => {
       setLoading(true);
       try {
         const loggedUser = await api.user.login(credentials);

@@ -9,7 +9,7 @@ import type {
   Speciality,
   SubSpeciality,
 } from "../interfaces/models.interface";
-import type { Student, User } from "../interfaces/user.interface";
+import type { Staff, Student, User } from "../interfaces/user.interface";
 
 export interface RequestOptions extends Omit<RequestInit, "body"> {
   body?: unknown;
@@ -356,7 +356,7 @@ class ApiClient {
 
   readonly user = {
     fetchOne: (id: number): Promise<User | Student> => {
-      return this.request<User | Student>(`user/${id}`, { method: "GET" });
+      return this.request<User | Staff | Student>(`user/${id}`, { method: "GET" });
     },
 
     create: (data: Partial<User>): Promise<User> => {
@@ -373,8 +373,8 @@ class ApiClient {
 
     login: (
       credentials: { email: string; password: string } | Partial<User>,
-    ): Promise<User | Student> => {
-      return this.request<User | Student>("user/login", {
+    ): Promise<User | Staff | Student> => {
+      return this.request<User | Staff | Student>("user/login", {
         method: "POST",
         body: credentials,
       });
@@ -384,8 +384,8 @@ class ApiClient {
       return this.request<void>("user/logout", { method: "POST" });
     },
 
-    getMe: (): Promise<User | Student | null> => {
-      return this.request<User | Student | null>("user/me", { method: "GET" });
+    getMe: (): Promise<User | Staff | Student | null> => {
+      return this.request<User | Staff | Student | null>("user/me", { method: "GET" });
     },
 
     fetchApplications: (userId: number): Promise<Application[]> => {

@@ -8,6 +8,7 @@ import type {
   Speciality,
   SubSpeciality,
 } from "./models.interface";
+
 export interface User {
   id: number;
   firstname: string;
@@ -17,10 +18,14 @@ export interface User {
   role: UserRole;
   medias: Media[] | null;
   organizationId: string;
-  campus: Campus | null;
+}
+
+export interface Staff extends User {
+  campus: Campus;
 }
 
 export interface Student extends User {
+  campus: Campus
   applications: Application[] | null;
   appointments: Appointment[] | null;
   promotion: Promotion | null;

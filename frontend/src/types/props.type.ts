@@ -46,6 +46,7 @@ export interface PropsTag extends PropsBase {
 
 export type PropsProfile = {
   className?: string;
+  contact?: boolean;
   user: User | Student;
   organization: Organization;
 };
@@ -114,10 +115,6 @@ export type PropsRecentApplications = {
 
 export type PropsPersonalInformation = {
   user: User | Student;
-};
-
-export type PropsSmallProfile = {
-  data: Student;
 };
 
 export interface SelectOption {
@@ -220,11 +217,13 @@ export interface PropsFilterBar {
 }
 
 export type PropsSchoolCard = {
-  name: string;
-  logo: string;
-  description: string;
+  data: Organization;
 };
 
 export type PropsSoon = {
   data: Appointment[];
 };
+
+export type PropsStudent = {
+  data: Student;
+}

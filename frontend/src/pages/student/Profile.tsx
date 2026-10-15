@@ -14,7 +14,7 @@ function Profile() {
           <PageTitle title="Profil" />
         </div>
         <div className="page-profile-container">
-          <ProfileComponent user={user} organization={organization} />
+          <ProfileComponent user={user} organization={organization} contact />
           <PersonalInformations user={user} />
         </div>
       </div>
