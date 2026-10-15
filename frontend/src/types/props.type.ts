@@ -246,4 +246,4 @@ export type PropsSoon = {
 
 export type PropsStudent = {
   data: Student;
-}
+};

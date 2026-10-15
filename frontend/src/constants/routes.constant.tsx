@@ -1,11 +1,11 @@
 import School from "../pages/admin/School";
-import StudentDetails from "../pages/StudentDetails";
 import Calendar from "../pages/Calendar";
 import Dashboard from "../pages/Dashboard";
 import Documents from "../pages/Documents";
 import ApplicationsPage from "../pages/student/ApplicationsPage";
 import MySchool from "../pages/student/MySchool";
 import Profile from "../pages/student/Profile";
+import StudentDetails from "../pages/StudentDetails";
 import type { UserRole } from "../types/enum.type";
 import type { Route } from "../types/global.type";
 
@@ -13,10 +13,6 @@ const sharedRoutes: Route[] = [
   {
     path: "dashboard",
     element: <Dashboard />,
-  },
-  {
-    path: "calendar",
-    element: <Calendar />,
   },
   {
     path: "student/:id",
@@ -56,6 +52,10 @@ export const routes: Record<UserRole, Route[]> = {
     {
       path: "documents",
       element: <Documents />,
+    },
+    {
+      path: "calendar",
+      element: <Calendar />,
     },
     {
       path: "school",
