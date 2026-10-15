@@ -1,6 +1,7 @@
-import { DAYS } from "../../../constants/global.constant";
+import { DAYS, MONTHS } from "../../../constants/global.constant";
 import type { DayInformations } from "../../../types/global.type";
 import type { PropsSmallCalendar } from "../../../types/props.type";
+import Button from "../Button/Button";
 import EventCard from "../EventCard/EventCard";
 import "./SmallCalendar.css";
 
@@ -8,20 +9,6 @@ const SmallCalendar = (props: PropsSmallCalendar) => {
   const appointmentsData = props.data;
 
   const todayDate: Date = new Date();
-  const months: string[] = [
-    "Janvier",
-    "Février",
-    "Mars",
-    "Avril",
-    "Mai",
-    "Juin",
-    "Juillet",
-    "Août",
-    "Septembre",
-    "Octobre",
-    "Novembre",
-    "Décembre",
-  ];
   const week: DayInformations[] = [];
   const todayDateDay: number = todayDate.getDay();
 
@@ -66,7 +53,7 @@ const SmallCalendar = (props: PropsSmallCalendar) => {
     <div className="small-calendar">
       <div className="calendar-date">
         <div className="calendar-month-year">
-          <p>{`${months[todayDate.getMonth()]} ${todayDate.getFullYear()}`}</p>
+          <p>{`${MONTHS[todayDate.getMonth()]} ${todayDate.getFullYear()}`}</p>
         </div>
         <div className="calendar-days">
           {week.map((day, index) => {
@@ -89,7 +76,13 @@ const SmallCalendar = (props: PropsSmallCalendar) => {
         <EventCard data={appointmentsData} />
       </div>
       <div className="small-calendar-btn">
-        <a href="#">Voir le calendrier</a>
+        <Button
+          href={`/${props.organization?.slug}/calendar`}
+          className="btn-primary"
+          shape="rectangle"
+        >
+          <span>Voir le calendrier</span>
+        </Button>
       </div>
     </div>
   );

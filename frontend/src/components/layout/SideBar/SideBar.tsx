@@ -66,24 +66,6 @@ const getSidebarItems = (orgSlug: string) => {
     admin: [
       ...sharedItems,
       {
-        label: "Calendrier",
-        link: `${prefix}/calendar`,
-        icon: (
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M12 12H17V17H12V12ZM19 3H18V1H16V3H8V1H6V3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 5V7H5V5H19ZM5 19V9H19V19H5Z"
-              fill="currentColor"
-            />
-          </svg>
-        ),
-      },
-      {
         label: "Mon école",
         link: `${prefix}/school`,
         icon: (
@@ -160,6 +142,24 @@ const getSidebarItems = (orgSlug: string) => {
               fillRule="evenodd"
               clipRule="evenodd"
               d="M12.3192 10.1328C12.3192 8.772 11.1732 7.7868 9.75955 7.7868C8.34595 7.7868 7.19995 8.7708 7.19995 10.1328V10.7736C7.20027 10.8867 7.24542 10.995 7.3255 11.0749C7.40558 11.1548 7.51406 11.1996 7.62715 11.1996H11.8932C12.006 11.1993 12.1142 11.1543 12.194 11.0745C12.2739 10.9947 12.3188 10.8865 12.3192 10.7736V10.1328Z"
+              fill="currentColor"
+            />
+          </svg>
+        ),
+      },
+      {
+        label: "Calendrier",
+        link: `${prefix}/calendar`,
+        icon: (
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 12H17V17H12V12ZM19 3H18V1H16V3H8V1H6V3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 5V7H5V5H19ZM5 19V9H19V19H5Z"
               fill="currentColor"
             />
           </svg>

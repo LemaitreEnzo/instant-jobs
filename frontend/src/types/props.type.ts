@@ -93,6 +93,7 @@ export type PropsFilePreview = {
 
 export type PropsSmallCalendar = {
   data: AppointmentWithApplication[];
+  organization: Organization;
 };
 
 export type PropsEventCard = {

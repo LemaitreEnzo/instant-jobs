@@ -12,7 +12,7 @@ import { UserRole } from "../types/enum.type";
  * and recent applications table for students.
  */
 function Dashboard() {
-  const { user, loading } = useAuth();
+  const { user, loading, organization } = useAuth();
 
   if (loading) {
     return (
@@ -29,7 +29,7 @@ function Dashboard() {
     );
   }
 
-  if (user) {
+  if (user && organization) {
     const studentUser = user as Student;
     const rawAppointments = studentUser.appointments || [];
     const applications = studentUser.applications || [];
@@ -54,7 +54,7 @@ function Dashboard() {
                 applications={applications}
                 appointments={appointments}
               />
-              <SmallCalendar data={appointments} />
+              <SmallCalendar data={appointments} organization={organization} />
             </div>
             <Applications data={applications} limit={5} />
           </>
