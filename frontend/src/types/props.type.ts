@@ -3,6 +3,7 @@ import type {
   Application,
   Appointment,
   AppointmentWithApplication,
+  Media,
   Organization,
 } from "../interfaces/models.interface";
 import type { Student, User } from "../interfaces/user.interface";
@@ -78,11 +79,15 @@ export interface PropsModal extends PropsBase {
 }
 
 export type PropsCardDocument = {
-  name: string;
-  added_at: Date;
-  stockage: number;
-  used: number;
-  pdf_url: string;
+  data: Media;
+  size: string;
+  type: string;
+  onDeleted?: (id: number) => void;
+};
+
+export type PropsFilePreview = {
+  path: string;
+  type: string;
 };
 
 export type PropsSmallCalendar = {
@@ -149,6 +154,21 @@ export type PropsApplicationFormModal = {
   open: boolean;
   onOpenChange: React.Dispatch<React.SetStateAction<boolean>>;
   application?: Application | null;
+  onSuccess?: () => void;
+};
+
+export type PaginationProps<T> = {
+  data: T[];
+  itemsPerPage: number;
+  currentPage: number;
+  onPageChange: (page: number) => void;
+  onDataChange: (paginatedData: T[]) => void;
+};
+
+export type PropsMediaFormModal = {
+  open: boolean;
+  onOpenChange: React.Dispatch<React.SetStateAction<boolean>>;
+  media?: Media | null;
   onSuccess?: () => void;
 };
 

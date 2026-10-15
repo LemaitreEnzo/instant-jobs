@@ -2,17 +2,22 @@
   display: flex;
   flex-direction: column;
   flex: 1;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
 
   .layout-body {
     display: flex;
     flex: 1;
     flex-wrap: wrap;
     background-color: var(--body-color);
+    max-height: 100%;
+    overflow-y: auto;
 
     .layout-children {
       flex: 1;
       padding: 1.5em;
+      max-height: 100%;
+      overflow-y: auto;
     }
   }
 }

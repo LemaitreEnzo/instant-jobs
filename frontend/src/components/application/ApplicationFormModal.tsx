@@ -22,6 +22,8 @@ import Input from "../ui/Input/Input";
 import Modal from "../ui/Modal/Modal";
 import Select from "../ui/Select/Select";
 
+import { getFileTypeFromUri } from "../../utils/globals.util";
+import { FilePreview } from "../layout/FilePreview/FilePreview";
 import "./ApplicationFormModal.css";
 
 const ApplicationFormModal = (props: PropsApplicationFormModal) => {
@@ -202,10 +204,9 @@ const ApplicationFormModal = (props: PropsApplicationFormModal) => {
           {preview ? (
             <div className="preview-container" onClick={handleTrash}>
               <div className="preview-image-wrapper">
-                <img
-                  className="preview-image"
-                  src={preview}
-                  alt="Aperçu du logo"
+                <FilePreview
+                  path={preview}
+                  type={getFileTypeFromUri(preview)}
                 />
                 <div className="preview-overlay">
                   <svg
@@ -228,10 +229,10 @@ const ApplicationFormModal = (props: PropsApplicationFormModal) => {
               name="logo"
               id="logo"
               title="Choisir un fichier ou le déposer ici"
-              helperText="JPEG, PNG, SVG et WebP format uniquement, 50Mo maximum"
+              helperText="JPEG, PNG, SVG et WebP format uniquement, 10Mo maximum"
               buttonText="Parcourir"
               accept="image/jpeg,image/png,image/svg+xml,image/webp"
-              maxSizeMB={50}
+              maxSizeMB={10}
               error={fileError || getError("logo")}
               onFileSelect={handleFileSelect}
               onError={handleFileError}
