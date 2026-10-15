@@ -341,10 +341,13 @@ export const getAuth = async (req: Request, res: Response) => {
     if (rawUserData.role !== "student") {
       delete rawUserData.applications;
       delete rawUserData.appointments;
-      delete rawUserData.campus;
       delete rawUserData.promotion;
       delete rawUserData.speciality;
       delete rawUserData.subSpeciality;
+
+      if (rawUserData.role === "admin") {
+        delete rawUserData.campus;
+      }
     }
 
     return res.status(200).json(rawUserData);

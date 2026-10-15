@@ -1,3 +1,7 @@
+export const sliceItem = (item: string, length: number) => {
+  return item.length > 15 ? `${item.slice(0, length)}...` : item;
+}
+
 export function getFileTypeFromUri(dataUri: string): string {
   const matches = dataUri.match(
     /^data:[a-zA-Z0-9]+\/([a-zA-Z0-9-+.]+);base64,/,

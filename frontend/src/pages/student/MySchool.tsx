@@ -37,7 +37,7 @@ function MySchool() {
       }
     };
     loadData();
-  }, []);
+  }, [fetchOne, fetchUsers, user]);
 
   if (students && organization) {
     return (
@@ -45,11 +45,7 @@ function MySchool() {
         <div className="my-school-header">
           <PageTitle title="Mon école" />
         </div>
-        <SchoolCard
-          name={organization.name}
-          logo={organization.logo}
-          description={organization.description}
-        />
+        <SchoolCard data={organization} />
 
         <div className="my-school-students">
           {students.map((student, index) => {

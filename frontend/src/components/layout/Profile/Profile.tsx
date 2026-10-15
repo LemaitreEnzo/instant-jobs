@@ -10,12 +10,11 @@ import Button from "../../ui/Button/Button";
 import Tag from "../../ui/Tag/Tag";
 import "./Profile.css";
 
-const Profile = (props: PropsProfile) => {
+const Profile = ({ contact = false, ...props}: PropsProfile) => {
   const classes: string = ["border profile", props.className].join(" ").trim();
   const user = props.user;
   const organisation = props.organization;
 
-  /**Function with content for users who are not students */
   const notStudent = () => {
     return (
       <div className="top-contact">
@@ -47,7 +46,6 @@ const Profile = (props: PropsProfile) => {
     );
   };
 
-  /**Function with content for students only */
   const isStudent = (
     promotion: string | undefined,
     speciality: string | undefined,
@@ -94,18 +92,18 @@ const Profile = (props: PropsProfile) => {
             <span className="top-description">
               {user.role === UserRole.ADMIN
                 ? `${UserRoleLabel[user.role]} à ${organisation.name}`
-                : `${UserRoleLabel[user.role]} du campus ${user.campus?.name} à ${organisation.name}`}
+                : `${UserRoleLabel[user.role]} du campus ${(user as Student).campus?.name} à ${organisation.name}`}
               {}
             </span>
           </div>
         </div>
-        {user.role === UserRole.STUDENT ? "" : notStudent()}
+        {contact && notStudent()}
       </div>
       {user.role === UserRole.STAFF ||
         (user.role === UserRole.STUDENT && (
           <div className="bottom">
             <p className="bottom-content">
-              Campus : <span>{user.campus?.name}</span>
+              Campus : <span>{(user as Student).campus?.name}</span>
             </p>
             {"status" in user && user.role === UserRole.STUDENT
               ? isStudent(

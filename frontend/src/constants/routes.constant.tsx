@@ -1,3 +1,5 @@
+import School from "../pages/admin/School";
+import StudentDetails from "../pages/StudentDetails";
 import Calendar from "../pages/Calendar";
 import Dashboard from "../pages/Dashboard";
 import Documents from "../pages/Documents";
@@ -13,16 +15,12 @@ const sharedRoutes: Route[] = [
     element: <Dashboard />,
   },
   {
-    path: "documents",
-    element: <Documents />,
-  },
-  {
     path: "calendar",
     element: <Calendar />,
   },
   {
-    path: "school",
-    element: <MySchool />,
+    path: "student/:id",
+    element: <StudentDetails />,
   },
   {
     path: "profile",
@@ -35,13 +33,33 @@ const sharedRoutes: Route[] = [
 ];
 
 export const routes: Record<UserRole, Route[]> = {
-  admin: sharedRoutes,
-  staff: sharedRoutes,
+  admin: [
+    ...sharedRoutes,
+    {
+      path: "school",
+      element: <School />,
+    },
+  ],
+  staff: [
+    ...sharedRoutes,
+    {
+      path: "campus",
+      element: <School />,
+    },
+  ],
   student: [
     ...sharedRoutes,
     {
       path: "applications",
       element: <ApplicationsPage />,
+    },
+    {
+      path: "documents",
+      element: <Documents />,
+    },
+    {
+      path: "school",
+      element: <MySchool />,
     },
   ],
 };

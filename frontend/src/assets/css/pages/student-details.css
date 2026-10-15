@@ -1,0 +1,20 @@
+.student-details {
+    background-color: var(--body-color);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 25px;
+
+    .student-details-top {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+        gap: 25px;
+        width: 100%;
+
+        .profile,
+        .pi {
+            flex: 1;
+        }
+    }
+}
