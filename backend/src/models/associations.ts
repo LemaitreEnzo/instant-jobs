@@ -1,3 +1,8 @@
+/**
+ * Relational associations mapping for Sequelize ORM models.
+ * Defines one-to-many and belongs-to relationships between Organizations, Campuses,
+ * Promotions, Specialities, SubSpecialities, Users, Applications, Appointments, and Medias.
+ */
 import { Application } from "./application.model";
 import { Appointment } from "./appointment.model";
 import { Campus } from "./campus.model";

@@ -9,6 +9,10 @@ import type { Organization } from "../../interfaces/models.interface";
 import type { Staff, Student } from "../../interfaces/user.interface";
 import { UserRole } from "../../types/enum.type";
 
+/**
+ * Administration page for schools and campuses.
+ * Displays organization overview and manages affiliated students and staff.
+ */
 function School() {
   const { user } = useAuth();
   const [organization, setOrganization] = useState<Organization | null>(null);

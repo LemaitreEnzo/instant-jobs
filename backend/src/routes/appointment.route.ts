@@ -1,7 +1,8 @@
-/* =========================
-   RESSOURCE : APPOINTMENTS
-========================= */
-
+/**
+ * Appointment routing definitions.
+ * Mounted under /appointment with parent-level `authenticateUser` middleware.
+ * Enforces ownership and access verification via `checkUser` with Appointment model.
+ */
 import {
   createAppointment,
   deleteAppointment,
@@ -17,12 +18,14 @@ import { checkUser } from "../../middlewares/auth.middleware";
 
 const appointmentsRoutes = express.Router({ mergeParams: true });
 
+// GET /:id - Auth: Admin, Staff, or appointment owner (student)
 appointmentsRoutes.get(
   "/:id",
   checkUser(Object.values(UserRole), Appointment),
   getOneAppointment,
 );
 
+// POST / - Auth: Any role with self-ownership enforced for students
 appointmentsRoutes.post(
   "/",
   customRateLimiter({ limit: 10 }),
@@ -30,6 +33,7 @@ appointmentsRoutes.post(
   createAppointment,
 );
 
+// PATCH /:id - Auth: Admin, Staff, or appointment owner (student)
 appointmentsRoutes.patch(
   "/:id",
   customRateLimiter({ limit: 20 }),
@@ -37,6 +41,7 @@ appointmentsRoutes.patch(
   updateAppointment,
 );
 
+// DELETE /:id - Auth: Admin, Staff, or appointment owner (student)
 appointmentsRoutes.delete(
   "/:id",
   customRateLimiter({ time: 5, limit: 5 }),

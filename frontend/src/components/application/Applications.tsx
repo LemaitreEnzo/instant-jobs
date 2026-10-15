@@ -16,6 +16,11 @@ import Tag from "../ui/Tag/Tag";
 import ApplicationFormModal from "./ApplicationFormModal";
 import "./Applications.css";
 
+/**
+ * Applications table component.
+ * Displays application records with status badges, company details, pagination,
+ * and handles click-to-edit row interactions.
+ */
 const Applications = ({
   data,
   loading: externalLoading,

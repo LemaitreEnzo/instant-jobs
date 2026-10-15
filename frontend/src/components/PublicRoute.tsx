@@ -2,6 +2,11 @@ import React from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
+/**
+ * Public route guard.
+ * Prevents authenticated users from accessing public-only pages (e.g. login),
+ * redirecting them automatically to their organization's dashboard.
+ */
 export const PublicRoute: React.FC<{ children: React.ReactElement }> = ({
   children,
 }) => {

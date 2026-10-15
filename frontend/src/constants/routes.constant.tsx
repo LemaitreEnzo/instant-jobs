@@ -1,3 +1,7 @@
+/**
+ * Route configurations segmented by user role (admin, staff, student).
+ * Maps relative URL sub-paths to page views rendered inside the authenticated MainLayout shell.
+ */
 import School from "../pages/admin/School";
 import Calendar from "../pages/Calendar";
 import Dashboard from "../pages/Dashboard";

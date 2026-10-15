@@ -16,6 +16,10 @@ import Profile from "../components/layout/Profile/Profile";
 
 import "../assets/css/pages/student-details.css";
 
+/**
+ * Student details page for staff and admin roles.
+ * Displays personal details, academic status, and submitted applications for a specific student ID.
+ */
 function StudentDetails() {
   const { id } = useParams();
   const { user } = useAuth();

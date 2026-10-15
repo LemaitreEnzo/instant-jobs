@@ -16,6 +16,11 @@ import Input from "../components/ui/Input/Input";
 
 import "../assets/css/pages/login.css";
 
+/**
+ * Authentication page component.
+ * Provides credentials input with client-side validation and authenticates users via AuthContext.
+ * Redirects to the user's organization dashboard on successful login.
+ */
 const Login = () => {
   const navigate = useNavigate();
   const { login, organization } = useAuth();

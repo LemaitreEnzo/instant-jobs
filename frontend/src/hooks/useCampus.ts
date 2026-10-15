@@ -2,6 +2,10 @@ import { useCallback, useState } from "react";
 import type { Campus, Promotion } from "../interfaces/models.interface";
 import { api } from "../lib/api";
 
+/**
+ * Custom hook for managing campus entities and affiliated promotions.
+ * Exposes methods to fetch, create, update, and delete campuses, as well as fetch related promotions.
+ */
 export const useCampus = () => {
   const [campus, setCampus] = useState<Campus | null>(null);
   const [promotions, setPromotions] = useState<Promotion[]>([]);

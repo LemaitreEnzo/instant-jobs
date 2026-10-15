@@ -8,6 +8,15 @@ interface RateLimiter {
   skipSuccessfulRequests?: boolean;
 }
 
+/**
+ * Configures and returns an Express rate-limiting middleware.
+ *
+ * @param options.time - Rolling window duration in minutes (defaults to 1 minute).
+ * @param options.limit - Maximum number of allowed requests per IP within the window.
+ * @param options.error - Short error label returned in the 429 response.
+ * @param options.message - Human-readable guidance message returned in the 429 response.
+ * @param options.skipSuccessfulRequests - Whether to count only failed requests against the limit.
+ */
 export const customRateLimiter = ({
   time = 1,
   limit = 60,

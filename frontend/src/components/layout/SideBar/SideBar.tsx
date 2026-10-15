@@ -166,6 +166,10 @@ const getSidebarItems = (orgSlug: string) => {
   };
 };
 
+/**
+ * Role-aware application sidebar navigation.
+ * Generates navigation links tailored to the user's role (admin, staff, student) and organization slug.
+ */
 const SideBar = () => {
   const { role, organization } = useAuth();
 

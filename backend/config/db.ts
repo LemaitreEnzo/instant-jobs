@@ -1,6 +1,10 @@
 import { Sequelize } from "sequelize";
 import getEnv from "../utils/envHelper";
 
+/**
+ * Sequelize ORM instance configured for PostgreSQL.
+ * Reads connection settings from environment variables and enables SQL logging in development mode.
+ */
 export const sequelize = new Sequelize({
   dialect: "postgres",
   host: getEnv("DB_HOST"),

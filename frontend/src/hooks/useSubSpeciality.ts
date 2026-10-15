@@ -2,6 +2,10 @@ import { useCallback, useState } from "react";
 import type { SubSpeciality } from "../interfaces/models.interface";
 import { api } from "../lib/api";
 
+/**
+ * Custom hook for managing granular sub-specialities.
+ * Exposes methods to fetch, create, update, and delete sub-specialities.
+ */
 export const useSubSpeciality = () => {
   const [subSpeciality, setSubSpeciality] = useState<SubSpeciality | null>(null);
   const [loading, setLoading] = useState<boolean>(false);

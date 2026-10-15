@@ -8,6 +8,10 @@ import useApplication from "../hooks/useApplication";
 import useUser from "../hooks/useUser";
 import type { Appointment } from "../interfaces/models.interface";
 
+/**
+ * Calendar page component.
+ * Aggregates appointments across the student's active applications and renders them inside BigCalendar.
+ */
 function Calendar() {
   const [appointments, setAppointments] = useState<Appointment[] | null>(null);
   const { user } = useAuth();
@@ -36,7 +40,7 @@ function Calendar() {
     };
 
     loadData();
-  }, []);
+  }, [fetchApplications, fetchAppointments, user]);
 
   if (appointments) {
     return (

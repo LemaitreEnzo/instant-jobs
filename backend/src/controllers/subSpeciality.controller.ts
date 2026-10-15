@@ -1,3 +1,6 @@
+/**
+ * SubSpeciality controller managing detailed curricular tracks and sub-specialisations.
+ */
 import type { Request, Response } from "express";
 import { Attributes } from "sequelize";
 import { SubSpeciality } from "src/models";
@@ -7,6 +10,12 @@ const excludedData: (keyof Attributes<SubSpeciality>)[] = [
   "updatedAt",
 ];
 
+/**
+ * Retrieves a single sub-speciality by primary ID.
+ *
+ * @param req - Express request with sub-speciality ID in params.
+ * @param res - Express response returning sub-speciality (200), not found (404), or internal error (500).
+ */
 export const getOneSubSpeciality = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -29,6 +38,12 @@ export const getOneSubSpeciality = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Creates a new sub-speciality record.
+ *
+ * @param req - Express request with sub-speciality data in body.
+ * @param res - Express response returning created sub-speciality (201) or internal error (500).
+ */
 export const createSubSpeciality = async (req: Request, res: Response) => {
   try {
     const data = req.body;
@@ -42,6 +57,12 @@ export const createSubSpeciality = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Updates an existing sub-speciality by primary ID.
+ *
+ * @param req - Express request with sub-speciality ID in params and update payload in body.
+ * @param res - Express response returning updated sub-speciality (200), not found (404), or internal error (500).
+ */
 export const updateSubSpeciality = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -67,6 +88,12 @@ export const updateSubSpeciality = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Deletes a sub-speciality by primary ID.
+ *
+ * @param req - Express request with sub-speciality ID in params.
+ * @param res - Express response returning 204 on success, 404 if not found, or 500 on internal error.
+ */
 export const deleteSubSpeciality = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;

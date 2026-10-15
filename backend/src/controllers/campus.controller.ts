@@ -1,3 +1,7 @@
+/**
+ * Campus controller managing geographic training locations (campuses)
+ * and their affiliated student promotions.
+ */
 import type { Request, Response } from "express";
 import { Attributes } from "sequelize";
 import { Campus, Promotion } from "src/models";
@@ -8,6 +12,12 @@ const excludedPromotionData: (keyof Attributes<Promotion>)[] = [
   "updatedAt",
 ];
 
+/**
+ * Retrieves a single campus by primary ID.
+ *
+ * @param req - Express request with campus ID in params.
+ * @param res - Express response returning campus (200), not found (404), or internal error (500).
+ */
 export const getOneCampus = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -31,6 +41,12 @@ export const getOneCampus = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Creates a new campus record.
+ *
+ * @param req - Express request with campus data in body.
+ * @param res - Express response returning created campus (201) or internal error (500).
+ */
 export const createCampus = async (req: Request, res: Response) => {
   try {
     const data = req.body;
@@ -44,6 +60,12 @@ export const createCampus = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Updates an existing campus by primary ID.
+ *
+ * @param req - Express request with campus ID in params and update payload in body.
+ * @param res - Express response returning updated campus (200), not found (404), or internal error (500).
+ */
 export const updateCampus = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -69,6 +91,12 @@ export const updateCampus = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Deletes a campus by primary ID.
+ *
+ * @param req - Express request with campus ID in params.
+ * @param res - Express response returning 204 on success, 404 if not found, or 500 on internal error.
+ */
 export const deleteCampus = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -93,6 +121,12 @@ export const deleteCampus = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Retrieves all promotions affiliated with a specific campus.
+ *
+ * @param req - Express request with campusId in params.
+ * @param res - Express response returning array of promotions (200) or internal error (500).
+ */
 export const getPromotions = async (req: Request, res: Response) => {
   try {
     const { campusId } = req.params;

@@ -4,6 +4,10 @@ import PersonalInformations from "../../components/layout/PersonalInformations/P
 import ProfileComponent from "../../components/layout/Profile/Profile";
 import { useAuth } from "../../context/AuthContext";
 
+/**
+ * User profile view and editing page.
+ * Displays personal details, contact information, and editable account settings.
+ */
 function Profile() {
   const { user, organization } = useAuth();
 

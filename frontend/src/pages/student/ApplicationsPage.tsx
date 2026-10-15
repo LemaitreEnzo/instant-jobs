@@ -21,6 +21,11 @@ import type {
   SortState,
 } from "../../types/props.type";
 
+/**
+ * Student applications management page.
+ * Displays all internship and job applications with multi-criteria filtering (status, type, follow-up),
+ * date sorting, and creation modal trigger.
+ */
 function ApplicationsPage() {
   const { user, loading } = useAuth();
   const applications = (user as Student).applications;
@@ -43,22 +48,22 @@ function ApplicationsPage() {
   const filteredAndSortedApplications = useMemo(() => {
     if (!applications) return [];
     let result = [...applications];
-    // Filtre par statut
+    // Filter by application status
     const selectedStatuses = activeFilters["status"] || [];
     if (selectedStatuses.length > 0) {
       result = result.filter((app) => selectedStatuses.includes(app.status));
     }
-    // Filtre par type
+    // Filter by application type
     const selectedTypes = activeFilters["type"] || [];
     if (selectedTypes.length > 0) {
       result = result.filter((app) => selectedTypes.includes(app.type));
     }
-    // Filtre par relance
+    // Filter by follow-up status
     const selectedResends = activeFilters["resend"] || [];
     if (selectedResends.length > 0) {
       result = result.filter((app) => selectedResends.includes(app.resend));
     }
-    // Tri par date
+    // Sort by application date
     if (activeSort.field === "date") {
       result.sort((a, b) => {
         const timeA = new Date(a.date).getTime() || 0;

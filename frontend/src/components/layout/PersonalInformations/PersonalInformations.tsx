@@ -18,6 +18,10 @@ import Modal from "../../ui/Modal/Modal";
 import Select from "../../ui/Select/Select";
 import "./PersonalInformations.css";
 
+/**
+ * Personal information display and update card.
+ * Formats user profile attributes, handles student status, and provides an edit modal with validation.
+ */
 function PersonalInformations(props: PropsPersonalInformation) {
   const user = props.user;
   const phoneFormatted: string = user.phone.match(/.{1,2}/g)?.join(" ") ?? ""; // Format phone number

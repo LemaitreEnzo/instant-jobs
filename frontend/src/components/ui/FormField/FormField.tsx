@@ -2,6 +2,9 @@ import type { PropsFormField } from "../../../types/props.type";
 import Label from "../Label/Label";
 import "./FormField.css";
 
+/**
+ * Form field layout wrapper integrating label, required indicator, input slot, and accessible error message.
+ */
 const FormField = ({
   label,
   name,

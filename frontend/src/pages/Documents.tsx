@@ -16,6 +16,11 @@ import {
 import "../assets/css/pages/documents.css";
 import type { Media } from "../interfaces/models.interface";
 
+/**
+ * Documents management page.
+ * Displays uploaded files (CV, cover letters) with type filtering, date sorting,
+ * pagination, and upload modal integration.
+ */
 function Documents() {
   const { user, loading, refreshUser } = useAuth();
   const student: Student = user as Student;
@@ -53,12 +58,12 @@ function Documents() {
     if (!medias) return [];
     let result = [...medias];
 
-    // Filtre par type
+    // Filter by document type
     const selectedTypes = activeFilters["type"] || [];
     if (selectedTypes.length > 0) {
       result = result.filter((app) => selectedTypes.includes(app.type));
     }
-    // Tri par date
+    // Sort by creation date
     if (activeSort.field === "date") {
       result.sort((a, b) => {
         const timeA = new Date(a.createdAt).getTime() || 0;

@@ -7,6 +7,10 @@ import type {
 import type { Student, User } from "../interfaces/user.interface";
 import { api } from "../lib/api";
 
+/**
+ * Custom hook for managing user data, profile lifecycle, and affiliated student resources.
+ * Exposes methods to fetch, create, update, delete users, and retrieve applications, medias, and appointments.
+ */
 export const useUser = () => {
   const [user, setUser] = useState<User | Student | null>(null);
   const [applications, setApplications] = useState<Application[]>([]);

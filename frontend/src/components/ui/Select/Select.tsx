@@ -1,6 +1,9 @@
 import type { PropsSelect } from "../../../types/props.type";
 import "./Select.css";
 
+/**
+ * Custom dropdown select component with accessibility error attributes.
+ */
 const Select = ({
   options,
   error,

@@ -14,6 +14,12 @@ declare global {
   }
 }
 
+/**
+ * Role-Based Access Control (RBAC) middleware factory.
+ * Verifies that the authenticated user (`req.user`) possesses one of the allowed roles.
+ *
+ * @param allowedRoles - List of permitted UserRole values.
+ */
 export const checkRole = (allowedRoles: UserRole[]) => {
   return (req: Request, res: Response, next: NextFunction) => {
     const user = req.user;
