@@ -262,7 +262,7 @@ describe("FUNCTIONAL TESTS - MEDIA", () => {
       expect(Media.findOne).toHaveBeenCalledWith({
         where: { id: "1" },
         attributes: {
-          exclude: ["createdAt", "updatedAt"],
+          exclude: ["updatedAt"],
         },
       });
     });
