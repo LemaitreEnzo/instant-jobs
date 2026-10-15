@@ -8,6 +8,11 @@ interface RoleBasedRouteProps {
   children: React.ReactElement;
 }
 
+/**
+ * Role-Based Access Control route wrapper.
+ * Inspects the current user role and ensures it is included in `allowedRoles`.
+ * Redirects unauthorized users to `/login`.
+ */
 const RoleBasedRoute: React.FC<RoleBasedRouteProps> = ({
   allowedRoles,
   children,

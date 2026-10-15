@@ -4,6 +4,10 @@ import { useAuth } from "../../../context/AuthContext";
 import type { PropsUserModal } from "../../../types/props.type";
 import Button from "../../ui/Button/Button";
 import "./UserModal.css";
+/**
+ * User account dropdown popover modal.
+ * Displays user profile summary, active role, organization details, and logout action with click-outside dismissal.
+ */
 const UserModal = (props: PropsUserModal) => {
   const { user, open, onOpenChange } = props;
   const { organization, logout } = useAuth();

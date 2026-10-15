@@ -9,6 +9,10 @@ import type { Organization } from "../../interfaces/models.interface";
 import type { Student } from "../../interfaces/user.interface";
 import { UserRole } from "../../types/enum.type";
 
+/**
+ * Student school directory page.
+ * Displays details of the student's training organization along with the list of fellow student profiles.
+ */
 function MySchool() {
   const { user } = useAuth();
   const [organization, setOrganization] = useState<Organization | null>(null);
@@ -18,7 +22,7 @@ function MySchool() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        /**Getting the list of students of an organization */
+        // Fetch students belonging to the current user's organization
         if (user) {
           const usersData = await fetchUsers(parseInt(user.organizationId));
           const organizationData = await fetchOne(

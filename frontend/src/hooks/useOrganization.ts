@@ -3,6 +3,11 @@ import type { Campus, Organization } from "../interfaces/models.interface";
 import type { User } from "../interfaces/user.interface";
 import { api } from "../lib/api";
 
+/**
+ * Custom hook for managing organization data (schools and companies).
+ * Exposes methods to fetch all organizations, fetch a single organization,
+ * perform CRUD mutations, and load affiliated campuses and members.
+ */
 export const useOrganization = () => {
   const [organization, setOrganization] = useState<Organization | null>(null);
   const [organizations, setOrganizations] = useState<Organization[]>([]);

@@ -1,3 +1,7 @@
+/**
+ * Application controller managing internship and job search application records,
+ * status transitions, and associated interview appointments.
+ */
 import { type Request, type Response } from "express";
 import { Attributes } from "sequelize";
 import { Application, Appointment } from "src/models";
@@ -13,6 +17,12 @@ const excludedAppointmentData: (keyof Attributes<Appointment>)[] = [
   "applicationId",
 ];
 
+/**
+ * Retrieves a single application by primary ID.
+ *
+ * @param req - Express request with application ID in params.
+ * @param res - Express response returning the application (200), not found (404), or internal error (500).
+ */
 export const getOneApplication = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -35,6 +45,12 @@ export const getOneApplication = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Creates a new internship/job application record.
+ *
+ * @param req - Express request with application payload in body.
+ * @param res - Express response returning created application (201) or internal error (500).
+ */
 export const createApplication = async (req: Request, res: Response) => {
   try {
     const application = await Application.create(req.body);
@@ -47,6 +63,12 @@ export const createApplication = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Updates an existing application by primary ID.
+ *
+ * @param req - Express request with application ID in params and update payload in body.
+ * @param res - Express response returning updated application (200), not found (404), or internal error (500).
+ */
 export const updateApplication = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -72,6 +94,12 @@ export const updateApplication = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Deletes an application by primary ID.
+ *
+ * @param req - Express request with application ID in params.
+ * @param res - Express response returning 204 on success, 404 if not found, or 500 on internal error.
+ */
 export const deleteApplication = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -96,6 +124,12 @@ export const deleteApplication = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Retrieves all scheduled appointments/interviews linked to a specific application.
+ *
+ * @param req - Express request with applicationId in params.
+ * @param res - Express response returning array of appointments (200) or internal error (500).
+ */
 export const getAppointmentsByApplication = async (
   req: Request,
   res: Response,

@@ -1,3 +1,9 @@
+/**
+ * Central HTTP client module for the Instant Jobs frontend.
+ * Provides typed domain namespaces (`organization`, `campus`, `promotion`, `speciality`,
+ * `subSpeciality`, `application`, `appointment`, `user`, `media`), automatic cookie inclusion,
+ * JSON/FormData body serialization, timeout aborts, and standardized ApiError normalization.
+ */
 import { BASE_URL } from "../constants/global.constant";
 import type {
   Application,
@@ -16,6 +22,10 @@ export interface RequestOptions extends Omit<RequestInit, "body"> {
   timeout?: number;
 }
 
+/**
+ * Standardized HTTP error thrown when an API request fails.
+ * Captures the HTTP response status code, human-readable error message, and server payload.
+ */
 export class ApiError extends Error {
   constructor(
     public status: number,
@@ -27,6 +37,9 @@ export class ApiError extends Error {
   }
 }
 
+/**
+ * ApiClient encapsulates fetch requests and groups domain API methods.
+ */
 class ApiClient {
   private baseUrl: string;
   private defaultTimeout: number;

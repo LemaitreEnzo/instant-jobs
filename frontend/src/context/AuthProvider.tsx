@@ -5,6 +5,11 @@ import { api } from "../lib/api";
 import type { UserRole } from "../types/enum.type";
 import { AuthContext } from "./AuthContext";
 
+/**
+ * Authentication context provider.
+ * Manages user session state, active user role, affiliated organization,
+ * session bootstrap via `/user/me`, and provides login/logout actions across the app.
+ */
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
@@ -88,7 +93,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       await api.user.logout();
     } catch (error) {
-      console.error("Erreur lors de la déconnexion", error);
+      console.error("Error during logout:", error);
     } finally {
       setUser(null);
       setRole(null);

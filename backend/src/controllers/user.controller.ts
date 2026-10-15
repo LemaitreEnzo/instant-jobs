@@ -1,3 +1,7 @@
+/**
+ * User controller managing authentication sessions, profile access,
+ * CRUD operations, and associated student resources (applications, medias, appointments).
+ */
 import bcrypt from "bcryptjs";
 import type { Request, Response } from "express";
 import jwt from "jsonwebtoken";
@@ -60,6 +64,14 @@ const excludedSubSpecialityData: (keyof Attributes<SubSpeciality>)[] = [
   "specialityId",
 ];
 
+/**
+ * Authenticates user credentials, issues a signed JWT within an HTTP-Only cookie,
+ * and returns the authenticated user data pruned of sensitive fields.
+ *
+ * @param req - Express request containing email and password in body.
+ * @param res - Express response returning user data (200), invalid credentials (401),
+ *              unauthorized role (403), or internal error (500).
+ */
 export const login = async (req: Request, res: Response) => {
   try {
     const email: string = req.body.email;
@@ -168,6 +180,12 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Clears the authentication session cookie and logs the user out.
+ *
+ * @param req - Express request.
+ * @param res - Express response returning 200 on success or 500 on failure.
+ */
 export const logout = async (req: Request, res: Response) => {
   try {
     const token = getEnv("TOKEN");
@@ -182,6 +200,15 @@ export const logout = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Retrieves the currently authenticated user's session profile (/me).
+ * Returns null silently if no session cookie exists. Excludes sensitive attributes
+ * and prunes role-specific collections for non-students.
+ *
+ * @param req - Express request containing the session cookie.
+ * @param res - Express response returning user profile or null (200),
+ *              unauthorized error (401), forbidden role (403), or internal error (500).
+ */
 export const getAuth = async (req: Request, res: Response) => {
   try {
     const tokenName = getEnv("TOKEN");
@@ -358,6 +385,14 @@ export const getAuth = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Retrieves a single user by primary ID along with related relations
+ * (medias, applications, appointments, campus, promotion, speciality, subSpeciality),
+ * filtering sensitive attributes and associations based on user role.
+ *
+ * @param req - Express request with user ID in params.
+ * @param res - Express response returning user details (200), not found (404), or internal error (500).
+ */
 export const getOneUser = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -434,6 +469,13 @@ export const getOneUser = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Creates a new user with bcrypt-hashed password.
+ * Returns the created user object without password_hash or timestamps.
+ *
+ * @param req - Express request containing user fields in body.
+ * @param res - Express response returning created user (201) or internal error (500).
+ */
 export const createUser = async (req: Request, res: Response) => {
   try {
     const data = req.body;
@@ -460,6 +502,12 @@ export const createUser = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Updates an existing user by primary ID.
+ *
+ * @param req - Express request with user ID in params and update payload in body.
+ * @param res - Express response returning updated user (200), not found (404), or internal error (500).
+ */
 export const updateUser = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -485,6 +533,12 @@ export const updateUser = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Deletes a user account by primary ID.
+ *
+ * @param req - Express request with user ID in params.
+ * @param res - Express response returning 204 on success, 404 if not found, or 500 on internal error.
+ */
 export const deleteUser = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -509,6 +563,12 @@ export const deleteUser = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Retrieves all internship/job applications for a specific student.
+ *
+ * @param req - Express request with student userId in params.
+ * @param res - Express response returning array of applications (200) or internal error (500).
+ */
 export const getApplications = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
@@ -528,6 +588,12 @@ export const getApplications = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Retrieves all media documents (CVs, cover letters) uploaded by a specific user.
+ *
+ * @param req - Express request with userId in params.
+ * @param res - Express response returning array of media records (200) or internal error (500).
+ */
 export const getMedias = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
@@ -547,6 +613,12 @@ export const getMedias = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Retrieves all scheduled appointments/interviews for a specific student.
+ *
+ * @param req - Express request with student userId in params.
+ * @param res - Express response returning array of appointments (200) or internal error (500).
+ */
 export const getAppointmentsByUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;

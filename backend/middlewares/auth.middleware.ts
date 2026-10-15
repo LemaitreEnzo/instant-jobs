@@ -17,6 +17,11 @@ declare global {
   }
 }
 
+/**
+ * Middleware that authenticates incoming requests using a JWT stored in an HTTP-Only cookie.
+ * Validates token signature, expiration, and ensures user role matches known UserRole values.
+ * Populates `req.user` with token payload on success.
+ */
 export const authenticateUser = async (
   req: Request,
   res: Response,
@@ -79,6 +84,13 @@ interface OwnableModelInstance extends Model {
   userId?: number | null;
 }
 
+/**
+ * Middleware factory for role authorization and resource ownership verification.
+ * Enforces that students can only create, view, modify, or delete their own resources.
+ *
+ * @param allowedRoles - Whitelisted roles permitted to perform the action.
+ * @param model - Optional Sequelize model instance to lookup and verify resource ownership against `user.id`.
+ */
 export const checkUser = <M extends OwnableModelInstance>(
   allowedRoles: UserRole[] = Object.values(UserRole),
   model?: ModelStatic<M> | null,

@@ -16,6 +16,10 @@ import { getFileTypeFromUri } from "../../utils/globals.util";
 import { FilePreview } from "../layout/FilePreview/FilePreview";
 import "./DocumentFormModal.css";
 
+/**
+ * Modal dialog for uploading and editing student documents (CVs, cover letters).
+ * Integrates file selection, size and type validation, preview thumbnail, and deletion.
+ */
 const DocumentFormModal = (props: PropsMediaFormModal) => {
   const { open, onOpenChange } = props;
   const [fileError, setFileError] = useState<string | null>(null);

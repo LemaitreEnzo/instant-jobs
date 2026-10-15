@@ -2,6 +2,10 @@ import { useCallback, useState } from "react";
 import type { Media } from "../interfaces/models.interface";
 import { api } from "../lib/api";
 
+/**
+ * Custom hook for managing uploaded student media files (CV, cover letters, contracts).
+ * Exposes methods to fetch, create, update, and delete media items.
+ */
 export const useMedia = () => {
   const [media, setMedia] = useState<Media | null>(null);
   const [loading, setLoading] = useState<boolean>(false);

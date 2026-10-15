@@ -2,6 +2,10 @@ import { useCallback, useState } from "react";
 import type { Promotion, Speciality } from "../interfaces/models.interface";
 import { api } from "../lib/api";
 
+/**
+ * Custom hook for managing academic cohort promotions and their specialities.
+ * Exposes methods to fetch, create, update, and delete promotions, as well as fetch related specialities.
+ */
 export const usePromotion = () => {
   const [promotion, setPromotion] = useState<Promotion | null>(null);
   const [specialities, setSpecialities] = useState<Speciality[]>([]);

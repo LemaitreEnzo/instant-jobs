@@ -17,6 +17,11 @@ import promotionsRoutes from "src/routes/promotion.route";
 import specialitiesRoutes from "src/routes/speciality.route";
 import subSpecialitiesRoutes from "src/routes/subSpeciality.route";
 import usersRoutes from "src/routes/user.route";
+/**
+ * Express application configuration and routing pipeline.
+ * Configures global security headers (Helmet), IP rate limiting, cookie parsing,
+ * JSON body limits, CORS credentials, and mounts versioned API routes.
+ */
 const app = express();
 
 const VERSION = getEnv("VERSION");
@@ -40,6 +45,8 @@ app.get(`/${VERSION}`, authenticateUser, (req: Request, res: Response) => {
 
 app.use(`/${VERSION}/organization`, authenticateUser, organizationsRoutes);
 
+// Note: authenticateUser is omitted at this level because public auth endpoints (login) reside here.
+// Protected user sub-routes apply authentication individually within user.route.ts.
 app.use(`/${VERSION}/user`, usersRoutes);
 
 app.use(`/${VERSION}/campus`, authenticateUser, campusRoutes);

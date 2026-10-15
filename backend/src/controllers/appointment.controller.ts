@@ -1,3 +1,7 @@
+/**
+ * Appointment controller managing recruitment interview schedules,
+ * appointment status, and associated student meeting dates.
+ */
 import { type Request, type Response } from "express";
 import { Attributes } from "sequelize";
 import { Appointment } from "src/models";
@@ -7,6 +11,12 @@ const excludedData: (keyof Attributes<Appointment>)[] = [
   "updatedAt",
 ];
 
+/**
+ * Retrieves a single appointment by primary ID.
+ *
+ * @param req - Express request with appointment ID in params.
+ * @param res - Express response returning appointment (200), not found (404), or internal error (500).
+ */
 export const getOneAppointment = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -29,6 +39,12 @@ export const getOneAppointment = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Creates a new appointment record.
+ *
+ * @param req - Express request with appointment payload in body.
+ * @param res - Express response returning created appointment (201) or internal error (500).
+ */
 export const createAppointment = async (req: Request, res: Response) => {
   try {
     const appointment = await Appointment.create(req.body);
@@ -41,6 +57,12 @@ export const createAppointment = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Updates an existing appointment by primary ID.
+ *
+ * @param req - Express request with appointment ID in params and update payload in body.
+ * @param res - Express response returning updated appointment (200), not found (404), or internal error (500).
+ */
 export const updateAppointment = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -66,6 +88,12 @@ export const updateAppointment = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Deletes an appointment by primary ID.
+ *
+ * @param req - Express request with appointment ID in params.
+ * @param res - Express response returning 204 on success, 404 if not found, or 500 on internal error.
+ */
 export const deleteAppointment = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;

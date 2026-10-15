@@ -1,9 +1,19 @@
+/**
+ * Media controller managing uploaded documents (CVs, cover letters, portfolio files)
+ * and their database records.
+ */
 import type { Request, Response } from "express";
 import { Attributes } from "sequelize";
 import { Media } from "src/models";
 
 const excludedData: (keyof Attributes<Media>)[] = ["updatedAt"];
 
+/**
+ * Retrieves a single media record by primary ID.
+ *
+ * @param req - Express request with media ID in params.
+ * @param res - Express response returning media (200), not found (404), or internal error (500).
+ */
 export const getOneMedia = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -26,6 +36,12 @@ export const getOneMedia = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Creates a new media record.
+ *
+ * @param req - Express request with media metadata and content payload in body.
+ * @param res - Express response returning created media (201) or internal error (500).
+ */
 export const createMedia = async (req: Request, res: Response) => {
   try {
     const data = req.body;
@@ -39,6 +55,12 @@ export const createMedia = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Updates an existing media record by primary ID.
+ *
+ * @param req - Express request with media ID in params and update payload in body.
+ * @param res - Express response returning updated media (200), not found (404), or internal error (500).
+ */
 export const updateMedia = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -64,6 +86,12 @@ export const updateMedia = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Deletes a media record by primary ID.
+ *
+ * @param req - Express request with media ID in params.
+ * @param res - Express response returning 204 on success, 404 if not found, or 500 on internal error.
+ */
 export const deleteMedia = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;

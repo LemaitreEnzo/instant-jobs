@@ -11,6 +11,11 @@ import Input from "../../ui/Input/Input";
 import Modal from "../../ui/Modal/Modal";
 import "./FilterBar.css";
 
+/**
+ * Comprehensive toolbar for data lists and tables.
+ * Provides interactive modal dialogs for multi-group filtering, field-based sorting,
+ * search queries, and an optional creation button.
+ */
 const FilterBar = ({
   filterGroups = [],
   onFilterChange,

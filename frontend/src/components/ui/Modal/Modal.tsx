@@ -2,6 +2,10 @@ import { useEffect } from "react";
 import type { PropsModal } from "../../../types/props.type";
 import "./Modal.css";
 
+/**
+ * Accessible modal dialog component.
+ * Supports backdrop click dismissal, Escape key handling, responsive sizing, and customizable headers.
+ */
 const Modal = ({
   open,
   onOpenChange,

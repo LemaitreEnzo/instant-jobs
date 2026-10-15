@@ -1,3 +1,7 @@
+/**
+ * HTTP server entrypoint.
+ * Verifies the PostgreSQL database connection via Sequelize before listening on the configured PORT.
+ */
 import app from "./app";
 import { sequelize } from "./config/db";
 import getEnv from "./utils/envHelper";

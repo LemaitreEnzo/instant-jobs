@@ -2,6 +2,10 @@ import { useCallback, useState } from "react";
 import type { Appointment } from "../interfaces/models.interface";
 import { api } from "../lib/api";
 
+/**
+ * Custom hook for managing recruitment interview appointments.
+ * Exposes methods to fetch, create, update, and delete interview appointments.
+ */
 export const useAppointment = () => {
   const [appointment, setAppointment] = useState<Appointment | null>(null);
   const [loading, setLoading] = useState<boolean>(false);

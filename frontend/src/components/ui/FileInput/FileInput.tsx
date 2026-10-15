@@ -4,6 +4,9 @@ import type { PropsFileInput } from "../../../types/props.type";
 import "./FileInput.css";
 import Button from "../Button/Button";
 
+/**
+ * File upload input component supporting drag-and-drop, mime-type validation, and size limit checks.
+ */
 const FileInput = ({
   name,
   id,

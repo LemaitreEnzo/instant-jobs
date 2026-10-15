@@ -26,6 +26,10 @@ import { getFileTypeFromUri } from "../../utils/globals.util";
 import { FilePreview } from "../layout/FilePreview/FilePreview";
 import "./ApplicationFormModal.css";
 
+/**
+ * Modal dialog for creating and editing job/internship applications.
+ * Handles company logo uploads, location, status updates, follow-up flags, and deletion.
+ */
 const ApplicationFormModal = (props: PropsApplicationFormModal) => {
   const { open, onOpenChange } = props;
   const [fileError, setFileError] = useState<string | null>(null);

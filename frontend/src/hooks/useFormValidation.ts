@@ -8,6 +8,9 @@ import type {
   ValidatorFn,
 } from "../types/form.type";
 
+/**
+ * Standard validation rule factories for form fields.
+ */
 export const validators = {
   required:
     (message = "Ce champ est obligatoire"): ValidatorFn =>
@@ -52,6 +55,12 @@ export const validators = {
     },
 };
 
+/**
+ * Custom hook providing schema-driven form validation, error state tracking, and blur/touch handling.
+ *
+ * @param schema - Object mapping field names to an array of validator functions.
+ * @returns State (errors, touched) and actions (validate, validateField, touchField, clearErrors).
+ */
 export const useFormValidation = (schema: ValidationSchema) => {
   const [errors, setErrors] = useState<FormErrors>({});
   const [touched, setTouched] = useState<TouchedFields>({});

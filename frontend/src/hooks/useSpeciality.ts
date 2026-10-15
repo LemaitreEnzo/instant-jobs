@@ -2,6 +2,10 @@ import { useCallback, useState } from "react";
 import type { Speciality, SubSpeciality } from "../interfaces/models.interface";
 import { api } from "../lib/api";
 
+/**
+ * Custom hook for managing academic training specialities and their sub-specialities.
+ * Exposes methods to fetch, create, update, and delete specialities, as well as fetch related sub-specialities.
+ */
 export const useSpeciality = () => {
   const [speciality, setSpeciality] = useState<Speciality | null>(null);
   const [subSpecialities, setSubSpecialities] = useState<SubSpeciality[]>([]);

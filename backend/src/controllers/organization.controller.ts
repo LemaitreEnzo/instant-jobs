@@ -1,3 +1,7 @@
+/**
+ * Organization controller managing school and company institutions,
+ * their associated campuses, and affiliated members (students and staff).
+ */
 import type { Request, Response } from "express";
 import { Attributes, Op } from "sequelize";
 import {
@@ -52,6 +56,12 @@ const excludedSubSpecialityData: (keyof Attributes<SubSpeciality>)[] = [
   "specialityId",
 ];
 
+/**
+ * Retrieves all registered organizations (schools and companies).
+ *
+ * @param req - Express request.
+ * @param res - Express response returning array of organizations (200) or internal error (500).
+ */
 export const getAllOrganizations = async (req: Request, res: Response) => {
   try {
     const organizations = await Organization.findAll({
@@ -68,6 +78,12 @@ export const getAllOrganizations = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Retrieves a single organization by primary ID.
+ *
+ * @param req - Express request with organization ID in params.
+ * @param res - Express response returning organization (200), not found (404), or internal error (500).
+ */
 export const getOneOrganization = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -90,6 +106,12 @@ export const getOneOrganization = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Creates a new organization record.
+ *
+ * @param req - Express request with organization data in body.
+ * @param res - Express response returning created organization (201) or internal error (500).
+ */
 export const createOrganization = async (req: Request, res: Response) => {
   try {
     const data = req.body;
@@ -103,6 +125,12 @@ export const createOrganization = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Updates an existing organization by primary ID.
+ *
+ * @param req - Express request with organization ID in params and update payload in body.
+ * @param res - Express response returning updated organization (200), not found (404), or internal error (500).
+ */
 export const updateOrganization = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -128,6 +156,12 @@ export const updateOrganization = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Deletes an organization by primary ID.
+ *
+ * @param req - Express request with organization ID in params.
+ * @param res - Express response returning 204 on success, 404 if not found, or 500 on internal error.
+ */
 export const deleteOrganization = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -151,6 +185,12 @@ export const deleteOrganization = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Retrieves all campuses belonging to an organization.
+ *
+ * @param req - Express request with organizationId in params.
+ * @param res - Express response returning array of campuses (200) or internal error (500).
+ */
 export const getCampuses = async (req: Request, res: Response) => {
   try {
     const { organizationId } = req.params;
@@ -170,6 +210,14 @@ export const getCampuses = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Retrieves all affiliated users of an organization.
+ * Executes parallel queries to fetch students (with full academic relations)
+ * and staff/admins, returning a unified member list.
+ *
+ * @param req - Express request with organizationId in params.
+ * @param res - Express response returning array of users (200) or internal error (500).
+ */
 export const getUsers = async (req: Request, res: Response) => {
   try {
     const { organizationId } = req.params;

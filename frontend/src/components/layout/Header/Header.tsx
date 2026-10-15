@@ -2,6 +2,10 @@ import UserHeader from "../../common/UserHeader/UserHeader";
 import Button from "../../ui/Button/Button";
 import "./Header.css";
 
+/**
+ * Application top navigation bar.
+ * Renders the brand logo, notifications button, and user session status via UserHeader.
+ */
 const Header = () => {
   return (
     <header className="header">

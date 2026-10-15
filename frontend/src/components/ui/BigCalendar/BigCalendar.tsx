@@ -3,6 +3,10 @@ import { DAYS, MONTHS } from "../../../constants/global.constant";
 import { CalendarView } from "../../../types/enum.type";
 import "./BigCalendar.css";
 
+/**
+ * Interactive full-page calendar component supporting Month and Week views.
+ * Generates dynamic day grids, highlights today's date, and provides month/week navigation controls.
+ */
 function BigCalendar() {
   const [calendarView, setCalendarView] = useState<CalendarView>(
     CalendarView.MONTH,

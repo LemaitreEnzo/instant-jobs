@@ -1,3 +1,7 @@
+/**
+ * Promotion controller managing annual academic class cohorts (promotions)
+ * and their affiliated training specialities.
+ */
 import type { Request, Response } from "express";
 import { Attributes } from "sequelize";
 import { Promotion, Speciality } from "src/models";
@@ -12,6 +16,12 @@ const excludedSpecialityData: (keyof Attributes<Speciality>)[] = [
   "updatedAt",
 ];
 
+/**
+ * Retrieves a single promotion by primary ID.
+ *
+ * @param req - Express request with promotion ID in params.
+ * @param res - Express response returning promotion (200), not found (404), or internal error (500).
+ */
 export const getOnePromotion = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -34,6 +44,12 @@ export const getOnePromotion = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Creates a new promotion record.
+ *
+ * @param req - Express request with promotion data in body.
+ * @param res - Express response returning created promotion (201) or internal error (500).
+ */
 export const createPromotion = async (req: Request, res: Response) => {
   try {
     const data = req.body;
@@ -47,6 +63,12 @@ export const createPromotion = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Updates an existing promotion by primary ID.
+ *
+ * @param req - Express request with promotion ID in params and update payload in body.
+ * @param res - Express response returning updated promotion (200), not found (404), or internal error (500).
+ */
 export const updatePromotion = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -72,6 +94,12 @@ export const updatePromotion = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Deletes a promotion by primary ID.
+ *
+ * @param req - Express request with promotion ID in params.
+ * @param res - Express response returning 204 on success, 404 if not found, or 500 on internal error.
+ */
 export const deletePromotion = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -93,6 +121,12 @@ export const deletePromotion = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Retrieves all specialities associated with a specific promotion.
+ *
+ * @param req - Express request with promotionId in params.
+ * @param res - Express response returning array of specialities (200) or internal error (500).
+ */
 export const getSpecialities = async (req: Request, res: Response) => {
   try {
     const { promotionId } = req.params;

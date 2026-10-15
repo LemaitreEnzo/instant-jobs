@@ -1,3 +1,8 @@
+/**
+ * User routing definitions.
+ * Configures authentication endpoints, profile retrieval, user administration,
+ * and student sub-resources with rate-limiting and ownership verification guards.
+ */
 import { customRateLimiter } from "config/rate-limit";
 import express from "express";
 import {
@@ -18,18 +23,23 @@ import { checkRole } from "../../middlewares/role.middleware";
 
 const usersRoutes = express.Router({ mergeParams: true });
 
+// POST /login - Public: Authenticates credentials with brute-force protection (10 attempts / 5min)
 usersRoutes.post(
   "/login",
   customRateLimiter({ time: 5, limit: 10, skipSuccessfulRequests: true }),
   login,
 );
 
+// POST /logout - Public/Auth: Clears the session cookie
 usersRoutes.post("/logout", logout);
 
+// GET /me - Public/Auth: Returns current authenticated session or null
 usersRoutes.get("/me", getAuth);
 
+// GET /:id - Auth: Any authenticated user
 usersRoutes.get("/:id", authenticateUser, getOneUser);
 
+// POST / - Auth: Admin, Staff
 usersRoutes.post(
   "/",
   customRateLimiter({ limit: 10 }),
@@ -38,6 +48,7 @@ usersRoutes.post(
   createUser,
 );
 
+// PATCH /:id - Auth: Admin, Staff, or self-account owner
 usersRoutes.patch(
   "/:id",
   customRateLimiter({ limit: 20 }),
@@ -46,6 +57,7 @@ usersRoutes.patch(
   updateUser,
 );
 
+// DELETE /:id - Auth: Admin, Staff
 usersRoutes.delete(
   "/:id",
   customRateLimiter({ time: 5, limit: 5 }),
@@ -54,8 +66,10 @@ usersRoutes.delete(
   deleteUser,
 );
 
+// GET /:userId/medias - Auth: Admin, Staff, or self-account owner
 usersRoutes.get("/:userId/medias", authenticateUser, checkUser(), getMedias);
 
+// GET /:userId/applications - Auth: Admin, Staff, or self-account owner
 usersRoutes.get(
   "/:userId/applications",
   authenticateUser,
@@ -63,6 +77,7 @@ usersRoutes.get(
   getApplications,
 );
 
+// GET /:userId/appointments - Auth: Admin, Staff, or self-account owner
 usersRoutes.get(
   "/:userId/appointments",
   authenticateUser,

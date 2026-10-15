@@ -6,6 +6,11 @@ import { useAuth } from "../context/AuthContext";
 import type { Student } from "../interfaces/user.interface";
 import { UserRole } from "../types/enum.type";
 
+/**
+ * Dashboard page component.
+ * Displays role-specific operational metrics, upcoming interview events via SmallCalendar,
+ * and recent applications table for students.
+ */
 function Dashboard() {
   const { user, loading } = useAuth();
 
