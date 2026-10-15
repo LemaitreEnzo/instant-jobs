@@ -1,7 +1,13 @@
+import type React from "react";
 import "./Input.css";
 
-const Input = ({ type, error, ...props }) => {
-  const finalClassName = ["input", props.customClassName].join(" ").trim();
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  error?: boolean | string;
+  customClassName?: string;
+}
+
+const Input: React.FC<InputProps> = ({ type, error, customClassName, ...props }) => {
+  const finalClassName = ["input", customClassName].filter(Boolean).join(" ").trim();
   return (
     <input
       type={type}

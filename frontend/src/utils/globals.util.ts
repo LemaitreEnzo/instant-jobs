@@ -1,6 +1,7 @@
-export const sliceItem = (item: string, length: number) => {
-  return item.length > 15 ? `${item.slice(0, length)}...` : item;
-}
+export const sliceItem = (item?: string, length = 15): string => {
+  if (!item) return "";
+  return item.length > length ? `${item.slice(0, length)}...` : item;
+};
 
 export function getFileTypeFromUri(dataUri: string): string {
   const matches = dataUri.match(

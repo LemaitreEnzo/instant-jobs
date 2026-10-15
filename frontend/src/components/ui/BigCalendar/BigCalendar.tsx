@@ -137,10 +137,10 @@ function BigCalendar() {
             })}
           </div>
           <ul className="calendar-week-days">
-            {week.map((day, index) => {
+            {week.map((_, index) => {
               return (
                 <div key={index} className="calendar-week-day">
-                  {hours.map((hour, index) => {
+                  {hours.map((_, index) => {
                     return (
                       <div key={index} className="calendar-week-slot"></div>
                     );
