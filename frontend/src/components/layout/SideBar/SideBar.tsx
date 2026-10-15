@@ -25,60 +25,6 @@ const getSidebarItems = (orgSlug: string) => {
       ),
     },
     {
-      label: "Documents",
-      link: `${prefix}/documents`,
-      icon: (
-        <svg
-          width="25"
-          height="25"
-          viewBox="0 0 25 25"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M14.152 2.08334C14.7045 2.08346 15.2343 2.30303 15.625 2.69376L20.2229 7.29168C20.6136 7.68229 20.8332 8.2121 20.8333 8.76459V20.8333C20.8333 21.3859 20.6138 21.9158 20.2231 22.3065C19.8324 22.6972 19.3025 22.9167 18.75 22.9167H6.24996C5.69742 22.9167 5.16752 22.6972 4.77682 22.3065C4.38612 21.9158 4.16663 21.3859 4.16663 20.8333V4.16668C4.16663 3.61414 4.38612 3.08424 4.77682 2.69354C5.16752 2.30284 5.69742 2.08334 6.24996 2.08334H14.152ZM12.5 4.16668H6.24996V20.8333H18.75V10.4167H14.0625C13.6481 10.4167 13.2506 10.2521 12.9576 9.95903C12.6646 9.66601 12.5 9.26858 12.5 8.85418V4.16668Z"
-            fill="currentColor"
-          />
-        </svg>
-      ),
-    },
-    {
-      label: "Calendrier",
-      link: `${prefix}/calendar`,
-      icon: (
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M12 12H17V17H12V12ZM19 3H18V1H16V3H8V1H6V3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 5V7H5V5H19ZM5 19V9H19V19H5Z"
-            fill="currentColor"
-          />
-        </svg>
-      ),
-    },
-    {
-      label: "Mon école",
-      link: `${prefix}/school`,
-      icon: (
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M21 17V10.1L12 15L1 9L12 3L23 9V17H21ZM12 21L5 17.2V12.2L12 16L19 12.2V17.2L12 21Z"
-            fill="currentColor"
-          />
-        </svg>
-      ),
-    },
-    {
       label: "Mon Profil",
       link: `${prefix}/profile`,
       icon: (
@@ -117,8 +63,66 @@ const getSidebarItems = (orgSlug: string) => {
   ];
 
   return {
-    admin: sharedItems,
-    staff: sharedItems,
+    admin: [
+      ...sharedItems,
+      {
+        label: "Calendrier",
+        link: `${prefix}/calendar`,
+        icon: (
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 12H17V17H12V12ZM19 3H18V1H16V3H8V1H6V3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 5V7H5V5H19ZM5 19V9H19V19H5Z"
+              fill="currentColor"
+            />
+          </svg>
+        ),
+      },
+      {
+        label: "Mon école",
+        link: `${prefix}/school`,
+        icon: (
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M21 17V10.1L12 15L1 9L12 3L23 9V17H21ZM12 21L5 17.2V12.2L12 16L19 12.2V17.2L12 21Z"
+              fill="currentColor"
+            />
+          </svg>
+        ),
+      },
+    ],
+    staff: [
+      ...sharedItems,
+      {
+        label: "Mon campus",
+        link: `${prefix}/campus`,
+        icon: (
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M21 17V10.1L12 15L1 9L12 3L23 9V17H21ZM12 21L5 17.2V12.2L12 16L19 12.2V17.2L12 21Z"
+              fill="currentColor"
+            />
+          </svg>
+        ),
+      },
+    ],
     student: [
       ...sharedItems.slice(0, 1), // Dashboard
       {
@@ -156,6 +160,24 @@ const getSidebarItems = (orgSlug: string) => {
               fillRule="evenodd"
               clipRule="evenodd"
               d="M12.3192 10.1328C12.3192 8.772 11.1732 7.7868 9.75955 7.7868C8.34595 7.7868 7.19995 8.7708 7.19995 10.1328V10.7736C7.20027 10.8867 7.24542 10.995 7.3255 11.0749C7.40558 11.1548 7.51406 11.1996 7.62715 11.1996H11.8932C12.006 11.1993 12.1142 11.1543 12.194 11.0745C12.2739 10.9947 12.3188 10.8865 12.3192 10.7736V10.1328Z"
+              fill="currentColor"
+            />
+          </svg>
+        ),
+      },
+      {
+        label: "Mon école",
+        link: `${prefix}/school`,
+        icon: (
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M21 17V10.1L12 15L1 9L12 3L23 9V17H21ZM12 21L5 17.2V12.2L12 16L19 12.2V17.2L12 21Z"
               fill="currentColor"
             />
           </svg>

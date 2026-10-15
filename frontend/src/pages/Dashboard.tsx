@@ -34,19 +34,6 @@ function Dashboard() {
     const rawAppointments = studentUser.appointments || [];
     const applications = studentUser.applications || [];
 
-    const duplicatedApplications = [...applications];
-
-    if (applications.length > 0) {
-      const baseApp = applications[0];
-      for (let index = 1; index < 30; index++) {
-        duplicatedApplications.push({
-          ...baseApp,
-          id: baseApp.id + index,
-          title: `${baseApp.title} (Copie ${index})`,
-        });
-      }
-    }
-
     const appointments = rawAppointments.map((appointment) => {
       const matchingApplication = applications.find(
         (app) => app.id === appointment.applicationId,
@@ -69,7 +56,7 @@ function Dashboard() {
               />
               <SmallCalendar data={appointments} />
             </div>
-            <Applications data={duplicatedApplications} limit={5} />
+            <Applications data={applications} limit={5} />
           </>
         )}
       </div>
