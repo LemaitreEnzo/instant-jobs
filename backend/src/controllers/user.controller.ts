@@ -24,11 +24,9 @@ const excludedData: (keyof Attributes<User>)[] = [
   "specialityId",
   "subSpecialityId",
 ];
-const excludedMediaData: (keyof Attributes<Media>)[] = [
-  "createdAt",
-  "updatedAt",
-  "userId",
-];
+
+const excludedMediaData: (keyof Attributes<Media>)[] = ["updatedAt", "userId"];
+
 const excludedApplicationData: (keyof Attributes<Application>)[] = [
   "createdAt",
   "updatedAt",

@@ -2,6 +2,7 @@ import School from "../pages/admin/School";
 import StudentDetails from "../pages/StudentDetails";
 import Calendar from "../pages/Calendar";
 import Dashboard from "../pages/Dashboard";
+import Documents from "../pages/Documents";
 import ApplicationsPage from "../pages/student/ApplicationsPage";
 import MySchool from "../pages/student/MySchool";
 import Profile from "../pages/student/Profile";
@@ -54,7 +55,7 @@ export const routes: Record<UserRole, Route[]> = {
     },
     {
       path: "documents",
-      element: <Dashboard />,
+      element: <Documents />,
     },
     {
       path: "school",
