@@ -5,6 +5,6 @@ require("ts-node").register({
   },
 });
 
-const configTS = require("./config.ts").default;
+const configTS = require("./config.ts");
 
-module.exports = configTS;
+module.exports = configTS.default || configTS;

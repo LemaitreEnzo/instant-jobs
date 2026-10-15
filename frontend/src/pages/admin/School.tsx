@@ -60,7 +60,7 @@ function School() {
     return (
       <div className="my-school">
         <div className="my-school-header">
-          <PageTitle title={user.role === UserRole.STAFF ? "Mon campus" : "Mon école"} />
+          <PageTitle title={user?.role === UserRole.STAFF ? "Mon campus" : "Mon école"} />
         </div>
         <SchoolCard data={organization} />
 

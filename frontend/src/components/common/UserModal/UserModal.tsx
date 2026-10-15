@@ -20,21 +20,21 @@ const UserModal = (props: PropsUserModal) => {
     navigate("/login", { replace: true });
   };
 
-  const checkClickOutside = (e: MouseEvent) => {
-    if (
-      open &&
-      modalRef.current &&
-      !modalRef.current.contains(e.target as Node)
-    ) {
-      onOpenChange(false);
-    }
-  };
-
   useEffect(() => {
+    const checkClickOutside = (e: MouseEvent) => {
+      if (
+        open &&
+        modalRef.current &&
+        !modalRef.current.contains(e.target as Node)
+      ) {
+        onOpenChange(false);
+      }
+    };
+
     document.addEventListener("mousedown", checkClickOutside);
 
     return () => document.removeEventListener("mousedown", checkClickOutside);
-  }, [open]);
+  }, [open, onOpenChange]);
 
   return (
     open && (

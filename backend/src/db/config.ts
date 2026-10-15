@@ -27,5 +27,6 @@ const config = {
     logging: false,
   },
 };
+const exportConfig = Object.assign(config, { default: config });
 
-export default config;
+export = exportConfig;
