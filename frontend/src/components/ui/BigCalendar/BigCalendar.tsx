@@ -1,23 +1,9 @@
 import { useState } from "react";
-import { DAYS } from "../../../constants/global.constant";
+import { DAYS, MONTHS } from "../../../constants/global.constant";
 import { CalendarView } from "../../../types/enum.type";
 import "./BigCalendar.css";
 
 function BigCalendar() {
-  const months: string[] = [
-    "Janvier",
-    "Février",
-    "Mars",
-    "Avril",
-    "Mai",
-    "Juin",
-    "Juillet",
-    "Août",
-    "Septembre",
-    "Octobre",
-    "Novembre",
-    "Décembre",
-  ];
   const [calendarView, setCalendarView] = useState<CalendarView>(
     CalendarView.MONTH,
   );
@@ -182,7 +168,7 @@ function BigCalendar() {
       <div className="calendar-day">
         <div className="calendar-day-summary">
           <span>
-            {`${DAYS[dayOffset]} ${cursor.getDate()} ${months[cursor.getMonth()]}`}
+            {`${DAYS[dayOffset]} ${cursor.getDate()} ${MONTHS[cursor.getMonth()]}`}
           </span>
         </div>
         <ul className="calendar-day-hours">
@@ -325,7 +311,7 @@ function BigCalendar() {
           </button>
         </div>
         <span className="calendar-month-year">
-          {`${months[currentDate.getMonth()]} ${currentDate.getFullYear()}`}
+          {`${MONTHS[currentDate.getMonth()]} ${currentDate.getFullYear()}`}
         </span>
         <select
           onChange={(option) =>
