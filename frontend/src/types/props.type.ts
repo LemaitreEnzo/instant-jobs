@@ -44,6 +44,43 @@ export interface PropsTag extends PropsBase {
   customClassName?: string;
   round?: boolean;
 }
+/** Visual variant styles for toast notifications. */
+export type ToastType =
+  | "toast-success"
+  | "toast-warn"
+  | "toast-error"
+  | "toast-none"
+  | "toast-primary"
+  | "toast-terciary";
+
+/** Configuration options for displaying a toast notification. */
+export interface ToastOptions {
+  title?: string;
+  description?: string;
+  type?: ToastType;
+  duration?: number;
+  customClassName?: string;
+}
+
+/** Internal toast item queued with unique identifier and exit state. */
+export interface ToastItem extends ToastOptions {
+  id: string;
+  isExiting?: boolean;
+}
+
+/** Props for the Toast presentational component. */
+export interface PropsToast {
+  id?: string;
+  title?: string;
+  description?: string;
+  className?: ToastType;
+  customClassName?: string;
+  duration?: number;
+  isExiting?: boolean;
+  onClose?: () => void;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
+}
 
 export type PropsProfile = {
   className?: string;
@@ -235,6 +272,8 @@ export interface PropsFilterBar {
   onAdd?: () => void;
   onAddClick?: () => void;
   customClassName?: string;
+  searchValue?: string;
+  onSearchChange?: (value: string) => void;
 }
 
 export type PropsSchoolCard = {

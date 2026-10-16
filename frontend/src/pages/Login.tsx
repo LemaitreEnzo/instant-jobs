@@ -3,12 +3,11 @@ import Logo from "../assets/img/Logo.webp";
 import Button from "../components/ui/Button/Button";
 
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "../context/AuthContext";
 import { useFormValidation, validators } from "../hooks/useFormValidation";
+import { useToast } from "../hooks/useToast";
 
-import type { Student, User } from "../interfaces/user.interface";
 import type { dataLogin } from "../types/form.type";
 
 import FormField from "../components/ui/FormField/FormField";
@@ -22,8 +21,8 @@ import "../assets/css/pages/login.css";
  * Redirects to the user's organization dashboard on successful login.
  */
 const Login = () => {
-  const navigate = useNavigate();
-  const { login, organization } = useAuth();
+  const { login } = useAuth();
+  const toast = useToast();
 
   const { validate, hasError, getError } = useFormValidation({
     email: [validators.required("L'email est obligatoire"), validators.email()],
@@ -47,18 +46,14 @@ const Login = () => {
     if (!validate(formData)) return;
 
     try {
-      const user: User | Student | undefined = await login(formData);
-
-      if (!user) return;
-
-      if (!organization) return;
-
-      console.log(organization);
-
-      const from = `${organization.slug}/dashboard`;
-      navigate(from, { replace: true });
+      await login(formData);
+      toast.success("Connexion réussie", "Ravi de vous revoir !");
     } catch (error) {
       console.error(error);
+      toast.error(
+        "Échec de la connexion",
+        "Vérifiez vos identifiants puis réessayez.",
+      );
     }
   };
 
@@ -68,7 +63,6 @@ const Login = () => {
         <div className="image">
           <img src={Logo} />
         </div>
-
         <div className="container">
           <div className="content">
             <h1>Bon retour ! </h1>
