@@ -16,6 +16,7 @@ import type {
   SubSpeciality,
 } from "../interfaces/models.interface";
 import type { Staff, Student, User } from "../interfaces/user.interface";
+import type { dataUser } from "../types/form.type";
 
 export interface RequestOptions extends Omit<RequestInit, "body"> {
   body?: unknown;
@@ -369,10 +370,12 @@ class ApiClient {
 
   readonly user = {
     fetchOne: (id: number): Promise<User | Student> => {
-      return this.request<User | Staff | Student>(`user/${id}`, { method: "GET" });
+      return this.request<User | Staff | Student>(`user/${id}`, {
+        method: "GET",
+      });
     },
 
-    create: (data: Partial<User>): Promise<User> => {
+    create: (data: Partial<dataUser>): Promise<User> => {
       return this.request<User>("user", { method: "POST", body: data });
     },
 
@@ -398,7 +401,9 @@ class ApiClient {
     },
 
     getMe: (): Promise<User | Staff | Student | null> => {
-      return this.request<User | Staff | Student | null>("user/me", { method: "GET" });
+      return this.request<User | Staff | Student | null>("user/me", {
+        method: "GET",
+      });
     },
 
     fetchApplications: (userId: number): Promise<Application[]> => {

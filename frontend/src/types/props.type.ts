@@ -237,6 +237,14 @@ export interface PropsFilterBar {
   customClassName?: string;
 }
 
+export type PropsUserFormModal = {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onSuccess?: () => void;
+  /** Campus imposé (staff) : le champ est verrouillé */
+  lockedCampusId?: number;
+};
+
 export type PropsSchoolCard = {
   data: Organization;
 };

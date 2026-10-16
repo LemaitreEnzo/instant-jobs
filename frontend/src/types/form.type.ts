@@ -2,6 +2,8 @@ import {
   ApplicationResend,
   ApplicationStatus,
   ApplicationType,
+  StudentStatus,
+  UserRole,
 } from "./enum.type";
 
 export type dataLogin = {
@@ -24,6 +26,21 @@ export type dataApplication = {
 export type dataMedia = {
   name: string;
   path: string;
+};
+
+export type dataUser = {
+  firstname: string;
+  lastname: string;
+  email: string;
+  phone: string;
+  password: string;
+  role: UserRole;
+  status: StudentStatus | null;
+  organizationId: number;
+  campusId: number | null;
+  promotionId: number | null;
+  specialityId: number | null;
+  subSpecialityId: number | null;
 };
 
 export type FieldValue =

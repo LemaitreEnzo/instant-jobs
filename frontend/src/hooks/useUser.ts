@@ -6,6 +6,7 @@ import type {
 } from "../interfaces/models.interface";
 import type { Student, User } from "../interfaces/user.interface";
 import { api } from "../lib/api";
+import type { dataUser } from "../types/form.type";
 
 /**
  * Custom hook for managing user data, profile lifecycle, and affiliated student resources.
@@ -35,7 +36,7 @@ export const useUser = () => {
     }
   }, []);
 
-  const create = useCallback(async (data: Partial<User>): Promise<User> => {
+  const create = useCallback(async (data: Partial<dataUser>): Promise<User> => {
     setLoading(true);
     setError(null);
     try {
