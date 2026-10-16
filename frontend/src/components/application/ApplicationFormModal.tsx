@@ -6,6 +6,7 @@ import type { PropsApplicationFormModal } from "../../types/props.type";
 
 import { useAuth } from "../../context/AuthContext";
 import { useApplication } from "../../hooks/useApplication";
+import { useToast } from "../../hooks/useToast";
 import {
   ApplicationResend,
   ApplicationResendLabel,
@@ -36,6 +37,7 @@ const ApplicationFormModal = (props: PropsApplicationFormModal) => {
 
   const { user } = useAuth();
   const { create, remove, update, loading } = useApplication();
+  const toast = useToast();
 
   const { validate, hasError, getError, clearErrors } = useFormValidation({
     logo: [validators.required("Le logo de l'entreprise est obligatoire")],
@@ -149,11 +151,19 @@ const ApplicationFormModal = (props: PropsApplicationFormModal) => {
           props.application.id,
           formData as unknown as Partial<Application>,
         );
+        toast.success(
+          "Candidature modifiée",
+          "Les modifications ont été enregistrées avec succès.",
+        );
       } else {
         await create({
           ...formData,
           userId: user?.id ?? null,
         } as unknown as Partial<Application>);
+        toast.success(
+          "Candidature créée",
+          "La nouvelle candidature a été ajoutée avec succès.",
+        );
       }
       props.onSuccess?.();
       setFormData(initData);
@@ -161,6 +171,14 @@ const ApplicationFormModal = (props: PropsApplicationFormModal) => {
       onOpenChange(false);
     } catch (err) {
       console.error(err);
+      toast.error(
+        props.application?.id
+          ? "Erreur lors de la modification"
+          : "Erreur lors de la création",
+        err instanceof Error
+          ? err.message
+          : "Impossible d'enregistrer la candidature.",
+      );
     }
   };
 
@@ -177,10 +195,20 @@ const ApplicationFormModal = (props: PropsApplicationFormModal) => {
 
     try {
       await remove(props.application.id);
+      toast.success(
+        "Candidature supprimée",
+        "La candidature a bien été supprimée.",
+      );
       props.onSuccess?.();
       onOpenChange(false);
     } catch (err) {
       console.error(err);
+      toast.error(
+        "Erreur lors de la suppression",
+        err instanceof Error
+          ? err.message
+          : "Impossible de supprimer la candidature.",
+      );
     }
   };
 

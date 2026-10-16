@@ -3,6 +3,7 @@ import { useFormValidation, validators } from "../../hooks/useFormValidation";
 
 import { useAuth } from "../../context/AuthContext";
 import useMedia from "../../hooks/useMedia";
+import { useToast } from "../../hooks/useToast";
 
 import Button from "../ui/Button/Button";
 import FileInput from "../ui/FileInput/FileInput";
@@ -26,6 +27,7 @@ const DocumentFormModal = (props: PropsMediaFormModal) => {
 
   const { user } = useAuth();
   const { create, remove, update, loading } = useMedia();
+  const toast = useToast();
 
   const { validate, hasError, getError, clearErrors } = useFormValidation({
     path: [validators.required("Le fichier est obligatoire")],
@@ -115,11 +117,19 @@ const DocumentFormModal = (props: PropsMediaFormModal) => {
     try {
       if (props.media?.id) {
         await update(props.media.id, formData as unknown as dataMedia);
+        toast.success(
+          "Document modifié",
+          "Les modifications ont été enregistrées avec succès.",
+        );
       } else {
         await create({
           ...formData,
           userId: user?.id ?? null,
         } as unknown as dataMedia);
+        toast.success(
+          "Document ajouté",
+          "Le document a été enregistré avec succès.",
+        );
       }
       props.onSuccess?.();
       setFormData(initData);
@@ -129,6 +139,14 @@ const DocumentFormModal = (props: PropsMediaFormModal) => {
       onOpenChange(false);
     } catch (err) {
       console.error(err);
+      toast.error(
+        props.media?.id
+          ? "Erreur lors de la modification"
+          : "Erreur lors de l'ajout",
+        err instanceof Error
+          ? err.message
+          : "Une erreur est survenue lors de l'enregistrement du document.",
+      );
     }
   };
 
@@ -143,10 +161,20 @@ const DocumentFormModal = (props: PropsMediaFormModal) => {
 
     try {
       await remove(props.media.id);
+      toast.success(
+        "Document supprimé",
+        "Le document a bien été supprimé.",
+      );
       props.onSuccess?.();
       onOpenChange(false);
     } catch (err) {
       console.error(err);
+      toast.error(
+        "Erreur lors de la suppression",
+        err instanceof Error
+          ? err.message
+          : "Impossible de supprimer le document.",
+      );
     }
   };
 

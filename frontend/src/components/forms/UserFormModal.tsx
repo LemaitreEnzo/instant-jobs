@@ -5,6 +5,7 @@ import useFormValidation, { validators } from "../../hooks/useFormValidation";
 import useOrganization from "../../hooks/useOrganization";
 import usePromotion from "../../hooks/usePromotion";
 import useSpeciality from "../../hooks/useSpeciality";
+import { useToast } from "../../hooks/useToast";
 import useUser from "../../hooks/useUser";
 import type {
   Campus,
@@ -45,6 +46,7 @@ const UserFormModal = ({
 }: PropsUserFormModal) => {
   const { user } = useAuth();
   const { create, loading } = useUser();
+  const toast = useToast();
   const { fetchCampuses } = useOrganization();
   const { fetchPromotions } = useCampus();
   const { fetchSpecialities } = usePromotion();
@@ -193,11 +195,21 @@ const UserFormModal = ({
         specialityId: formData.specialityId ?? null,
         subSpecialityId: formData.subSpecialityId ?? null,
       });
+      toast.success(
+        "Élève créé",
+        "Le compte de l'élève a été créé avec succès.",
+      );
       onSuccess?.();
       clearErrors();
       onOpenChange(false);
     } catch (err) {
       console.error(err);
+      toast.error(
+        "Erreur lors de la création",
+        err instanceof Error
+          ? err.message
+          : "Impossible de créer le compte élève.",
+      );
     }
   };
 
