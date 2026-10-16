@@ -2,6 +2,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import { AuthProvider } from "./context/AuthProvider";
+import { ToastProvider } from "./context/ToastProvider";
 
 const rootElement = document.getElementById("root");
 
@@ -11,8 +12,11 @@ if (!rootElement) {
 
 ReactDOM.createRoot(rootElement).render(
   <BrowserRouter>
-    <AuthProvider>
-      <App />
-    </AuthProvider>
+    {/* Global toast notification provider enabling app-wide alerts */}
+    <ToastProvider>
+      <AuthProvider>
+        <App />
+      </AuthProvider>
+    </ToastProvider>
   </BrowserRouter>,
 );

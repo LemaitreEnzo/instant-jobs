@@ -7,24 +7,6 @@ const getSidebarItems = (orgSlug: string) => {
 
   const sharedItems = [
     {
-      label: "Dashboard",
-      link: `${prefix}/dashboard`,
-      icon: (
-        <svg
-          width="25"
-          height="25"
-          viewBox="0 0 25 25"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M13.5417 9.375V3.125H21.875V9.375H13.5417ZM3.125 13.5417V3.125H11.4583V13.5417H3.125ZM13.5417 21.875V11.4583H21.875V21.875H13.5417ZM3.125 21.875V15.625H11.4583V21.875H3.125Z"
-            fill="currentColor"
-          />
-        </svg>
-      ),
-    },
-    {
       label: "Mon Profil",
       link: `${prefix}/profile`,
       icon: (
@@ -64,7 +46,6 @@ const getSidebarItems = (orgSlug: string) => {
 
   return {
     admin: [
-      ...sharedItems,
       {
         label: "Mon école",
         link: `${prefix}/school`,
@@ -83,9 +64,9 @@ const getSidebarItems = (orgSlug: string) => {
           </svg>
         ),
       },
+      ...sharedItems,
     ],
     staff: [
-      ...sharedItems,
       {
         label: "Mon campus",
         link: `${prefix}/campus`,
@@ -104,9 +85,27 @@ const getSidebarItems = (orgSlug: string) => {
           </svg>
         ),
       },
+      ...sharedItems,
     ],
     student: [
-      ...sharedItems.slice(0, 1), // Dashboard
+      {
+        label: "Dashboard",
+        link: `${prefix}/dashboard`,
+        icon: (
+          <svg
+            width="25"
+            height="25"
+            viewBox="0 0 25 25"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M13.5417 9.375V3.125H21.875V9.375H13.5417ZM3.125 13.5417V3.125H11.4583V13.5417H3.125ZM13.5417 21.875V11.4583H21.875V21.875H13.5417ZM3.125 21.875V15.625H11.4583V21.875H3.125Z"
+              fill="currentColor"
+            />
+          </svg>
+        ),
+      },
       {
         label: "Candidatures",
         link: `${prefix}/applications`,
@@ -183,7 +182,7 @@ const getSidebarItems = (orgSlug: string) => {
           </svg>
         ),
       },
-      ...sharedItems.slice(1),
+      ...sharedItems,
     ],
   };
 };

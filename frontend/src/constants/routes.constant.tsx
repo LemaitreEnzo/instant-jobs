@@ -15,10 +15,6 @@ import type { Route } from "../types/global.type";
 
 const sharedRoutes: Route[] = [
   {
-    path: "dashboard",
-    element: <Dashboard />,
-  },
-  {
     path: "student/:id",
     element: <StudentDetails />,
   },
@@ -34,21 +30,24 @@ const sharedRoutes: Route[] = [
 
 export const routes: Record<UserRole, Route[]> = {
   admin: [
-    ...sharedRoutes,
     {
       path: "school",
       element: <School />,
     },
+    ...sharedRoutes,
   ],
   staff: [
-    ...sharedRoutes,
     {
       path: "campus",
       element: <School />,
     },
+    ...sharedRoutes,
   ],
   student: [
-    ...sharedRoutes,
+    {
+      path: "dashboard",
+      element: <Dashboard />,
+    },
     {
       path: "applications",
       element: <ApplicationsPage />,
@@ -65,5 +64,6 @@ export const routes: Record<UserRole, Route[]> = {
       path: "school",
       element: <MySchool />,
     },
+    ...sharedRoutes,
   ],
 };
