@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "../../assets/css/pages/student/mySchool.css";
+import FilterBar from "../../components/layout/FilterBar/FilterBar";
 import PageTitle from "../../components/layout/PageTitle/PageTitle";
+import Pagination from "../../components/layout/Pagination/Pagination";
 import SchoolCard from "../../components/ui/SchoolCard/SchoolCard";
 import SmallProfile from "../../components/ui/SmallProfile/SmallProfile";
 import { useAuth } from "../../context/AuthContext";
@@ -8,6 +10,7 @@ import useOrganization from "../../hooks/useOrganization";
 import type { Organization } from "../../interfaces/models.interface";
 import type { Student } from "../../interfaces/user.interface";
 import { UserRole } from "../../types/enum.type";
+import type { FilterGroup, SortOption } from "../../types/props.type";
 
 /**
  * Student school directory page.
@@ -16,8 +19,10 @@ import { UserRole } from "../../types/enum.type";
 function MySchool() {
   const { user } = useAuth();
   const [organization, setOrganization] = useState<Organization | null>(null);
-  const [students, setStudents] = useState<Student[] | null>(null);
+  const [students, setStudents] = useState<Student[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const { fetchUsers, fetchOne } = useOrganization();
+  const [paginatedStudents, setPaginatedStudents] = useState<Student[]>([]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -43,20 +48,79 @@ function MySchool() {
     loadData();
   }, [fetchOne, fetchUsers, user]);
 
+  const [activeFilters, setActiveFilters] = useState<Record<string, string[]>>(
+    {},
+  );
+
+  const sortOptions: SortOption[] = useMemo(
+    () => [{ label: "Date d'envoi", value: "date" }],
+    [],
+  );
+
+  const filteredAndSortedStudents = useMemo(() => {
+    if (!students) return [];
+    let result = [...students];
+
+    const selectedCampus = activeFilters["campus"] || [];
+    if (selectedCampus.length > 0) {
+      result = result.filter((s) => selectedCampus.includes(s.campus.name));
+    }
+
+    return result;
+  }, [students, activeFilters]);
+
+  const [prevFilters, setPrevFilters] = useState(activeFilters);
+
+  if (activeFilters !== prevFilters) {
+    setPrevFilters(activeFilters);
+    setCurrentPage(1);
+  }
+
+  const filterGroups: FilterGroup[] = useMemo(() => {
+    const uniqueCampusName = Array.from(
+      new Set(students.map((s) => s.campus.name)),
+    );
+
+    return [
+      {
+        id: "campus",
+        title: "Campus",
+        options: uniqueCampusName.map((name) => ({
+          id: name,
+          label: name,
+        })),
+      },
+    ];
+  }, [students]);
+
   if (students && organization) {
     return (
       <div className="my-school">
-        <div className="my-school-header">
-          <PageTitle title="Mon école" />
-        </div>
         <SchoolCard data={organization} />
 
-        <div className="my-school-students">
-          {students.map((student, index) => {
-            return <SmallProfile key={index} data={student} />;
-          })}
+        <div className="top">
+          <PageTitle title="Mon école" />
+          <FilterBar
+            filterGroups={filterGroups}
+            onFilterChange={setActiveFilters}
+            sortOptions={sortOptions}
+          />
         </div>
-        <div></div>
+
+        <div className="my-school-students">
+          {paginatedStudents.length > 0 &&
+            paginatedStudents.map((student, index) => {
+              return <SmallProfile key={index} data={student} />;
+            })}
+        </div>
+
+        <Pagination
+          data={filteredAndSortedStudents}
+          itemsPerPage={4}
+          currentPage={currentPage}
+          onPageChange={setCurrentPage}
+          onDataChange={setPaginatedStudents}
+        />
       </div>
     );
   } else {

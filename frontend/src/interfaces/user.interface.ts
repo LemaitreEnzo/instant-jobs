@@ -25,10 +25,10 @@ export interface Staff extends User {
 }
 
 export interface Student extends User {
-  campus: Campus
+  campus: Campus;
   applications: Application[] | null;
   appointments: Appointment[] | null;
-  promotion: Promotion | null;
+  promotion: Promotion;
   speciality: Speciality | null;
   subSpeciality: SubSpeciality | null;
   status: StudentStatus;
