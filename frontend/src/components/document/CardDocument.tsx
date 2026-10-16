@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from "react";
 import useMedia from "../../hooks/useMedia";
+import { useToast } from "../../hooks/useToast";
 import type { Media } from "../../interfaces/models.interface";
 import type { PropsCardDocument } from "../../types/props.type";
 import { toBlobUrl } from "../../utils/globals.util";
@@ -9,6 +10,7 @@ import "./CardDocument.css";
 const CardDocument = (props: PropsCardDocument) => {
   const document: Media = props.data;
   const { remove } = useMedia();
+  const toast = useToast();
 
   const fileUrl = useMemo(() => toBlobUrl(document.path), [document.path]);
 
@@ -29,9 +31,19 @@ const CardDocument = (props: PropsCardDocument) => {
 
     try {
       await remove(document.id);
+      toast.success(
+        "Document supprimé",
+        "Le document a bien été supprimé.",
+      );
       props.onDeleted?.(document.id);
     } catch (err) {
       console.error(err);
+      toast.error(
+        "Erreur lors de la suppression",
+        err instanceof Error
+          ? err.message
+          : "Impossible de supprimer le document.",
+      );
     }
   };
 

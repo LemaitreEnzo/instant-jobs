@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
+import { useToast } from "../../../hooks/useToast";
 import type { PropsUserModal } from "../../../types/props.type";
 import Button from "../../ui/Button/Button";
 import "./UserModal.css";
@@ -11,13 +12,25 @@ import "./UserModal.css";
 const UserModal = (props: PropsUserModal) => {
   const { user, open, onOpenChange } = props;
   const { organization, logout } = useAuth();
+  const toast = useToast();
   const modalRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
   const logoutUser = async () => {
-    await logout();
-    onOpenChange(false);
-    navigate("/login", { replace: true });
+    try {
+      await logout();
+      toast.info("Déconnexion réussie", "À bientôt !");
+      onOpenChange(false);
+      navigate("/login", { replace: true });
+    } catch (error) {
+      console.error(error);
+      toast.error(
+        "Erreur lors de la déconnexion",
+        error instanceof Error
+          ? error.message
+          : "Une erreur est survenue lors de la déconnexion.",
+      );
+    }
   };
 
   useEffect(() => {

@@ -3,6 +3,7 @@ import { useAuth } from "../../../context/AuthContext";
 import useFormValidation, {
   validators,
 } from "../../../hooks/useFormValidation";
+import { useToast } from "../../../hooks/useToast";
 import useUser from "../../../hooks/useUser";
 import type { Student } from "../../../interfaces/user.interface";
 import {
@@ -28,6 +29,7 @@ function PersonalInformations(props: PropsPersonalInformation) {
   const [open, setOpen] = useState(false);
   const userHook = useUser();
   const { setUser } = useAuth();
+  const toast = useToast();
 
   const isStudent = user.role === UserRole.STUDENT && "status" in user;
 
@@ -70,7 +72,10 @@ function PersonalInformations(props: PropsPersonalInformation) {
 
     try {
       await userHook.update(user.id, formData);
-
+      toast.success(
+        "Profil mis à jour",
+        "Vos informations personnelles ont été modifiées avec succès.",
+      );
       setUser((prevUser) => {
         if (!prevUser) return null;
         return {
@@ -82,6 +87,12 @@ function PersonalInformations(props: PropsPersonalInformation) {
       clearErrors();
     } catch (error) {
       console.error("Erreur lors de la mise à jour :", error);
+      toast.error(
+        "Erreur lors de la mise à jour",
+        error instanceof Error
+          ? error.message
+          : "Impossible de mettre à jour vos informations.",
+      );
     }
   };
 
